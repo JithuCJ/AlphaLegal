@@ -1,26 +1,35 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+// import React from 'react'
+import ReactDOM from "react-dom";
 import {
   BrowserRouter as Router,
+  Routes,
   Route,
-  Switch,
-  Redirect,
-} from 'react-router-dom'
+  Navigate,
+} from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-import './style.css'
-import Desktop1 from './views/desktop1'
-import NotFound from './views/not-found'
+import "./style.css";
+// import Desktop1 from "./views/desktop1";
+import NotFound from "./views/not-found";
+import Home from "./pages/home";
+import Login from "./pages/login";
+import Register from "./pages/register";
+import Header from "./pages/Navbar";
 
 const App = () => {
   return (
     <Router>
-      <Switch>
-        <Route component={Desktop1} exact path="/" />
-        <Route component={NotFound} path="**" />
-        <Redirect to="**" />
-      </Switch>
+      <Header />
+      <Routes>
+        {/* <Route path="/" element={<Desktop1 />} /> */}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<NotFound />} />
+        <Route path="/*" element={<Navigate to="/" />} />
+      </Routes>
     </Router>
-  )
-}
+  );
+};
 
-ReactDOM.render(<App />, document.getElementById('app'))
+ReactDOM.render(<App />, document.getElementById("app"));

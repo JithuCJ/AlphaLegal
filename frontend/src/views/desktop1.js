@@ -1,15 +1,15 @@
-import React from 'react'
+import React from "react";
 
-import { Helmet } from 'react-helmet'
+// import { Helmet } from "react-helmet";
 
-import './desktop1.css'
+import "./desktop1.css";
 
 const Desktop1 = (props) => {
   return (
     <div className="desktop1-container">
-      <Helmet>
+      {/* <Helmet> */}
         <title>exported project</title>
-      </Helmet>
+      {/* </Helmet> */}
       <div className="desktop1-desktop1">
         <img
           src="/external/bg632-cgs-900h.png"
@@ -67,7 +67,7 @@ const Desktop1 = (props) => {
                   Enter email address
                   <span
                     dangerouslySetInnerHTML={{
-                      __html: ' ',
+                      __html: " ",
                     }}
                   />
                 </span>
@@ -128,7 +128,7 @@ const Desktop1 = (props) => {
         </span>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Desktop1
+export default Desktop1;
