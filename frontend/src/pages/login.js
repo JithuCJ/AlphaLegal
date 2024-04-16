@@ -9,15 +9,15 @@ function LoginForm() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    // Use axios to send a POST request to the server
+ 
     axios.post('http://localhost:5000/login', { email, password })
       .then(response => {
-        // Handle response here
+        
         console.log("Login successful", response.data);
         alert("Login successful!");
       })
       .catch(error => {
-        // Handle errors here
+      
         console.error("Login error", error);
         alert("Login failed!");
       });
