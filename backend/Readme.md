@@ -1,3 +1,6 @@
 you can run:
 
-### python3 app.py
+# pip install -r requirement.txt
+
+# python3 app.py
+
