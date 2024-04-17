@@ -1,5 +1,6 @@
+// RegisterForm.js
 import React, { useState } from "react";
-import { Form, Button, Container, Card } from "react-bootstrap";
+import { Form, Button, Container, Card, Alert } from "react-bootstrap";
 import "../style.css";
 import axios from "axios";
 
@@ -10,6 +11,8 @@ function RegisterForm() {
     password: "",
     confirmPassword: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const { name, email, password, confirmPassword } = formData;
 
@@ -19,34 +22,45 @@ function RegisterForm() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-    } else {
-      axios
-        .post("http://localhost:5000/register", {
-          username: name,
-          email: email,
-          password: password,
-        })
-        .then((response) => {
-          console.log("Registration successful", response.data);
-          alert("Registration Successful!");
-        })
-        .catch((error) => {
-          console.error("Registration error", error);
-          alert(
-            "Registration Failed! Error: " +
-              (error.response?.data?.message || "Unknown Error")
-          );
-        });
+    if (!email.endsWith("@gmail.com")) {
+      setMessage("Please use your organization email to register.");
+      return;
     }
+
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+    axios
+      .post("http://localhost:5000/register", {
+        username: name,
+        email: email,
+        password: password,
+      })
+      .then((response) => {
+        console.log("Registration successful", response.data);
+        setMessage(
+          "Registration successful! Please check your email to confirm."
+        );
+      })
+      .catch((error) => {
+        console.error("Registration error", error);
+        setMessage(
+          "Registration Failed! Error: " +
+            (error.response?.data?.message || "Token Error")
+        );
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
     <Container className="d-flex justify-content-center mt-5">
-      <Card style={{ width: "26rem" }} className="shadow">
-        <Card.Body className="mb-4">
+      <Card style={{ width: "28rem" }} className="shadow">
+        <Card.Body className="mb-3">
           <h2 className="text-center mb-4">Register</h2>
+          {message && <Alert variant="info">{message}</Alert>}
           <Form onSubmit={onSubmit}>
             <Form.Group className="mb-3" controlId="formBasicName">
               <Form.Label>Name</Form.Label>
@@ -96,8 +110,13 @@ function RegisterForm() {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-100 mt-2">
-              Register
+            <Button
+              variant="primary"
+              type="submit"
+              className="w-100"
+              disabled={loading}
+            >
+              {loading ? "Registering…" : "Register"}
             </Button>
           </Form>
         </Card.Body>

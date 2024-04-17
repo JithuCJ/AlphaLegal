@@ -1,9 +1,15 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from config import ApplicationConfig
 from models import db, User
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager, create_access_token
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
+import os
+
+
 load_dotenv()
 
 
@@ -11,11 +17,23 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 
+app.secret_key = 'your_flask_secret_key_here'
+
 app.config.from_object(ApplicationConfig)
 
 bcrypt = Bcrypt(app)
 db.init_app(app)
+jwt = JWTManager(app)
 
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'shubhamkharche01@gmail.com'
+app.config['MAIL_PASSWORD'] = os.environ.get('shubham@3005')
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
+
+serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 with app.app_context():
 
@@ -36,12 +54,23 @@ def register():
     if user_exists:
         return jsonify({'message': 'User already exists'}), 400
 
+    # Generate a token
+    token = serializer.dumps(email, salt='email-confirm')
+
+    # Send email with token
+    msg = Message('Confirm Your Email',
+                  sender='shubhamkharche01@gmail.com', recipients=[email])
+    msg.body = f"Hi {username},\n\nconfirm your email: http://localhost:3000/confirm/{token}"
+    mail.send(msg)
+    #
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = User(email=email, username=username, password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'message': 'User created successfully'}), 201
+    # Generate JWT token upon successful registration
+    access_token = create_access_token(identity=new_user.id)
+    return jsonify({'message': 'User created successfully', 'access_token': access_token}), 201
 
 
 @app.route('/login', methods=['POST'])
@@ -55,7 +84,9 @@ def login():
     if not bcrypt.check_password_hash(user.password, password):
         return jsonify({'message': 'Invalid credentials'}), 401
 
-    return jsonify({'message': 'Login successful'}), 200
+  # Generate JWT token upon successful login
+    access_token = create_access_token(identity=user.id)
+    return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
 
 
 if __name__ == '__main__':
