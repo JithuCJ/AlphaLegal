@@ -17,7 +17,7 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 
-app.secret_key = 'your_flask_secret_key_here'
+app.secret_key = 'super-secret-key'
 
 app.config.from_object(ApplicationConfig)
 
@@ -25,12 +25,7 @@ bcrypt = Bcrypt(app)
 db.init_app(app)
 jwt = JWTManager(app)
 
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'shubhamkharche01@gmail.com'
-app.config['MAIL_PASSWORD'] = os.environ.get('shubham@3005')
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
+
 mail = Mail(app)
 
 serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
@@ -47,6 +42,7 @@ def me():
 
 @app.route('/register', methods=['POST'])
 def register():
+
     email = request.json.get('email')
     username = request.json.get('username')
     password = request.json.get('password')
@@ -54,15 +50,15 @@ def register():
     if user_exists:
         return jsonify({'message': 'User already exists'}), 400
 
-    # Generate a token
     token = serializer.dumps(email, salt='email-confirm')
 
     # Send email with token
     msg = Message('Confirm Your Email',
-                  sender='shubhamkharche01@gmail.com', recipients=[email])
+                  sender='noreplay@gmail.com', recipients=[email])
     msg.body = f"Hi {username},\n\nconfirm your email: http://localhost:3000/confirm/{token}"
     mail.send(msg)
-    #
+
+    # Hash password
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = User(email=email, username=username, password=hashed_password)
     db.session.add(new_user)

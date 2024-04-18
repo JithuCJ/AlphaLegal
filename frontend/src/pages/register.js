@@ -1,4 +1,4 @@
-// RegisterForm.js
+
 import React, { useState } from "react";
 import { Form, Button, Container, Card, Alert } from "react-bootstrap";
 import "../style.css";
