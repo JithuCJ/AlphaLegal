@@ -14,3 +14,5 @@ class User(db.Model):
     username = db.Column(db.String, unique=False, nullable=False)
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
+    email_confirmed = db.Column(db.Boolean, default=False)
+    

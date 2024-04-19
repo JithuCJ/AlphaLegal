@@ -5,8 +5,12 @@ from models import db, User
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token
-from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from flask_migrate import Migrate
+
 import os
 
 
@@ -24,15 +28,40 @@ app.config.from_object(ApplicationConfig)
 bcrypt = Bcrypt(app)
 db.init_app(app)
 jwt = JWTManager(app)
-
-
-mail = Mail(app)
+migrate = Migrate(app, db)
 
 serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 with app.app_context():
 
     db.create_all()
+
+# Add this function to your Flask application
+
+
+def send_email(recipient_email, token):
+    sender_email = "shubhamkharche01@gmail.com"  # Change this to your email address
+    sender_password = "lzkt yfio ftds aklq"   # Change this to your email password
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = recipient_email
+    msg['Subject'] = "Email Confirmation Token"
+
+    # Email body
+    body = f"Your confirmation token is: {token}"
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        # Change to your SMTP server
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, recipient_email, msg.as_string())
+        server.quit()
+        print("Email sent successfully!")
+    except Exception as e:
+        print("Error sending email:", str(e))
 
 
 @app.route('/', methods=['GET'])
@@ -46,6 +75,8 @@ def register():
     email = request.json.get('email')
     username = request.json.get('username')
     password = request.json.get('password')
+    email_confirmed = request.json.get('email_confirmed')
+
     user_exists = User.query.filter_by(email=email).first() is not None
     if user_exists:
         return jsonify({'message': 'User already exists'}), 400
@@ -53,20 +84,38 @@ def register():
     token = serializer.dumps(email, salt='email-confirm')
 
     # Send email with token
-    msg = Message('Confirm Your Email',
-                  sender='noreplay@gmail.com', recipients=[email])
-    msg.body = f"Hi {username},\n\nconfirm your email: http://localhost:3000/confirm/{token}"
-    mail.send(msg)
+    send_email(email, token)
 
     # Hash password
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = User(email=email, username=username, password=hashed_password)
+
+    new_user = User(email=email, username=username,
+                    password=hashed_password, email_confirmed=email_confirmed)
     db.session.add(new_user)
     db.session.commit()
 
     # Generate JWT token upon successful registration
-    access_token = create_access_token(identity=new_user.id)
-    return jsonify({'message': 'User created successfully', 'access_token': access_token}), 201
+    # access_token = create_access_token(identity=new_user.id)
+    return jsonify({'message': 'User created successfully'}), 201
+
+
+@app.route('/confirm/<token>', methods=['POST'])
+def confirm_email(token):
+    try:
+        # 1 hour to confirm the email
+        email = serializer.loads(
+            token, salt='email-confirm', max_age=3600)
+    except:
+        return jsonify({'message': 'The confirmation link is invalid or has expired.'}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if user.email_confirmed:
+        return jsonify({'message': 'Account already confirmed.'}), 200
+    else:
+        user.email_confirmed = True
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({'message': 'You have confirmed your account. Thanks!'}), 200
 
 
 @app.route('/login', methods=['POST'])

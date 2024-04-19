@@ -8,3 +8,4 @@ flask-cors
 flask-jwt-extended
 Flask-Mail
 itsdangerous
+Flask-Migrate
