@@ -99,7 +99,7 @@ def register():
     return jsonify({'message': 'User created successfully'}), 201
 
 
-@app.route('/confirm/<token>', methods=['POST'])
+@app.route('/confirm-token', methods=['POST'])
 def confirm_email(token):
     try:
         # 1 hour to confirm the email

@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Form, Button, Container, Card, Alert } from "react-bootstrap";
+import { Form, Button, Container, Card, Alert, Modal } from "react-bootstrap";
 import "../style.css";
 import axios from "axios";
 
@@ -13,11 +12,17 @@ function RegisterForm() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [showModal, setShowModal] = useState(false); // To control the visibility of the modal
+  const [token, setToken] = useState(""); // State to hold the token input by the user
 
   const { name, email, password, confirmPassword } = formData;
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleTokenChange = (e) => {
+    setToken(e.target.value); // Update the token state on input change
   };
 
   const onSubmit = (e) => {
@@ -44,6 +49,7 @@ function RegisterForm() {
         setMessage(
           "Registration successful! Please check your email to confirm."
         );
+        setShowModal(true); // Show the modal for token input after successful registration
       })
       .catch((error) => {
         console.error("Registration error", error);
@@ -55,6 +61,19 @@ function RegisterForm() {
       .finally(() => setLoading(false));
   };
 
+  const verifyToken = () => {
+    // Logic to verify token
+    axios
+      .post("http://localhost:5000/confirm-token", { token })
+      .then((response) => {
+        setMessage("Account verified successfully!");
+        setShowModal(true);
+      })
+      .catch((error) => {
+        setMessage("Verification failed. Please try again.");
+      });
+  };
+
   return (
     <Container className="d-flex justify-content-center mt-5">
       <Card style={{ width: "28rem" }} className="shadow">
@@ -62,6 +81,7 @@ function RegisterForm() {
           <h2 className="text-center mb-4">Register</h2>
           {message && <Alert variant="info">{message}</Alert>}
           <Form onSubmit={onSubmit}>
+            {/* Name Input */}
             <Form.Group className="mb-3" controlId="formBasicName">
               <Form.Label>Name</Form.Label>
               <Form.Control
@@ -74,6 +94,7 @@ function RegisterForm() {
               />
             </Form.Group>
 
+            {/* Email Input */}
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
               <Form.Control
@@ -86,6 +107,7 @@ function RegisterForm() {
               />
             </Form.Group>
 
+            {/* Password Input */}
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control
@@ -98,6 +120,7 @@ function RegisterForm() {
               />
             </Form.Group>
 
+            {/* Confirm Password Input */}
             <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
               <Form.Label>Confirm Password</Form.Label>
               <Form.Control
@@ -110,6 +133,7 @@ function RegisterForm() {
               />
             </Form.Group>
 
+            {/* Submit Button */}
             <Button
               variant="primary"
               type="submit"
@@ -121,6 +145,34 @@ function RegisterForm() {
           </Form>
         </Card.Body>
       </Card>
+
+      {/* Token Verification Modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Verify Your Account</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Verification Token</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter token sent to your email"
+                value={token}
+                onChange={handleTokenChange}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={verifyToken}>
+            Verify Account
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }
