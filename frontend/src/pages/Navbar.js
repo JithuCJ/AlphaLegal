@@ -1,39 +1,40 @@
-import { Button } from "react-bootstrap";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
+import React from "react";
+import { Container, Nav, Navbar } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../store/auth";
 
 function Header() {
-  return (
-    <>
-      <Navbar bg="light" data-bs-theme="light" className="p-3">
-        <Container>
-          {/* <Navbar.Brand href="#home">Navbar</Navbar.Brand> */}
-          <img src="/external/logo.png" alt="logo" height={"30rem"} />
-          <Nav className="me-auto">
-            <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/">Services</Nav.Link>
-            <Nav.Link href="/">Career</Nav.Link>
-          </Nav>
-          <Nav className="gap-3">
-            <Button variant="primary">
-              {" "}
-              <Nav.Link href="/login" style={{ color: "white" }}>
-                Login
-              </Nav.Link>
-            </Button>
+    const { isLoggedIn, logoutUser } = useContext(AuthContext);
 
-            <Button variant="primary">
-              {" "}
-              <Nav.Link href="/register" style={{ color: "white" }}>
-                Register
-              </Nav.Link>{" "}
-            </Button>
-          </Nav>
-        </Container>
-      </Navbar>
-    </>
-  );
+    return (
+        <Navbar bg="light" expand="lg" className="p-3">
+            <Container>
+                <Navbar.Brand as={NavLink} to="/">
+                <img src="/external/logo.png" alt="logo" height={"30rem"} /> 
+                </Navbar.Brand>
+                <Nav className="me-auto">
+                    <Nav.Link as={NavLink} to="/">Home</Nav.Link>
+                    <Nav.Link as={NavLink} to="/">Services</Nav.Link>
+                    <Nav.Link as={NavLink} to="/">Career</Nav.Link>
+                </Nav>
+                <Nav>
+                    {isLoggedIn ? (
+                        <>
+                            <Nav.Link onClick={logoutUser} as={NavLink} to="/logout">
+                                Logout
+                            </Nav.Link>
+                        </>
+                    ) : (
+                        <>
+                            <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
+                            <Nav.Link as={NavLink} to="/register">Register</Nav.Link>
+                        </>
+                    )}
+                </Nav>
+            </Container>
+        </Navbar>
+    );
 }
 
 export default Header;

@@ -10,13 +10,14 @@
   .container {
     height: 100%;
     display: flex;
-    align-items: center; /* Aligns vertically center */
+    align-items: center; 
     justify-content: center;
   }
   
   .card {
-    border: none; /* No border for a cleaner look */
-    border-radius: 0.25rem; /* Slightly rounded corners for the card */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Subtle shadow for 3D effect */
+    border: none; 
+    border-radius: 0.25rem; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
   }
   
+ 

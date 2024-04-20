@@ -1,27 +1,33 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Form, Button, Container, Card } from "react-bootstrap";
-import axios from 'axios';  // Import axios to make HTTP requests
+import axios from "axios"; // Import axios to make HTTP requests
 import "../style.css";
+import { useNavigate } from "react-router-dom";
+
+import { AuthContext } from "../store/auth";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+    const { storeToken } = useContext(AuthContext);  // Use storeToken from AuthContext
 
-  const onSubmit = (e) => {
-    e.preventDefault();
- 
-    axios.post('http://localhost:5000/login', { email, password })
-      .then(response => {
-        
-        console.log("Login successful", response.data);
-        alert("Login successful!");
-      })
-      .catch(error => {
-      
-        console.error("Login error", error);
-        alert("Login failed!");
-      });
-  };
+    const onSubmit = (e) => {
+        e.preventDefault();
+
+        axios.post("http://localhost:5000/login", { email, password })
+            .then((response) => {
+                console.log("Login successful", response.data);
+                storeToken(response.data.token);  // Store the token on successful login
+                navigate("/");
+                alert("Login successful!");
+            })
+            .catch((error) => {
+                console.error("Login error", error);
+                alert("Login failed!");
+            });
+    };
+
 
   return (
     <Container className="mt-5 d-flex justify-content-center">
