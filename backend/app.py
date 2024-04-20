@@ -40,6 +40,7 @@ with app.app_context():
 
 
 def send_email(recipient_email, token):
+    #  Sender Email address
     sender_email = "shubhamkharche01@gmail.com"  # Change this to your email address
     sender_password = "lzkt yfio ftds aklq"   # Change this to your email password
 
@@ -52,9 +53,34 @@ def send_email(recipient_email, token):
     body = f"Your confirmation token is: {token}"
     msg.attach(MIMEText(body, 'plain'))
 
+    # Determine SMTP settings based on the recipient's email domain
+    domain = recipient_email.split('@')[-1]
+    if domain.lower() == 'gmail.com':
+        smtp_server = 'smtp.gmail.com'
+        smtp_port = 587
+
+    elif domain.lower() == 'yahoo.com':
+        smtp_server = 'smtp.mail.yahoo.com'
+        smtp_port = 587
+
+    elif domain.lower().endswith('outlook.com') or domain.lower().endswith('hotmail.com'):
+        smtp_server = 'smtp.office365.com'
+        smtp_port = 587
+
+    # Sent all email domain
+    elif domain.lower().endswith(''):
+        smtp_server = 'smtp.'
+        smtp_port = 587
+
+    else:
+        print("Unsupported email domain")
+        return
+
+    #
+
     try:
         # Change to your SMTP server
-        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server = smtplib.SMTP(smtp_server, smtp_port)
         server.starttls()
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, recipient_email, msg.as_string())
