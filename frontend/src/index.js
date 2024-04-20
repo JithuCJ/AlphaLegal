@@ -15,16 +15,17 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import Header from "./pages/Navbar";
+import Logout from "./pages/Logout";
 
 const App = () => {
   return (
     <Router>
       <Header />
       <Routes>
-        {/* <Route path="/" element={<Desktop1 />} /> */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/logout" element={<Logout />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/*" element={<Navigate to="/" />} />
       </Routes>

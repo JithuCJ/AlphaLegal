@@ -22,12 +22,12 @@ function RegisterForm() {
   };
 
   const handleTokenChange = (e) => {
-    setToken(e.target.value); // Update the token state on input change
+    setToken(e.target.value); 
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (!email.endsWith("@gmail.com")) {
+    if (!email.endsWith("@gmail.com" && "yahoo.com" && "outlook.com" && "hotmail.com" && "")) {
       setMessage("Please use your organization email to register.");
       return;
     }
@@ -49,7 +49,7 @@ function RegisterForm() {
         setMessage(
           "Registration successful! Please check your email to confirm."
         );
-        setShowModal(true); // Show the modal for token input after successful registration
+        setShowModal(true); 
       })
       .catch((error) => {
         console.error("Registration error", error);
