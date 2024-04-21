@@ -8,26 +8,26 @@ import { AuthContext } from "../store/auth";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const navigate = useNavigate();
-    const { storeToken } = useContext(AuthContext);  // Use storeToken from AuthContext
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { storeToken } = useContext(AuthContext); // Use storeToken from AuthContext
 
-    const onSubmit = (e) => {
-        e.preventDefault();
+  const onSubmit = (e) => {
+    e.preventDefault();
 
-        axios.post("http://localhost:5000/login", { email, password })
-            .then((response) => {
-                console.log("Login successful", response.data);
-                storeToken(response.data.token);  // Store the token on successful login
-                navigate("/");
-                alert("Login successful!");
-            })
-            .catch((error) => {
-                console.error("Login error", error);
-                alert("Login failed!");
-            });
-    };
-
+    axios
+      .post("http://localhost:5000/login", { email, password })
+      .then((response) => {
+        console.log("Login successful", response.data);
+        storeToken(response.data.token); // Store the token on successful login
+        navigate("/dashboard");
+        alert("Login successful!");
+      })
+      .catch((error) => {
+        console.error("Login error", error);
+        alert("Login failed!");
+      });
+  };
 
   return (
     <Container className="mt-5 d-flex justify-content-center">

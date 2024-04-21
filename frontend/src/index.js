@@ -18,6 +18,8 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import Header from "./pages/Navbar";
 import { Logout } from "./pages/Logout";
+import  Dashboard  from "./dashboard/dashboard";
+
 
 const App = () => {
   return (
@@ -28,6 +30,10 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        {/* dashboard */}
+        
+       
         <Route path="*" element={<NotFound />} />
         <Route path="/*" element={<Navigate to="/" />} />
       </Routes>
