@@ -44,6 +44,8 @@ def send_email(recipient_email, token):
     sender_email = "shubhamkharche01@gmail.com"  # Change this to your email address
     sender_password = "lzkt yfio ftds aklq"   # Change this to your email password
     smtp_port = 587
+    smtp_server = 'smtp.gmail.com'  # Default SMTP server for Gmail
+
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = recipient_email
@@ -52,27 +54,6 @@ def send_email(recipient_email, token):
     # Email body
     body = f"Your confirmation token is: {token}"
     msg.attach(MIMEText(body, 'plain'))
-
-    # Determine SMTP settings based on the recipient's email domain
-    domain = recipient_email.split('@')[-1]
-    if domain.lower() == 'gmail.com':
-        smtp_server = 'smtp.gmail.com'
-
-    elif domain.lower() == 'yahoo.com':
-        smtp_server = 'smtp.mail.yahoo.com'
-
-    elif domain.lower().endswith('outlook.com') or domain.lower().endswith('hotmail.com'):
-        smtp_server = 'smtp.office365.com'
-
-    # Sent all email domain
-    elif domain.lower().endswith('alphalegal.ai'):  
-        smtp_server = 'smtp.alphalegal.ai'
-
-    else:
-        print("Unsupported email domain")
-        return
-
-    #
 
     try:
         # Change to your SMTP server

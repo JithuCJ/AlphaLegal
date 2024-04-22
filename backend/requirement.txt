@@ -10,3 +10,5 @@ Flask-Mail
 itsdangerous
 Flask-Migrate
 smtplib
+secure-smtplib
+
