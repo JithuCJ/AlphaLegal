@@ -3,8 +3,8 @@ import { Form, Button, Container, Card } from "react-bootstrap";
 import axios from "axios"; // Import axios to make HTTP requests
 import "../style.css";
 import { useNavigate } from "react-router-dom";
-
 import { AuthContext } from "../store/auth";
+import {  toast } from 'react-toastify';
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -21,11 +21,11 @@ function LoginForm() {
         console.log("Login successful", response.data);
         storeToken(response.data.token); // Store the token on successful login
         navigate("/dashboard");
-        alert("Login successful!");
+        toast("Login successful!");
       })
       .catch((error) => {
         console.error("Login error", error);
-        alert("Login failed!");
+        toast("Login failed!");
       });
   };
 

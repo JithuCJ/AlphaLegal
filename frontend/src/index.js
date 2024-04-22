@@ -18,8 +18,9 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import Header from "./pages/Navbar";
 import { Logout } from "./pages/Logout";
-import  Dashboard  from "./dashboard/dashboard";
-
+import Dashboard from "./dashboard/dashboard";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
@@ -32,8 +33,7 @@ const App = () => {
         <Route path="/logout" element={<Logout />} />
         <Route path="/dashboard" element={<Dashboard />} />
         {/* dashboard */}
-        
-       
+
         <Route path="*" element={<NotFound />} />
         <Route path="/*" element={<Navigate to="/" />} />
       </Routes>
@@ -44,6 +44,18 @@ const App = () => {
 ReactDOM.render(
   <AuthProvider>
     <App />
+    <ToastContainer
+      position="top-right"
+      autoClose={3000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+    />
   </AuthProvider>,
 
   document.getElementById("app")

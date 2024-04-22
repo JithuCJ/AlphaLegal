@@ -43,7 +43,7 @@ def send_email(recipient_email, token):
     #  Sender Email address
     sender_email = "shubhamkharche01@gmail.com"  # Change this to your email address
     sender_password = "lzkt yfio ftds aklq"   # Change this to your email password
-
+    smtp_port = 587
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = recipient_email
@@ -57,20 +57,16 @@ def send_email(recipient_email, token):
     domain = recipient_email.split('@')[-1]
     if domain.lower() == 'gmail.com':
         smtp_server = 'smtp.gmail.com'
-        smtp_port = 587
 
     elif domain.lower() == 'yahoo.com':
         smtp_server = 'smtp.mail.yahoo.com'
-        smtp_port = 587
 
     elif domain.lower().endswith('outlook.com') or domain.lower().endswith('hotmail.com'):
         smtp_server = 'smtp.office365.com'
-        smtp_port = 587
 
     # Sent all email domain
-    elif domain.lower().endswith(''):
-        smtp_server = 'smtp.'
-        smtp_port = 587
+    elif domain.lower().endswith('alphalegal.ai'):  
+        smtp_server = 'smtp.alphalegal.ai'
 
     else:
         print("Unsupported email domain")

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Form, Button, Container, Card, Alert, Modal } from "react-bootstrap";
 import "../style.css";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -22,12 +23,16 @@ function RegisterForm() {
   };
 
   const handleTokenChange = (e) => {
-    setToken(e.target.value); 
+    setToken(e.target.value);
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (!email.endsWith("@gmail.com" && "yahoo.com" && "outlook.com" && "hotmail.com" && "")) {
+    if (
+      !email.endsWith(
+        "@gmail.com" && "yahoo.com" && "outlook.com" && "hotmail.com" && ""
+      )
+    ) {
       setMessage("Please use your organization email to register.");
       return;
     }
@@ -49,7 +54,7 @@ function RegisterForm() {
         setMessage(
           "Registration successful! Please check your email to confirm."
         );
-        setShowModal(true); 
+        setShowModal(true);
       })
       .catch((error) => {
         console.error("Registration error", error);
