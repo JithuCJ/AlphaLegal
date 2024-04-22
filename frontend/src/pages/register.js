@@ -72,7 +72,8 @@ function RegisterForm() {
       .post("http://localhost:5000/confirm-token", { token })
       .then((response) => {
         setMessage("Account verified successfully!");
-        setShowModal(true);
+        setShowModal(false);
+        toast.success("Account verified successfully!");
       })
       .catch((error) => {
         setMessage("Verification failed. Please try again.");
