@@ -4,7 +4,7 @@ import axios from "axios"; // Import axios to make HTTP requests
 import "../style.css";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../store/auth";
-import {  toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 function LoginForm() {
   const [email, setEmail] = useState("");

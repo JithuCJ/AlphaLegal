@@ -1,23 +1,91 @@
 import React from "react";
-import { Container, Nav, Navbar , NavDropdown } from "react-bootstrap";
+import { Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../store/auth";
-import { toast } from "react-toastify";
+
+import {
+  UserOutlined,
+  NotificationOutlined,
+  HomeOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
+import { Layout, Menu } from "antd";
 
 function Header() {
   const { isLoggedIn, logoutUser } = useContext(AuthContext);
+  const { Sider } = Layout;
 
   return (
     <>
       {isLoggedIn ? (
         <>
-          <Container className="p-5">
-            <Nav.Link onClick={logoutUser} as={NavLink} to="/logout">
-              Logout
-            </Nav.Link>
-            
-          </Container>
+          <Layout className="">
+            <Sider
+              className="p-3 "
+              width="40vh"
+              style={{
+                height: "100vh",
+                position: "fixed",
+                left: 0,
+                overflow: "auto",
+                zIndex: 3,
+                minHeight: "100%",
+              }}
+              trigger={null} // Custom trigger option
+            >
+              <div
+                className="logo d-flex justify-content-center align-items-center border rounded-2"
+                style={{
+                  height: "40px",
+
+                  margin: "16px",
+                  background: "rgba(255, 255, 255, 0.3)",
+                }}
+              >
+                <h4 className="text-center text-white m-2 shadow">
+                  LegalShield
+                </h4>
+              </div>
+              <Menu
+                theme="dark"
+                mode="inline"
+                defaultSelectedKeys={["1"]}
+                style={{ marginTop: "4rem" }}
+              >
+                <Menu.Item key="1" icon={<HomeOutlined />} className="">
+                  <Nav.Link as={NavLink} to="/dashboard">
+                    Home
+                  </Nav.Link>
+                </Menu.Item>
+                <Menu.Item
+                  key="2"
+                  icon={<UserOutlined />}
+                  className="sidebar-menu"
+                >
+                  <Nav.Link as={NavLink} to="/profile">
+                    Profile
+                  </Nav.Link>
+                </Menu.Item>
+                <Menu.Item
+                  key="3"
+                  icon={<NotificationOutlined />}
+                  className="sidebar-menu"
+                >
+                  <Nav.Link as={NavLink} to="/notifications">
+                    Notifications
+                  </Nav.Link>
+                </Menu.Item>
+                <Menu.Item
+                  key="4"
+                  icon={<LogoutOutlined />}
+                  onClick={() => logoutUser()}
+                >
+                  Logout
+                </Menu.Item>
+              </Menu>
+            </Sider>
+          </Layout>
         </>
       ) : (
         <>
