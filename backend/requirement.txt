@@ -1,0 +1,14 @@
+flask
+flask-sqlalchemy
+flask-bcrypt
+python-dotenv
+flask-session
+alembic
+flask-cors
+flask-jwt-extended
+Flask-Mail
+itsdangerous
+Flask-Migrate
+smtplib
+secure-smtplib
+
