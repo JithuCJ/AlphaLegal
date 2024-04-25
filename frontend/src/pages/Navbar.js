@@ -1,124 +1,135 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
-import { useContext } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../store/auth";
-
 import {
   UserOutlined,
   NotificationOutlined,
   HomeOutlined,
   LogoutOutlined,
+  StepBackwardOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Button } from "antd";
 
-function Header() {
+const { Header, Sider, Content } = Layout;
+
+function AppHeader() {
   const { isLoggedIn, logoutUser } = useContext(AuthContext);
-  const { Sider } = Layout;
+  const [collapsed, setCollapsed] = useState(true);
+  const navigate = useNavigate();
+
+  const toggleSidebar = () => {
+    setCollapsed(!collapsed);
+  };
 
   return (
     <>
       {isLoggedIn ? (
-        <>
-          <Layout className="">
-            <Sider
-              className="p-3 "
-              width="40vh"
-              style={{
-                height: "100vh",
-                position: "fixed",
-                left: 0,
-                overflow: "auto",
-                zIndex: 3,
-                minHeight: "100%",
-              }}
-              trigger={null} // Custom trigger option
+        <Layout>
+          <Sider
+            trigger={null}
+            collapsible
+            collapsed={collapsed}
+            width={250}
+            style={{
+              overflow: "auto",
+              height: "100vh",
+              position: "fixed",
+              left: 0,
+            }}
+          >
+            <Menu
+              theme="dark"
+              mode="inline"
+              defaultSelectedKeys={["1"]}
+              style={{ marginTop: "15rem" }}
             >
-              <div
-                className="logo d-flex justify-content-center align-items-center border rounded-2"
-                style={{
-                  height: "40px",
-
-                  margin: "16px",
-                  background: "rgba(255, 255, 255, 0.3)",
-                }}
+              <Menu.Item key="1" icon={<HomeOutlined />} className="">
+                <Nav.Link as={NavLink} to="/dashboard">
+                  Welcome
+                </Nav.Link>
+              </Menu.Item>
+              <Menu.Item
+                key="2"
+                icon={<UserOutlined />}
+                className="sidebar-menu"
               >
-                <h4 className="text-center text-white m-2 shadow">
-                  LegalShield
-                </h4>
-              </div>
-              <Menu
-                theme="dark"
-                mode="inline"
-                defaultSelectedKeys={["1"]}
-                style={{ marginTop: "4rem" }}
+                <Nav.Link as={NavLink} to="/profile">
+                  Profile
+                </Nav.Link>
+              </Menu.Item>
+              <Menu.Item
+                key="3"
+                icon={<NotificationOutlined />}
+                className="sidebar-menu"
               >
-                <Menu.Item key="1" icon={<HomeOutlined />} className="">
-                  <Nav.Link as={NavLink} to="/dashboard">
-                    Home
-                  </Nav.Link>
-                </Menu.Item>
-                <Menu.Item
-                  key="2"
-                  icon={<UserOutlined />}
-                  className="sidebar-menu"
-                >
-                  <Nav.Link as={NavLink} to="/profile">
-                    Profile
-                  </Nav.Link>
-                </Menu.Item>
-                <Menu.Item
-                  key="3"
-                  icon={<NotificationOutlined />}
-                  className="sidebar-menu"
-                >
-                  <Nav.Link as={NavLink} to="/notifications">
-                    Notifications
-                  </Nav.Link>
-                </Menu.Item>
-                <Menu.Item
-                  key="4"
-                  icon={<LogoutOutlined />}
-                  onClick={() => logoutUser()}
-                >
-                  Logout
-                </Menu.Item>
-              </Menu>
-            </Sider>
+                <Nav.Link as={NavLink} to="/regulation">
+                  Regulation
+                </Nav.Link>
+              </Menu.Item>
+              <Menu.Item
+                key="4"
+                icon={<LogoutOutlined />}
+                onClick={() => logoutUser()}
+               
+              >
+                Logout
+              </Menu.Item>
+            </Menu>
+          </Sider>
+          <Layout
+            className="site-layout"
+            style={{
+              marginLeft: collapsed ? 40 : 200,
+              transition: "0.5s ease-",
+            }}
+          >
+            <Header className="site-layout-background" style={{ padding: 0 }}>
+              <Button
+                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                onClick={toggleSidebar}
+                style={{ marginLeft: 22 }}
+              />
+            </Header>
+            <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
+              {/* <div className="site-layout-background" style={{ padding: 24, textAlign: 'center' }}>
+                Content goes here.
+              </div> */}
+            </Content>
           </Layout>
-        </>
+        </Layout>
       ) : (
-        <>
-          <Navbar bg="light" expand="lg" className="p-3">
-            <Container>
-              <Navbar.Brand as={NavLink} to="/">
-                <img src="/external/logo.png" alt="logo" height={"30rem"} />
-              </Navbar.Brand>
-              <Nav className="me-auto">
-                <Nav.Link as={NavLink} to="/">
-                  Home
-                </Nav.Link>
-                <Nav.Link as={NavLink} to="/">
-                  Services
-                </Nav.Link>
-                <Nav.Link as={NavLink} to="/">
-                  Career
-                </Nav.Link>
-              </Nav>
-              <Nav>
-                <Nav.Link as={NavLink} to="/login">
-                  Login
-                </Nav.Link>
-                <Nav.Link as={NavLink} to="/register">
-                  Register
-                </Nav.Link>
-              </Nav>
-            </Container>
-          </Navbar>
-        </>
+        <Navbar bg="light" expand="lg" className="p-3">
+          <Container>
+            <Navbar.Brand as={NavLink} to="/">
+              <img src="/external/logo.png" alt="logo" height={"30rem"} />
+            </Navbar.Brand>
+            <Nav className="me-auto">
+              <Nav.Link as={NavLink} to="/">
+                Home
+              </Nav.Link>
+              <Nav.Link as={NavLink} to="/">
+                Services
+              </Nav.Link>
+              <Nav.Link as={NavLink} to="/">
+                Career
+              </Nav.Link>
+            </Nav>
+            <Nav>
+              <Nav.Link as={NavLink} to="/login">
+                Login
+              </Nav.Link>
+              <Nav.Link as={NavLink} to="/register">
+                Register
+              </Nav.Link>
+            </Nav>
+          </Container>
+        </Navbar>
       )}
     </>
   );
 }
 
-export default Header;
+export default AppHeader;
