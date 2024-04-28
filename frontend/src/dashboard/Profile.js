@@ -8,7 +8,7 @@ function Profile() {
   return (
     <Layout>
       <Content style={{ padding: "50px" }}>
-        <Container className="text-center shadow">
+        <Container className="text-center shadow-sm border">
           <div className="bg-light p-5 rounded">
             <h1 className="mb-4">Profile</h1>
           </div>
