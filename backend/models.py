@@ -1,16 +1,23 @@
 from flask_sqlalchemy import SQLAlchemy
 from uuid import uuid4
+import random
+import string
+
 
 db = SQLAlchemy()
 
 
-def get_uuid():
-    return uuid4().hex
+def customer_id():
+    length = random.randint(6, 10)
+    alphanumeric = ''.join(random.choices(
+        string.ascii_letters + string.digits, k=length))
+    return alphanumeric
 
 
 class User(db.Model):
     __tablename__ = 'users'
-    id = db.Column(db.String, primary_key=True, unique=True, default=get_uuid)
+    customer_id = db.Column(db.String, primary_key=True,
+                            unique=True, default=customer_id)
     username = db.Column(db.String, unique=False, nullable=False)
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)

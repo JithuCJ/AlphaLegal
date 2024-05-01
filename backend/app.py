@@ -39,7 +39,7 @@ with app.app_context():
 # Add this function to your Flask application
 
 
-def send_email(recipient_email, token):
+def send_email(recipient_email, token, customer_id):
     #  Sender Email address
     sender_email = "shubhamkharche01@gmail.com"  # Change this to your email address
     sender_password = "lzkt yfio ftds aklq"   # Change this to your email password
@@ -52,7 +52,7 @@ def send_email(recipient_email, token):
     msg['Subject'] = "Email Confirmation Token"
 
     # Email body
-    body = f"Your confirmation token is: {token}"
+    body = f"Your confirmation token is: {token}. Your customer ID is: {customer_id} "
     msg.attach(MIMEText(body, 'plain'))
 
     try:
@@ -82,7 +82,6 @@ def register():
         return jsonify({'message': 'User already exists'}), 400
 
     token = serializer.dumps(email, salt='email-confirm')
-    send_email(email, token)
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
@@ -91,7 +90,10 @@ def register():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'message': 'Registration successful. Please check your email to confirm.'}), 201
+    user_id = new_user.customer_id
+    send_email(email, token, user_id)
+
+    return jsonify({'message': 'Registration successful. Please check your email to confirm.', 'user_id': user_id}), 201
 
 
 @app.route('/confirm-token', methods=['POST'])
