@@ -93,7 +93,7 @@ def register():
     user_id = new_user.customer_id
     send_email(email, token, user_id)
 
-    return jsonify({'message': 'Registration successful. Please check your email to confirm.', 'user_id': user_id}), 201
+    return jsonify({'message': 'Registration successful. Please check your email to confirm.', 'user_id': user_id, 'token': token}), 201
 
 
 @app.route('/confirm-token', methods=['POST'])
@@ -115,9 +115,9 @@ def confirm_email():
 
 @app.route('/login', methods=['POST'])
 def login():
-    email = request.json.get('email')
+    customer_id = request.json.get('customer_id')
     password = request.json.get('password')
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(customer_id=customer_id).first()
 
     if user is None:
         return jsonify({'message': 'User not found'}), 404
@@ -128,7 +128,7 @@ def login():
     if not bcrypt.check_password_hash(user.password, password):
         return jsonify({'message': 'Invalid credentials'}), 401
 
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=user.customer_id)
     return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
 
 
