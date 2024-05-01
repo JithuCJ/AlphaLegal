@@ -100,7 +100,7 @@ function Regulation() {
 
   return (
     <Layout>
-      <Content style={{ padding: "50px" }}>
+      <Content style={{ padding: "" }}>
         <Container className=" shadow-sm  bg-white border">
           <div className="container m-4">
             <Form form={form} onFinish={handleSubmit}>

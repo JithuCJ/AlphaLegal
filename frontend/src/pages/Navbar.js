@@ -73,7 +73,9 @@ function AppHeader() {
                 </Nav.Link>
               </Menu.Item>
               <Menu.Item key="4" icon={<LogoutOutlined />} onClick={logoutUser}>
-                Logout
+                <Nav.Link as={NavLink} to="/">
+                  Logout
+                </Nav.Link>
               </Menu.Item>
             </Menu>
           </Sider>
@@ -124,10 +126,10 @@ function AppHeader() {
                 <Nav.Link as={NavLink} to="/">
                   Home
                 </Nav.Link>
-                <Nav.Link as={NavLink} to="/services">
+                <Nav.Link as={NavLink} to="/">
                   Services
                 </Nav.Link>
-                <Nav.Link as={NavLink} to="/career">
+                <Nav.Link as={NavLink} to="/">
                   Career
                 </Nav.Link>
               </Nav>
