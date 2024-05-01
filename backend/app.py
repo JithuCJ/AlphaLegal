@@ -36,11 +36,9 @@ with app.app_context():
 
     db.create_all()
 
-# Add this function to your Flask application
-
 
 def send_email(recipient_email, token, customer_id):
-    #  Sender Email address
+
     sender_email = "shubhamkharche01@gmail.com"  # Change this to your email address
     sender_password = "lzkt yfio ftds aklq"   # Change this to your email password
     smtp_port = 587
@@ -70,6 +68,9 @@ def send_email(recipient_email, token, customer_id):
 @app.route('/', methods=['GET'])
 def me():
     return jsonify({'message': 'Hello, World!'})
+
+
+#  Auth Routes
 
 
 @app.route('/register', methods=['POST'])
@@ -131,6 +132,16 @@ def login():
     access_token = create_access_token(identity=user.customer_id)
     return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
 
+
+@app.route('/user', methods=['GET'])    
+def user():
+    customer_id = request.json.get('customer_id')
+    user = User.query.filter_by(customer_id=customer_id).first()
+
+    if user is None:
+        return jsonify({'message': 'User not found'}), 404
+
+    return jsonify({'customer_id': user.customer_id, 'username': user.username, 'email': user.email, 'email_confirmed': user.email_confirmed}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
