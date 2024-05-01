@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: LegalShield QGenius API
+  description: API for managing documents for LegalShield QGenius.
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+  description: Development server
+paths:
+  /legalshield/qgenius/api/v1/{customerId}/docs:
+    get:
+      summary: Get all document IDs
+      description: Retrieve all document IDs for the specified customer ID.
+      operationId: legalshield_qgenius_api_v1_customer_id_docs_get
+      parameters:
+      - name: customerId
+        in: path
+        description: The ID of the customer.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A list of document IDs.
+      x-openapi-router-controller: app.controllers.default_controller
+    post:
+      summary: Post a document
+      description: Upload a new document for the specified customer ID.
+      operationId: legalshield_qgenius_api_v1_customer_id_docs_post
+      parameters:
+      - name: customerId
+        in: path
+        description: The ID of the customer.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/customerId_docs_body'
+        required: true
+      responses:
+        "201":
+          description: Document uploaded successfully.
+        "400":
+          description: Bad request. Invalid input or missing parameters.
+        "401":
+          description: Unauthorized. Authentication credentials are missing or invalid.
+      x-openapi-router-controller: app.controllers.default_controller
+  /legalshield/qgenius/api/v1/{customerId}/{docId}:
+    get:
+      summary: Get a document by ID
+      description: Retrieve a document by its ID for the specified customer ID.
+      operationId: legalshield_qgenius_api_v1_customer_id_doc_id_get
+      parameters:
+      - name: customerId
+        in: path
+        description: The ID of the customer.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: docId
+        in: path
+        description: The ID of the document.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: The document content.
+        "400":
+          description: Bad request. Invalid input or missing parameters.
+        "401":
+          description: Unauthorized. Authentication credentials are missing or invalid.
+        "404":
+          description: Not found. The customer ID or document ID does not exist.
+      x-openapi-router-controller: app.controllers.default_controller
+    put:
+      summary: Update a document by ID
+      description: Update a document by its ID for the specified customer ID.
+      operationId: legalshield_qgenius_api_v1_customer_id_doc_id_put
+      parameters:
+      - name: customerId
+        in: path
+        description: The ID of the customer.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: docId
+        in: path
+        description: The ID of the document.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/customerId_docId_body'
+        required: true
+      responses:
+        "200":
+          description: Document updated successfully.
+        "400":
+          description: Bad request. Invalid input or missing parameters.
+        "401":
+          description: Unauthorized. Authentication credentials are missing or invalid.
+        "404":
+          description: Not found. The customer ID or document ID does not exist.
+      x-openapi-router-controller: app.controllers.default_controller
+components:
+  schemas:
+    customerId_docs_body:
+      type: object
+      properties:
+        documentId:
+          type: string
+          description: The ID of the document.
+        content:
+          type: string
+          description: The content of the document.
+        metadata:
+          type: object
+          description: Metadata associated with the document.
+    customerId_docId_body:
+      type: object
+      properties:
+        content:
+          type: string
+          description: The content of the document.
+        metadata:
+          type: object
+          description: Metadata associated with the document.
+
