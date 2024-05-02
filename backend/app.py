@@ -10,8 +10,11 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from flask_migrate import Migrate
-
+from flask_sqlalchemy import SQLAlchemy
 import os
+
+
+from controllers.questions_api import questions_api
 
 
 load_dotenv()
@@ -65,13 +68,17 @@ def send_email(recipient_email, token, customer_id):
         print("Error sending email:", str(e))
 
 
+# Routes
+
+app.register_blueprint(questions_api, url_prefix='/questions')
+
+
 @app.route('/', methods=['GET'])
 def me():
     return jsonify({'message': 'Hello, World!'})
 
 
 #  Auth Routes
-
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -133,7 +140,7 @@ def login():
     return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
 
 
-@app.route('/user', methods=['GET'])    
+@app.route('/customer_id', methods=['GET'])
 def user():
     customer_id = request.json.get('customer_id')
     user = User.query.filter_by(customer_id=customer_id).first()
@@ -142,6 +149,7 @@ def user():
         return jsonify({'message': 'User not found'}), 404
 
     return jsonify({'customer_id': user.customer_id, 'username': user.username, 'email': user.email, 'email_confirmed': user.email_confirmed}), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
