@@ -8,10 +8,14 @@ db = SQLAlchemy()
 
 
 def customer_id():
+
     length = random.randint(6, 10)
     alphanumeric = ''.join(random.choices(
         string.ascii_letters + string.digits, k=length))
     return alphanumeric
+
+
+
 
 
 class User(db.Model):
@@ -22,3 +26,18 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     email_confirmed = db.Column(db.Boolean, default=False)
+
+    #  Relationship
+
+    questions = db.relationship('Question', backref='user', lazy=True)
+
+
+class Question(db.Model):
+    __tablename__ = 'questions'
+    question_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    customer_id = db.Column(db.String, db.ForeignKey('users.customer_id'), nullable=False)
+    question_text = db.Column(db.String, nullable=False)
+   
+
+    def __repr__(self):
+        return f"Question(id={self.question_id}, customer_id={self.customer_id}, question_text='{self.question_text}')"
