@@ -7,7 +7,7 @@ import { AuthContext } from "../store/auth";
 import { toast } from "react-toastify";
 
 function LoginForm() {
-  const [email, setEmail] = useState("");
+  const [customer_id, setCustomer_id] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { storeToken } = useContext(AuthContext); // Use storeToken from AuthContext
@@ -16,7 +16,7 @@ function LoginForm() {
     e.preventDefault();
 
     axios
-      .post("http://localhost:5000/login", { email, password })
+      .post("http://localhost:5000/login", { customer_id, password })
       .then((response) => {
         console.log("Login successful", response.data);
         storeToken(response.data.token); // Store the token on successful login
@@ -38,10 +38,10 @@ function LoginForm() {
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
               <Form.Control
-                type="email"
-                placeholder="Enter email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type=""
+                placeholder="Enter "
+                value={customer_id}
+                onChange={(e) => setCustomer_id(e.target.value)}
                 required
               />
             </Form.Group>
