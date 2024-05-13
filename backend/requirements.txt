@@ -9,6 +9,6 @@ flask-jwt-extended
 Flask-Mail
 itsdangerous
 Flask-Migrate
-smtplib
+
 secure-smtplib
 
