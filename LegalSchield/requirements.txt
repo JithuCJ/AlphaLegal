@@ -2,3 +2,4 @@ connexion[swagger-ui] >= 2.14.2
 swagger-ui-bundle >= 0.0.2
 connexion[uvicorn] >= 0.29.0
 connexion[flask]
+six

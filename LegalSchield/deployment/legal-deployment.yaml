@@ -14,12 +14,10 @@ spec:
     spec:
       containers:
         - name: legal
-          image: 'alphalegal.azurecr.io/legalschield:v3'
+          image: 'alphalegal.azurecr.io/legalschield:v10'
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
-          command: [ "sleep" ]
-          args: [ "infinity" ]
       imagePullSecrets:
         - name: legal
 
