@@ -1,6 +1,7 @@
-# local db
+
 /__pycache__
 /instance
 /migrations
 /controllers/__pycache__
 /bin
+
