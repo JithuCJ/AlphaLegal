@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: alphalegal.azurecr.io/frontend:v4
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - backend=http://backend:5000/
+      - legal=http://legal:8080/
+    depends_on:
+      - backend
+      - legal
+
+  backend:
+    image: alphalegal.azurecr.io/backend:v1
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5000:5000"
+
+  legal:
+    image: alphalegal.azurecr.io/legalschield:v10
+    build:
+      context: ./LegalSchield
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
