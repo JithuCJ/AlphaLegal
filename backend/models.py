@@ -27,9 +27,6 @@ class User(db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     email_confirmed = db.Column(db.Boolean, default=False)
 
-    #  Relationship
-
-    questions = db.relationship('Question', backref='user', lazy=True)
 
 
 class Question(db.Model):
@@ -39,5 +36,4 @@ class Question(db.Model):
     question_text = db.Column(db.String, nullable=False)
    
 
-    def __repr__(self):
-        return f"Question(id={self.question_id}, customer_id={self.customer_id}, question_text='{self.question_text}')"
+

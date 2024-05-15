@@ -1,99 +1,127 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { Layout, Menu, Button } from "antd";
+import { NavLink, Routes, Route } from "react-router-dom";
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
-import { useContext } from "react";
+import Dashboard from "../dashboard/dashboard";
+import Regulation from "../dashboard/Regulation";
+import Profile from "../dashboard/Profile";
 import { AuthContext } from "../store/auth";
-
 import {
   UserOutlined,
   NotificationOutlined,
   HomeOutlined,
   LogoutOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
 
-function Header() {
+const { Header, Sider, Content, Footer } = Layout;
+
+function AppHeader() {
   const { isLoggedIn, logoutUser } = useContext(AuthContext);
-  const { Sider } = Layout;
+  const [collapsed, setCollapsed] = useState(true);
+
+  const toggleSidebar = () => {
+    setCollapsed(!collapsed);
+  };
 
   return (
     <>
       {isLoggedIn ? (
-        <>
-          <Layout className="">
-            <Sider
-              className="p-3 "
-              width="40vh"
-              style={{
-                height: "100vh",
-                position: "fixed",
-                left: 0,
-                overflow: "auto",
-                zIndex: 3,
-                minHeight: "100%",
-              }}
-              trigger={null} // Custom trigger option
+        <Layout>
+          <Sider
+            trigger={null}
+            collapsible
+            collapsed={collapsed}
+            width={250}
+            style={{
+              overflow: "",
+              height: "100%",
+              position: "fixed",
+              left: 0,
+            }}
+          >
+            <Button
+              type="text"
+              onClick={toggleSidebar}
+              style={{ marginBlock: 24, marginLeft: 30 }}
             >
-              <div
-                className="logo d-flex justify-content-center align-items-center border rounded-2"
-                style={{
-                  height: "40px",
-
-                  margin: "16px",
-                  background: "rgba(255, 255, 255, 0.3)",
-                }}
-              >
-                <h4 className="text-center text-white m-2 shadow">
-                  LegalShield
-                </h4>
-              </div>
-              <Menu
-                theme="dark"
-                mode="inline"
-                defaultSelectedKeys={["1"]}
-                style={{ marginTop: "4rem" }}
-              >
-                <Menu.Item key="1" icon={<HomeOutlined />} className="">
-                  <Nav.Link as={NavLink} to="/dashboard">
-                    Home
-                  </Nav.Link>
-                </Menu.Item>
-                <Menu.Item
-                  key="2"
-                  icon={<UserOutlined />}
-                  className="sidebar-menu"
-                >
-                  <Nav.Link as={NavLink} to="/profile">
-                    Profile
-                  </Nav.Link>
-                </Menu.Item>
-                <Menu.Item
-                  key="3"
-                  icon={<NotificationOutlined />}
-                  className="sidebar-menu"
-                >
-                  <Nav.Link as={NavLink} to="/notifications">
-                    Notifications
-                  </Nav.Link>
-                </Menu.Item>
-                <Menu.Item
-                  key="4"
-                  icon={<LogoutOutlined />}
-                  onClick={() => logoutUser()}
-                >
+              <MenuUnfoldOutlined
+                style={{ color: "white", fontSize: "26px" }}
+              />
+            </Button>
+            <Menu
+              theme="dark"
+              mode="inline"
+              className=""
+              defaultSelectedKeys={["1"]}
+              style={{ height: "100%", borderRight: 0 }}
+            >
+              <Menu.Item key="1" icon={<HomeOutlined />}>
+                <Nav.Link as={NavLink} to="/dashboard">
+                  Dashboard
+                </Nav.Link>
+              </Menu.Item>
+              <Menu.Item key="2" icon={<UserOutlined />}>
+                <Nav.Link as={NavLink} to="/profile">
+                  Profile
+                </Nav.Link>
+              </Menu.Item>
+              <Menu.Item key="3" icon={<NotificationOutlined />}>
+                <Nav.Link as={NavLink} to="/regulation">
+                  Regulation
+                </Nav.Link>
+              </Menu.Item>
+              <Menu.Item key="4" icon={<LogoutOutlined />} onClick={logoutUser}>
+                <Nav.Link as={NavLink} to="/">
                   Logout
-                </Menu.Item>
-              </Menu>
-            </Sider>
+                </Nav.Link>
+              </Menu.Item>
+            </Menu>
+          </Sider>
+          <Layout
+            className="site-layout"
+            style={{
+              marginLeft: collapsed ? 80 : 250, // Adjusted for better visual alignment
+              transition: "0.5s ease",
+              minHeight: "100vh",
+            }}
+          >
+            {/* <Header
+              className="bg"
+              style={{
+                padding: 0,
+                position: "",
+                zIndex: 1,
+                width: "100%",
+              }}
+            ></Header> */}
+            <Content
+              style={{
+                margin: "24px 16px 0",
+                overflow: "initial",
+                paddingTop: 64,
+              }}
+            >
+              <Routes>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/regulation" element={<Regulation />} />
+              </Routes>
+            </Content>
+            <Footer style={{ textAlign: "center" }}>
+              ©{new Date().getFullYear()} AlphaLegal | All rights reserved
+            </Footer>
           </Layout>
-        </>
+        </Layout>
       ) : (
-        <>
-          <Navbar bg="light" expand="lg" className="p-3">
-            <Container>
-              <Navbar.Brand as={NavLink} to="/">
-                <img src="/external/logo.png" alt="logo" height={"30rem"} />
-              </Navbar.Brand>
+        <Navbar bg="light" expand="lg" className="p-3">
+          <Container>
+            <Navbar.Brand as={NavLink} to="/">
+              <img src="/external/logo.png" alt="logo" height={"30rem"} />
+            </Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
                 <Nav.Link as={NavLink} to="/">
                   Home
@@ -113,12 +141,12 @@ function Header() {
                   Register
                 </Nav.Link>
               </Nav>
-            </Container>
-          </Navbar>
-        </>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
       )}
     </>
   );
 }
 
-export default Header;
+export default AppHeader;
