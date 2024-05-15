@@ -14,9 +14,14 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: 'alphalegal.azurecr.io/frontend'
+          image: 'alphalegal.azurecr.io/frontend:v4'
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
+          env:
+            - name: REACT_APP_BACKEND_URL
+              value: "http://localhost:5000/"
+            - name: REACT_APP_LEGAL_URL
+              value: "http://legal:8000/"
       imagePullSecrets:
         - name: frontend
