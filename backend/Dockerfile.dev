@@ -1,13 +1,26 @@
+FROM python:3.8
 
-FROM python:3.6-alpine
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    g++ \
+    libfreetype6-dev \
+    libmupdf-dev \
+    libjbig2dec0-dev \
+    libjpeg-dev \
+    libopenjp2-7-dev \
+    libharfbuzz-dev \
+    libxml2-dev \
+    libxslt-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /app
-
 WORKDIR /app
 
 COPY requirements*.txt /app/
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements*.txt
 
 COPY . /app/
 

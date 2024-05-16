@@ -4,4 +4,6 @@
 /migrations
 /controllers/__pycache__
 /bin
-
+/venv
+/uploads
+/app.db

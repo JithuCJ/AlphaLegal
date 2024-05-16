@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from config import ApplicationConfig
-from models import db, User
+from models import db, User, Question, Answer
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token
@@ -42,8 +42,8 @@ with app.app_context():
 
 def send_email(recipient_email, token, customer_id):
 
-    sender_email = "shubhamkharche01@gmail.com"  
-    sender_password = "lzkt yfio ftds aklq"   
+    sender_email = "shubhamkharche01@gmail.com"
+    sender_password = "lzkt yfio ftds aklq"
     smtp_port = 587
     smtp_server = 'smtp.gmail.com'  # Default SMTP server for Gmail
 
@@ -71,7 +71,6 @@ def send_email(recipient_email, token, customer_id):
 # Routes
 
 app.register_blueprint(questions_api, url_prefix='/questions')
-
 
 
 @app.route('/', methods=['GET'])
@@ -138,7 +137,38 @@ def login():
         return jsonify({'message': 'Invalid credentials'}), 401
 
     access_token = create_access_token(identity=user.customer_id)
-    return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
+
+#
+    if not user.answers:
+        questions = Question.query.all()
+        questions_data = [{'id': q.id, 'question': q.question,
+                           'options': q.options.split('\n')} for q in questions]
+        return jsonify({'message': 'Login successful', 'access_token': access_token, 'questions': questions_data}), 200
+
+    user_answers = Answer.query.filter_by(user_id=user.customer_id).all()
+    answers_data = [{'question_id': ans.question_id,
+                     'answer': ans.answer} for ans in user_answers]
+    return jsonify({'message': 'Login successful', 'access_token': access_token,}), 200
+
+
+@app.route('/save-answers', methods=['POST'])
+def save_answers():
+    customer_id = request.json.get('customer_id')
+    answers = request.json.get('answers')
+
+    user = User.query.filter_by(customer_id=customer_id).first()
+    if not user:
+        return jsonify({'message': 'User not found'}), 404
+
+    for ans in answers:
+        question_id = ans['question_id']
+        answer_text = ans['answer']
+        answer = Answer(user_id=user.customer_id,
+                        question_id=question_id, answer=answer_text)
+        db.session.add(answer)
+
+    db.session.commit()
+    return jsonify({'message': 'Answers saved successfully'}), 201
 
 
 @app.route('/customer_id', methods=['GET'])
@@ -153,5 +183,5 @@ def user():
 
 
 if __name__ == '__main__':
-    
+
     app.run(debug=True, host='0.0.0.0', port=5000)
