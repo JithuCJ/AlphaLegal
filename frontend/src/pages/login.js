@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../store/auth";
 import { toast } from "react-toastify";
 
+const backend = process.env.REACT_APP_BACKEND_URL;
+
 function LoginForm() {
   const [customer_id, setCustomer_id] = useState("");
   const [password, setPassword] = useState("");
@@ -15,8 +17,10 @@ function LoginForm() {
   const onSubmit = (e) => {
     e.preventDefault();
 
+    // const backend = process.env.REACT_APP_BACKEND_URL;
+
     axios
-      .post("http://localhost:5000/login", { customer_id, password })
+      .post(`${backend}login`, { customer_id, password })
       .then((response) => {
         console.log("Login successful", response.data);
         storeToken(response.data.token); // Store the token on successful login

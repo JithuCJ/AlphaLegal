@@ -4,6 +4,10 @@ import "../style.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+
+
+const backend = process.env.REACT_APP_BACKEND_URL;
+
 function RegisterForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -13,8 +17,8 @@ function RegisterForm() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [showModal, setShowModal] = useState(false); // To control the visibility of the modal
-  const [token, setToken] = useState(""); // State to hold the token input by the user
+  const [showModal, setShowModal] = useState(false); 
+  const [token, setToken] = useState("");
 
   const { name, email, password, confirmPassword } = formData;
 
@@ -28,6 +32,9 @@ function RegisterForm() {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    
+   
+
     if (
       !email.endsWith(
         "@gmail.com" && "yahoo.com" && "outlook.com" && "hotmail.com" && ""
@@ -43,8 +50,11 @@ function RegisterForm() {
     }
 
     setLoading(true);
+
+   
+
     axios
-      .post("http://localhost:5000/register", {
+      .post(`${backend}register`, {
         username: name,
         email: email,
         password: password,
@@ -67,9 +77,9 @@ function RegisterForm() {
   };
 
   const verifyToken = () => {
-    // Logic to verify token
+    // verify token
     axios
-      .post("http://localhost:5000/confirm-token", { token })
+      .post(`${backend}confirm-token`, { token })
       .then((response) => {
         setMessage("Account verified successfully!");
         setShowModal(false);

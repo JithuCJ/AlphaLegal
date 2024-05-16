@@ -17,7 +17,7 @@ spec:
           image: 'alphalegal.azurecr.io/legalschield:v10'
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8000
+            - containerPort: 8080
       imagePullSecrets:
         - name: legal
 

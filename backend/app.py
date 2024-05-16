@@ -21,7 +21,7 @@ load_dotenv()
 
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 
 
 app.secret_key = 'super-secret-key'
@@ -42,8 +42,8 @@ with app.app_context():
 
 def send_email(recipient_email, token, customer_id):
 
-    sender_email = "shubhamkharche01@gmail.com"  # Change this to your email address
-    sender_password = "lzkt yfio ftds aklq"   # Change this to your email password
+    sender_email = "shubhamkharche01@gmail.com"  
+    sender_password = "lzkt yfio ftds aklq"   
     smtp_port = 587
     smtp_server = 'smtp.gmail.com'  # Default SMTP server for Gmail
 
@@ -71,6 +71,7 @@ def send_email(recipient_email, token, customer_id):
 # Routes
 
 app.register_blueprint(questions_api, url_prefix='/questions')
+
 
 
 @app.route('/', methods=['GET'])
@@ -152,4 +153,5 @@ def user():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    
+    app.run(debug=True, host='0.0.0.0', port=5000)
