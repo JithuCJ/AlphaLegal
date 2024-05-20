@@ -138,7 +138,6 @@ def login():
 
     access_token = create_access_token(identity=user.customer_id)
 
-#
     if not user.answers:
         questions = Question.query.all()
         questions_data = [{'id': q.id, 'question': q.question,
@@ -148,7 +147,7 @@ def login():
     user_answers = Answer.query.filter_by(user_id=user.customer_id).all()
     answers_data = [{'question_id': ans.question_id,
                      'answer': ans.answer} for ans in user_answers]
-    return jsonify({'message': 'Login successful', 'access_token': access_token,}), 200
+    return jsonify({'message': 'Login successful', 'access_token': access_token, }), 200
 
 
 @app.route('/save-answers', methods=['POST'])
