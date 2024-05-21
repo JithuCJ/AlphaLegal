@@ -14,16 +14,19 @@ function LoginForm() {
   const navigate = useNavigate();
   const { storeToken } = useContext(AuthContext); // Use storeToken from AuthContext
 
+
+  
+
   const onSubmit = (e) => {
     e.preventDefault();
 
     // const backend = process.env.REACT_APP_BACKEND_URL;
-
+    // ${backend}login
     axios
       .post(`${backend}login`, { customer_id, password })
       .then((response) => {
         console.log("Login successful", response.data);
-        storeToken(response.data.token); // Store the token on successful login
+        storeToken(response.data.token); 
         navigate("/dashboard");
         toast("Login successful!");
       })
@@ -40,10 +43,10 @@ function LoginForm() {
           <h2 className="text-center mb-4">Login</h2>
           <Form onSubmit={onSubmit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
+              <Form.Label>User ID</Form.Label>
               <Form.Control
                 type=""
-                placeholder="Enter "
+                placeholder="Enter User ID"
                 value={customer_id}
                 onChange={(e) => setCustomer_id(e.target.value)}
                 required

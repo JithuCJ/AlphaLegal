@@ -4,8 +4,6 @@ import "../style.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-
-
 const backend = process.env.REACT_APP_BACKEND_URL;
 
 function RegisterForm() {
@@ -17,7 +15,7 @@ function RegisterForm() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
   const [token, setToken] = useState("");
 
   const { name, email, password, confirmPassword } = formData;
@@ -32,8 +30,6 @@ function RegisterForm() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    
-   
 
     if (
       !email.endsWith(
@@ -50,8 +46,6 @@ function RegisterForm() {
     }
 
     setLoading(true);
-
-   
 
     axios
       .post(`${backend}register`, {

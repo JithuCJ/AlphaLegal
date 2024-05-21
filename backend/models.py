@@ -12,7 +12,7 @@ def generate_customer_id():
 
 class User(db.Model):
     __tablename__ = 'users'
-    customer_id = db.Column(db.String, primary_key=True, unique=True, default=generate_customer_id)
+    customer_id = db.Column(db.String, primary_key=True, unique=True, nullable=False, default=generate_customer_id)
     username = db.Column(db.String, unique=False, nullable=False)
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)

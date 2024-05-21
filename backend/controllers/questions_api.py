@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, Question, Answer
+from models import db, Question, Answer, User
 import fitz
 
 questions_api = Blueprint('questions_api', __name__)
@@ -87,3 +87,68 @@ def get_questions():
     output = [{'id': q.id, 'question': q.question, 'options': q.options}
               for q in questions]
     return jsonify({'questions': output})
+
+
+
+# # working
+# @questions_api.route('/save-answer', methods=['POST'])
+# def save_answer():
+#     data = request.json
+#     customer_id = data['customer_id']
+#     answers = data['answers']
+
+#     for answer in answers:
+#         question_id = answer['question_id']
+#         answer_text = answer['answer']
+
+#         existing_answer = Answer.query.filter_by(user_id=customer_id, question_id=question_id).first()
+#         if existing_answer:
+#             existing_answer.answer = answer_text
+#         else:
+#             new_answer = Answer(user_id=customer_id, question_id=question_id, answer=answer_text)
+#             db.session.add(new_answer)
+
+#     db.session.commit()
+#     return jsonify({'message': 'Answers saved successfully'}), 200
+
+
+@questions_api.route('/save-answer', methods=['POST'])
+def save_answer():
+    data = request.get_json()  # Ensure you are getting the JSON data from the request
+    if not data or 'customer_id' not in data:
+        return jsonify({'error': 'Missing customer_id in request data'}), 400
+    
+    customer_id = data['customer_id']
+    answers = data.get('answers', [])
+
+    for answer in answers:
+        question_id = answer['question_id']
+        answer_text = answer['answer']
+
+        existing_answer = Answer.query.filter_by(user_id=customer_id, question_id=question_id).first()
+        if existing_answer:
+            existing_answer.answer = answer_text
+        else:
+            new_answer = Answer(user_id=customer_id, question_id=question_id, answer=answer_text)
+            db.session.add(new_answer)
+
+    db.session.commit()
+    return jsonify({'message': 'Answers saved successfully'}), 200
+
+
+
+@questions_api.route('/unanswered-questions/<customer_id>', methods=['GET'])
+def get_unanswered_questions(customer_id):
+    answered_question_ids = [answer.question_id for answer in Answer.query.filter_by(user_id=customer_id).all()]
+    unanswered_questions = Question.query.filter(~Question.id.in_(answered_question_ids)).all()
+    output = [{'id': q.id, 'question': q.question, 'options': q.options} for q in unanswered_questions]
+    return jsonify({'questions': output})
+
+
+
+@questions_api.route('/customer_id', methods=['GET'])
+def user():
+    customer_id = request.json.get('customer_id')
+    user = User.query.filter_by(customer_id=customer_id).first()
+    return jsonify({'customer_id': user.customer_id}), 200
+

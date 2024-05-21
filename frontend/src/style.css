@@ -1,22 +1,28 @@
 .card {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 0.25rem;
-  }
-  
-  body, html {
-    height: 100%;
-  }
-  
-  .container {
-    height: 100%;
-    display: flex;
-    align-items: center; 
-    justify-content: center;
-  }
-  
-  .card {
-    border: none; 
-    border-radius: 0.25rem; 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
-  }
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+}
 
+body,
+html {
+  height: 100%;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.card {
+  border: none;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.question-btn {
+  padding-top: 1rem;
+  margin-left: 2rem;
+ display: flex;
+ gap: 1rem;
+}

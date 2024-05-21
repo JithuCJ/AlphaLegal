@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "./store/auth";
+import { UserProvider } from "./store/UserContext";
 import "./style.css";
 
 import "./style.css";
@@ -22,6 +23,7 @@ import { Logout } from "./pages/Logout";
 import Dashboard from "./dashboard/dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import Profile from "./dashboard/Profile";
 import Regulation from "./dashboard/Regulation";
 
@@ -47,6 +49,8 @@ const App = () => {
 
 ReactDOM.render(
   <AuthProvider>
+    <UserProvider> 
+      
     <App />
     <ToastContainer
       position="top-right"
@@ -60,6 +64,7 @@ ReactDOM.render(
       pauseOnHover
       theme="light"
     />
+    </UserProvider>
   </AuthProvider>,
 
   document.getElementById("app")
