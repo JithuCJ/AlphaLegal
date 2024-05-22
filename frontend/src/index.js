@@ -36,13 +36,9 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/logout"  element={<Logout />} />
-        {/* <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/regulation" element={<Regulation />} /> */}
-        {/* <Route path="*" element={<NotFound />} />
-        <Route path="/*" element={<Navigate to="/" />} /> */}
+
       </Routes>
-      {/* <Footer /> */}
+  
     </Router>
   );
 };

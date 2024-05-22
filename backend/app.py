@@ -75,7 +75,7 @@ app.register_blueprint(questions_api, url_prefix='/questions')
 
 @app.route('/', methods=['GET'])
 def me():
-    return jsonify({'message': 'Hello, World!'})
+    return jsonify({'message': 'Server is up and running!'})
 
 
 #  Auth Routes
@@ -138,43 +138,25 @@ def login():
 
     access_token = create_access_token(identity=user.customer_id)
 
-    if not user.answers:
-        questions = Question.query.all()
-        questions_data = [{'id': q.id, 'question': q.question,
-                           'options': q.options.split('\n')} for q in questions]
-        return jsonify({'message': 'Login successful', 'access_token': access_token, 'questions': questions_data}), 200
-
-    user_answers = Answer.query.filter_by(user_id=user.customer_id).all()
-    answers_data = [{'question_id': ans.question_id,
-                     'answer': ans.answer} for ans in user_answers]
+    
     return jsonify({'message': 'Login successful', 'access_token': access_token, }), 200
 
+# @app.route('/customer_id', methods=['GET'])
+# def user():
+#     customer_id = request.json.get('customer_id')
+#     # user = User.query.filter_by(customer_id=customer_id).first()
+#     user = User.query.first() 
 
-@app.route('/save-answers', methods=['POST'])
-def save_answers():
-    customer_id = request.json.get('customer_id')
-    answers = request.json.get('answers')
+#     if user is None:
+#         return jsonify({'message': 'User not found'}), 404
 
-    user = User.query.filter_by(customer_id=customer_id).first()
-    if not user:
-        return jsonify({'message': 'User not found'}), 404
-
-    for ans in answers:
-        question_id = ans['question_id']
-        answer_text = ans['answer']
-        answer = Answer(user_id=user.customer_id,
-                        question_id=question_id, answer=answer_text)
-        db.session.add(answer)
-
-    db.session.commit()
-    return jsonify({'message': 'Answers saved successfully'}), 201
+#     return jsonify({'customer_id': user.customer_id, 'username': user.username, 'email': user.email, 'email_confirmed': user.email_confirmed}), 200
 
 
 @app.route('/customer_id', methods=['GET'])
 def user():
-    customer_id = request.json.get('customer_id')
-    user = User.query.filter_by(customer_id=customer_id).first()
-
+    # Assuming some logic to retrieve the currently logged-in user
+    user = User.query.first()  # Replace this with the actual logic to get the current user
     if user is None:
         return jsonify({'message': 'User not found'}), 404
 

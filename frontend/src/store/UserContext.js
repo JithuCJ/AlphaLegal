@@ -1,19 +1,17 @@
-// UserContext.js
 import axios from "axios";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [customerId, setCustomerId] = useState();
+  const [customerId, setCustomerId] = useState(null); // Initialize with null
 
   useEffect(() => {
     const fetchCustomerId = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/questions/customer_id"
-        ); // Replace with your API endpoint
-        setCustomerId(response.data.customerId);
+        const response = await axios.get("http://localhost:5000/customer_id");
+        console.log("Fetched Customer ID Response:", response.data); // Log the entire response
+        setCustomerId(response.data.customer_id); // Ensure the key matches the response
       } catch (error) {
         console.error("Error fetching customer ID:", error);
       }

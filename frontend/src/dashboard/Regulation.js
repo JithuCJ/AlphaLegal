@@ -13,14 +13,13 @@ const backend = process.env.REACT_APP_BACKEND_URL;
 
 function Regulation() {
   const [form] = Form.useForm();
-  const [score, setScore] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { customerId } = useUser();
 
   useEffect(() => {
     axios
-      .get(`${backend}questions/questions`)
+      .get(`http://localhost:5000/questions/questions`)
       .then((response) => {
         setQuestions(response.data.questions);
       })
@@ -30,76 +29,43 @@ function Regulation() {
   }, []);
 
   useEffect(() => {
-    if (customerId) {
-      axios
-        .get(`${backend}questions/unanswered-questions/${customerId}`
-        )
-        .then((response) => {
-          setQuestions(response.data.questions);
-        })
-        .catch((error) => {
-          console.error("There was an error fetching the questions!", error);
-        });
-    }
+    console.log("Customer ID from context:", customerId); // Log the customer ID from context
   }, [customerId]);
 
-  // const handleSave = () => {
-  //   const values = form.getFieldsValue();
-  //   const answers = Object.keys(values).map((key) => {
-  //     const questionId = key.split("_")[1];
-  //     return { question_id: questionId, answer: values[key] };
-  //   });
-
-  //   axios
-  //     .post(`${backend}/questions/save-answer`, {
-  //       customer_id: customerId,
-  //       answers: answers,
-  //     })
-  //     .then((response) => {
-  //       console.log(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("There was an error saving the answers!", error);
-  //     });
-  // };
-
   const handleSave = () => {
-    const values = form.getFieldsValue();
-    console.log("Form Values:", values);
-
-    const answers = Object.keys(values).map((key) => {
-      const questionId = key.split("_")[1];
-      return { question_id: questionId, answer: values[key] };
-    });
-
-    const payload = {
-      customer_id: customerId,
-      answers: answers,
-    };
-
-    console.log("Payload:", payload);
-
-    axios
-      .post(`${backend}questions/save-answer`, payload)
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("There was an error saving the answers!", error);
+    form.validateFields().then((values) => {
+      const answers = Object.keys(values).map((key) => {
+        const [prefix, id] = key.split('_');
+        return {
+          question_id: id,
+          answer: values[key] || "",
+        };
       });
+
+     
+      if (customerId) {
+        axios
+          .post(`http://localhost:5000/questions/save`, { customerId, answers })
+          .then((response) => {
+            console.log("Answers saved successfully!");
+          })
+          .catch((error) => {
+            console.error("There was an error saving the answers!", error);
+          });
+      } else {
+        console.error("Customer ID is missing!");
+      }
+    });
   };
 
-  // pagination
   const indexOfLastQuestion = currentPage * QUESTIONS_PER_PAGE;
   const indexOfFirstQuestion = indexOfLastQuestion - QUESTIONS_PER_PAGE;
-  const currentQuestions = questions.slice(
-    indexOfFirstQuestion,
-    indexOfLastQuestion
-  );
+  const currentQuestions = questions.slice(indexOfFirstQuestion, indexOfLastQuestion);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
   const itemRender = (page, type, originalElement) => {
     if (type === "page") {
       return Math.abs(currentPage - page) < 2 ? originalElement : null;
@@ -112,7 +78,7 @@ function Regulation() {
       <Content>
         <Container className="shadow-sm bg-white border">
           <div className="container m-4">
-            <Form form={form} onFinish={handleSave}>
+            <Form form={form}>
               {currentQuestions.map((q) => (
                 <Form.Item
                   key={q.id}
@@ -149,15 +115,17 @@ function Regulation() {
               />
               <Form.Item>
                 <div className="question-btn">
-                  <Button type="primary" htmlType="submit">
-                    Submit
+                  <Button
+                    type="primary"
+                    style={{ width: "6rem", height: "2.3rem" }}
+                    className="mt-3"
+                    onClick={handleSave}
+                    disabled={!customerId} // Disable save button if customerId is missing
+                  >
+                    Save
                   </Button>
-
-                  <Button onClick={handleSave}>Save</Button>
                 </div>
               </Form.Item>
-
-              {/* <div>Score: {score}</div>  */}
             </Form>
           </div>
         </Container>
