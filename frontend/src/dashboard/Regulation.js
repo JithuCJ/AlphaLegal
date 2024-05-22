@@ -3,6 +3,7 @@ import axios from "axios";
 import { Container } from "react-bootstrap";
 import { Button, Form, Radio, Input, Select, Layout, Pagination } from "antd";
 import { useUser } from "../store/UserContext";
+import { toast } from "react-toastify";
 
 const { Content } = Layout;
 const { TextArea } = Input;
@@ -16,6 +17,8 @@ function Regulation() {
   const [questions, setQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { customerId } = useUser();
+  // const [saveSuccess, setSaveSuccess] = useState(false);
+  // const [saveError, setSaveError] = useState(null);
 
   useEffect(() => {
     axios
@@ -29,38 +32,56 @@ function Regulation() {
   }, []);
 
   useEffect(() => {
-    console.log("Customer ID from context:", customerId); // Log the customer ID from context
+    console.log("Customer ID from context:", customerId);
   }, [customerId]);
 
   const handleSave = () => {
     form.validateFields().then((values) => {
-      const answers = Object.keys(values).map((key) => {
-        const [prefix, id] = key.split('_');
-        return {
-          question_id: id,
-          answer: values[key] || "",
-        };
-      });
+      const answers = Object.keys(values)
+        .map((key) => {
+          const [prefix, id] = key.split("_");
+          return {
+            question_id: id,
+            answer: values[key] || "",
+          };
+        })
+        .filter((answer) => answer.answer.trim() !== ""); // Filter out unanswered questions
 
-     
-      if (customerId) {
+      console.log("Customer ID before save:", customerId);
+      console.log("Filtered Answers:", answers); // Log to verify filtered answers
+
+      if (customerId && answers.length > 0) {
         axios
           .post(`http://localhost:5000/questions/save`, { customerId, answers })
           .then((response) => {
             console.log("Answers saved successfully!");
+           
+            toast.success("Answers saved successfully!");
           })
           .catch((error) => {
             console.error("There was an error saving the answers!", error);
+           
+            toast("There was an error saving your answers. Please try again.");
           });
-      } else {
+      } else if (!customerId) {
         console.error("Customer ID is missing!");
+       toast.error("Customer ID is missing!");
+      } else {
+        console.error("No answers to save!");
+       
+        toast.error(
+          "There was an error saving your answers. Please try again."
+        );
       }
     });
   };
 
   const indexOfLastQuestion = currentPage * QUESTIONS_PER_PAGE;
   const indexOfFirstQuestion = indexOfLastQuestion - QUESTIONS_PER_PAGE;
-  const currentQuestions = questions.slice(indexOfFirstQuestion, indexOfLastQuestion);
+  const currentQuestions = questions.slice(
+    indexOfFirstQuestion,
+    indexOfLastQuestion
+  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -120,7 +141,7 @@ function Regulation() {
                     style={{ width: "6rem", height: "2.3rem" }}
                     className="mt-3"
                     onClick={handleSave}
-                    disabled={!customerId} // Disable save button if customerId is missing
+                    disabled={!customerId}
                   >
                     Save
                   </Button>

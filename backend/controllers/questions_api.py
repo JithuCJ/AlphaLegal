@@ -93,7 +93,6 @@ def get_questions():
     return jsonify({'questions': output})
 
 
-
 @questions_api.route('/save', methods=['POST'])
 def save_answers():
     data = request.get_json()
@@ -113,9 +112,39 @@ def save_answers():
         if question_id is None or answer_text is None:
             logging.error(f"Invalid answer format: {answer}")
             return jsonify({'error': 'Invalid answer format'}), 400
-
+        
+        # Check if the answer for this question already exists for this customer
+        existing_answer = Answer.query.filter_by(user_id=customer_id, question_id=question_id).first()
+        if existing_answer:
+            logging.debug(f"Answer already exists for customer {customer_id} and question {question_id}")
+            continue
+        
         new_answer = Answer(user_id=customer_id, question_id=question_id, answer=answer_text)
         db.session.add(new_answer)
     
     db.session.commit()
     return jsonify({'message': 'Answers saved successfully!'}), 201
+
+
+
+@questions_api.route('/questions_with_answers', methods=['GET'])
+def get_questions_with_answers():
+    customer_id = request.args.get('customerId')
+    if not customer_id:
+        return jsonify({'error': 'Missing customerId'}), 400
+
+    questions = Question.query.all()
+    answers = Answer.query.filter_by(user_id=customer_id).all()
+
+    answered_questions = {answer.question_id: answer.answer for answer in answers}
+
+    questions_with_answers = []
+    for question in questions:
+        questions_with_answers.append({
+            'id': question.id,
+            'question': question.question,
+            'options': question.options,
+            'answer': answered_questions.get(question.id, '')
+        })
+
+    return jsonify({'questions': questions_with_answers}), 200
