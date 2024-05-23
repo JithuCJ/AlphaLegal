@@ -141,17 +141,6 @@ def login():
     
     return jsonify({'message': 'Login successful', 'access_token': access_token, }), 200
 
-# @app.route('/customer_id', methods=['GET'])
-# def user():
-#     customer_id = request.json.get('customer_id')
-#     # user = User.query.filter_by(customer_id=customer_id).first()
-#     user = User.query.first() 
-
-#     if user is None:
-#         return jsonify({'message': 'User not found'}), 404
-
-#     return jsonify({'customer_id': user.customer_id, 'username': user.username, 'email': user.email, 'email_confirmed': user.email_confirmed}), 200
-
 
 @app.route('/customer_id', methods=['GET'])
 def user():

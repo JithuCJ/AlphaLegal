@@ -7,3 +7,5 @@
 /venv
 /uploads
 /app.db
+/__pycache__
+/tests/__pycache__
