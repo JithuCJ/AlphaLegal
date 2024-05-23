@@ -100,7 +100,7 @@ function AppHeader() {
               style={{
                 margin: "24px 16px 0",
                 overflow: "initial",
-                paddingTop: 64,
+                paddingTop: 24,
               }}
             >
               <Routes>

@@ -11,4 +11,7 @@ itsdangerous
 Flask-Migrate
 
 secure-smtplib
-
+PyMuPDF
+pytest
+flask-testing
+pytest-flask

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from config import ApplicationConfig
-from models import db, User
+from models import db, User, Question, Answer
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token
@@ -42,8 +42,8 @@ with app.app_context():
 
 def send_email(recipient_email, token, customer_id):
 
-    sender_email = "shubhamkharche01@gmail.com"  
-    sender_password = "lzkt yfio ftds aklq"   
+    sender_email = "shubhamkharche01@gmail.com"
+    sender_password = "lzkt yfio ftds aklq"
     smtp_port = 587
     smtp_server = 'smtp.gmail.com'  # Default SMTP server for Gmail
 
@@ -73,10 +73,9 @@ def send_email(recipient_email, token, customer_id):
 app.register_blueprint(questions_api, url_prefix='/questions')
 
 
-
 @app.route('/', methods=['GET'])
 def me():
-    return jsonify({'message': 'Hello, World!'})
+    return jsonify({'message': 'Server is up and running!'})
 
 
 #  Auth Routes
@@ -138,14 +137,15 @@ def login():
         return jsonify({'message': 'Invalid credentials'}), 401
 
     access_token = create_access_token(identity=user.customer_id)
-    return jsonify({'message': 'Login successful', 'access_token': access_token}), 200
+
+    
+    return jsonify({'message': 'Login successful', 'access_token': access_token, }), 200
 
 
 @app.route('/customer_id', methods=['GET'])
 def user():
-    customer_id = request.json.get('customer_id')
-    user = User.query.filter_by(customer_id=customer_id).first()
-
+    # Assuming some logic to retrieve the currently logged-in user
+    user = User.query.first()  # Replace this with the actual logic to get the current user
     if user is None:
         return jsonify({'message': 'User not found'}), 404
 
@@ -153,5 +153,5 @@ def user():
 
 
 if __name__ == '__main__':
-    
+
     app.run(debug=True, host='0.0.0.0', port=5000)

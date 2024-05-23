@@ -40,7 +40,7 @@ function Dashboard() {
               onClick={() => navigate("/regulation")}
               className="mt-4"
             >
-              Take Survey
+              Regulation Survey
             </Button>
           </div>
         </Container>
