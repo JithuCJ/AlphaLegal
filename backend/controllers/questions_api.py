@@ -35,64 +35,6 @@ def extract_text_from_pdf(file):
         text += page.get_text()
     return text
 
-# def parse_questions(text):
-#     lines = text.splitlines()
-#     questions_data = []
-#     question = ""
-#     options = []
-#     weights = {}
-#     option_prefixes = ('a)', 'b)', 'c)', 'd)')
-    
-#     for line in lines:
-#         if line.strip().startswith(tuple(f"{i}." for i in range(1, 101))):
-#             if question:
-#                 if options and weights:
-#                     questions_data.append({
-#                         'question': question.strip(),
-#                         'options': options,
-#                         'weights': weights
-#                     })
-#                 else:
-#                     questions_data.append({
-#                         'question': question.strip(),
-#                         'options': options,
-#                         'weights': {}
-#                     })
-#             question = line.strip()
-#             options = []
-#             weights = {}
-#         elif any(line.strip().startswith(prefix) for prefix in option_prefixes):
-#             option_text = line.strip().split(") ", 1)[1]
-#             option_key = line.strip().split(")")[0]
-#             options.append(option_text)
-#         elif line.strip().startswith("Ans:"):
-#             weights_text = line.strip().split("[", 1)[1].strip("]").split(", ")
-#             for weight in weights_text:
-#                 key, value = weight.split("=")
-#                 weights[key.strip()] = int(value.strip())
-#         else:
-#             if options:
-#                 options[-1] += ' ' + line.strip()
-#             else:
-#                 question += ' ' + line.strip()
-
-#     if question:
-#         if options and weights:
-#             questions_data.append({
-#                 'question': question.strip(),
-#                 'options': options,
-#                 'weights': weights
-#             })
-#         else:
-#             questions_data.append({
-#                 'question': question.strip(),
-#                 'options': options,
-#                 'weights': {}
-#             })
-
-#     return questions_data
-
-
 def parse_questions(text):
     lines = text.splitlines()
     questions_data = []
