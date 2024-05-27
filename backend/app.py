@@ -144,8 +144,8 @@ def login():
 
 @app.route('/customer_id', methods=['GET'])
 def user():
-    # Assuming some logic to retrieve the currently logged-in user
-    user = User.query.first()  # Replace this with the actual logic to get the current user
+   
+    user = User.query.first() 
     if user is None:
         return jsonify({'message': 'User not found'}), 404
 

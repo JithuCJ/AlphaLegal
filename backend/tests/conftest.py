@@ -35,9 +35,9 @@ def init_database():
     db.session.add(user1)
     db.session.add(user2)
     
-    # Adding some questions to test with
-    question1 = Question(question='Is the sky blue?', options='Yes\nNo')
-    question2 = Question(question='Is water wet?', options='Yes\nNo')
+    # Adding some questions to test with, including weights
+    question1 = Question(question='Is the sky blue?', options='Yes\nNo', weights={'Yes': 1, 'No': 0})
+    question2 = Question(question='Is water wet?', options='Yes\nNo', weights={'Yes': 1, 'No': 0})
     db.session.add(question1)
     db.session.add(question2)
     

@@ -24,7 +24,7 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.Text, nullable=False)
     options = db.Column(db.Text, nullable=False)
-    weights = db.Column(db.JSON, nullable=False)
+    weights = db.Column(db.JSON, nullable=True)
     answers = db.relationship('Answer', back_populates='question', cascade="all, delete-orphan")
 
 

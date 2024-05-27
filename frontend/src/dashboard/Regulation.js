@@ -34,7 +34,7 @@ function Regulation() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/questions/questions`)
+      .get(`${backend}questions/questions`)
       .then((response) => {
         setQuestions(response.data.questions);
       })
@@ -66,7 +66,7 @@ function Regulation() {
 
       if (customerId && answers.length > 0) {
         axios
-          .post(`http://localhost:5000/questions/save`, { customerId, answers })
+          .post(`${backend}questions/save`, { customerId, answers })
           .then((response) => {
             console.log("Answers saved successfully!", response.data);
             const score = response.data.total_score;
