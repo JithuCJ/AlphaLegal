@@ -21,7 +21,7 @@ function AppHeader() {
   const { isLoggedIn, logoutUser } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(true);
 
-  const toggleSidebar = () => {
+  const toggleSidebar = () => { 
     setCollapsed(!collapsed);
   };
 

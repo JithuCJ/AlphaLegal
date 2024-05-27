@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchCustomerId = async () => {
       try {
-        const response = await axios.get(`${backend}customer_id`);
+        const response = await axios.get(`http://localhost:5000/customer_id`);
         console.log("Fetched Customer ID Response:", response.data); // Log the entire response
         setCustomerId(response.data.customer_id); // Ensure the key matches the response
       } catch (error) {
