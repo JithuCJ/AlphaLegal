@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Container } from "react-bootstrap";
 import {
@@ -149,8 +149,12 @@ function Regulation() {
                 />
                 <Button
                   type="primary"
-                  style={{ marginTop: "20px" }}
-                  className=" w-25"
+                  style={{
+                    marginTop: "20px",
+                    width: "10rem",
+                    height: "2.8rem",
+                  }}
+                  className="fs-6"
                   onClick={handleSave}
                   disabled={!customerId}
                 >

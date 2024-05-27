@@ -115,8 +115,8 @@ function AppHeader() {
           </Layout>
         </Layout>
       ) : (
-        <Navbar bg="light" expand="lg" className="p-3">
-          <Container>
+        <Navbar bg="light" expand="lg" className="p-3 custom-navbar">
+          <Container className="">
             <Navbar.Brand as={NavLink} to="/">
               <img src="/external/logo.png" alt="logo" height={"30rem"} />
             </Navbar.Brand>
@@ -142,8 +142,11 @@ function AppHeader() {
                 </Nav.Link>
               </Nav>
             </Navbar.Collapse>
+   
           </Container>
+          
         </Navbar>
+       
       )}
     </>
   );
