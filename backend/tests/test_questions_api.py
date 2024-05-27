@@ -71,7 +71,7 @@ def test_get_questions_with_answers(test_client, init_database):
     """
     response = test_client.get('/questions/questions_with_answers', query_string={'customerId': 'somecustomerid'})
     assert response.status_code == 200
-    assert 'questions' in response.json
+    assert 'questions' in response.jsonVerify Blueprint
 
 def test_get_questions_with_answers_missing_customer_id(test_client, init_database):
     """
