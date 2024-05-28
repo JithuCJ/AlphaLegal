@@ -1,15 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Container } from "react-bootstrap";
-import { Button, Form, Radio, Input, Select, Layout, Pagination } from "antd";
+import {
+  Button,
+  Form,
+  Radio,
+  Input,
+  Layout,
+  Pagination,
+  Modal,
+  Row,
+  Col,
+  Typography,
+} from "antd";
 import { useUser } from "../store/UserContext";
 import { toast } from "react-toastify";
 
 const { Content } = Layout;
 const { TextArea } = Input;
-const { Option } = Select;
+const { Title } = Typography;
 
-const QUESTIONS_PER_PAGE = 9;
+const QUESTIONS_PER_PAGE = 5;
 const backend = process.env.REACT_APP_BACKEND_URL;
 
 function Regulation() {
@@ -17,8 +28,9 @@ function Regulation() {
   const [questions, setQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { customerId } = useUser();
-  // const [saveSuccess, setSaveSuccess] = useState(false);
-  // const [saveError, setSaveError] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [score, setScore] = useState(0);
+  const [rating, setRating] = useState("");
 
   useEffect(() => {
     axios
@@ -31,9 +43,14 @@ function Regulation() {
       });
   }, []);
 
-  useEffect(() => {
-    console.log("Customer ID from context:", customerId);
-  }, [customerId]);
+  const getRating = (score) => {
+    if (score >= 75 && score <= 100)
+      return { text: "Excellent", color: "green" };
+    if (score >= 60 && score < 75) return { text: "Good", color: "green" };
+    if (score >= 45 && score < 60)
+      return { text: "Average", color: "lightgreen" };
+    return { text: "Poor", color: "red" };
+  };
 
   const handleSave = () => {
     form.validateFields().then((values) => {
@@ -45,30 +62,30 @@ function Regulation() {
             answer: values[key] || "",
           };
         })
-        .filter((answer) => answer.answer.trim() !== ""); // Filter out unanswered questions
-
-      console.log("Customer ID before save:", customerId);
-      console.log("Filtered Answers:", answers); // Log to verify filtered answers
+        .filter((answer) => answer.answer.trim() !== "");
 
       if (customerId && answers.length > 0) {
         axios
           .post(`${backend}questions/save`, { customerId, answers })
           .then((response) => {
-            console.log("Answers saved successfully!");
-           
-            toast.success("Answers saved successfully!");
+            console.log("Answers saved successfully!", response.data);
+            const score = response.data.total_score;
+            const rating = getRating(score);
+            setScore(score);
+            setRating(rating);
+            setIsModalVisible(true);
           })
           .catch((error) => {
             console.error("There was an error saving the answers!", error);
-           
-            toast("There was an error saving your answers. Please try again.");
+            toast.error(
+              "There was an error saving your answers. Please try again."
+            );
           });
       } else if (!customerId) {
         console.error("Customer ID is missing!");
-       toast.error("Customer ID is missing!");
+        toast.error("Customer ID is missing!");
       } else {
         console.error("No answers to save!");
-       
         toast.error(
           "There was an error saving your answers. Please try again."
         );
@@ -101,55 +118,63 @@ function Regulation() {
           <div className="container m-4">
             <Form form={form}>
               {currentQuestions.map((q) => (
-                <Form.Item
-                  key={q.id}
-                  name={`question_${q.id}`}
-                  label={q.question}
-                  rules={[]}
-                >
-                  {q.options && q.options.includes("Yes/no") ? (
-                    <Radio.Group>
-                      <Radio value="Yes">Yes</Radio>
-                      <Radio value="No">No</Radio>
-                    </Radio.Group>
-                  ) : q.options ? (
-                    <Select>
-                      {q.options.split("\n").map((option) => (
-                        <Option key={option} value={option}>
-                          {option}
-                        </Option>
-                      ))}
-                    </Select>
-                  ) : (
-                    <TextArea rows={3} />
-                  )}
-                </Form.Item>
-              ))}
-              <Pagination
-                current={currentPage}
-                pageSize={QUESTIONS_PER_PAGE}
-                total={questions.length}
-                onChange={handlePageChange}
-                showSizeChanger={false}
-                showQuickJumper
-                itemRender={itemRender}
-              />
-              <Form.Item>
-                <div className="question-btn">
-                  <Button
-                    type="primary"
-                    style={{ width: "6rem", height: "2.3rem" }}
-                    className="mt-3"
-                    onClick={handleSave}
-                    disabled={!customerId}
+                <div key={q.id} style={{ marginBottom: "24px" }}>
+                  <Title level={4}>{q.question}</Title>
+                  <Form.Item
+                    name={`question_${q.id}`}
+                    // rules={[{ required: true, message: 'Please select an option!' }]}
                   >
-                    Save
-                  </Button>
+                    <Radio.Group>
+                      <Row gutter={[16, 16]}>
+                        {q.options.split("\n").map((option, index) => (
+                          <Col span={12} key={index}>
+                            <Radio value={option}>{option}</Radio>
+                          </Col>
+                        ))}
+                      </Row>
+                    </Radio.Group>
+                  </Form.Item>
                 </div>
-              </Form.Item>
+              ))}
+              <hr />
+              <div style={{ textAlign: "center", marginTop: "24px" }}>
+                <Pagination
+                  current={currentPage}
+                  pageSize={QUESTIONS_PER_PAGE}
+                  total={questions.length}
+                  onChange={handlePageChange}
+                  showSizeChanger={false}
+                  showQuickJumper
+                  itemRender={itemRender}
+                />
+                <Button
+                  type="primary"
+                  style={{
+                    marginTop: "20px",
+                    width: "10rem",
+                    height: "2.8rem",
+                  }}
+                  className="fs-6"
+                  onClick={handleSave}
+                  disabled={!customerId}
+                >
+                  Save
+                </Button>
+              </div>
             </Form>
           </div>
         </Container>
+        <Modal
+          title="Your Score"
+          visible={isModalVisible}
+          onOk={() => setIsModalVisible(false)}
+          onCancel={() => setIsModalVisible(false)}
+        >
+          <div style={{ textAlign: "center" }}>
+            <p style={{ fontSize: "48px", color: rating.color }}>{score}</p>
+            <h2 style={{ color: rating.color }}>Rating: {rating.text}</h2>
+          </div>
+        </Modal>
       </Content>
     </Layout>
   );

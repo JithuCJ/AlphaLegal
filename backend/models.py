@@ -23,8 +23,10 @@ class Question(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.Text, nullable=False)
-    options = db.Column(db.Text, nullable=False) 
+    options = db.Column(db.Text, nullable=False)
+    weights = db.Column(db.JSON, nullable=True)
     answers = db.relationship('Answer', back_populates='question', cascade="all, delete-orphan")
+
 
 class Answer(db.Model):
     __tablename__ = 'answers'

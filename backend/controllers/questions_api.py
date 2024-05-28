@@ -35,30 +35,41 @@ def extract_text_from_pdf(file):
         text += page.get_text()
     return text
 
-
 def parse_questions(text):
     lines = text.splitlines()
     questions_data = []
     question = ""
     options = []
-    option_prefixes = ('a.', 'b.', 'c.', 'd.',)
-    yes_no_options = ('Yes', 'No')
-
+    weights = {}
+    option_prefixes = ('a)', 'b)', 'c)', 'd)')
+    
     for line in lines:
         if line.strip().startswith(tuple(f"{i}." for i in range(1, 101))):
             if question:
-                if options:
-                    questions_data.append(
-                        {'question': question.strip(), 'options': options})
+                if options and weights:
+                    questions_data.append({
+                        'question': question.strip(),
+                        'options': [f"{prefix} {opt}" for prefix, opt in zip(option_prefixes, options)],
+                        'weights': weights
+                    })
                 else:
-                    questions_data.append(
-                        {'question': question.strip(), 'options': None})
+                    questions_data.append({
+                        'question': question.strip(),
+                        'options': [f"{prefix} {opt}" for prefix, opt in zip(option_prefixes, options)],
+                        'weights': {}
+                    })
             question = line.strip()
             options = []
+            weights = {}
         elif any(line.strip().startswith(prefix) for prefix in option_prefixes):
-            options.append(line.strip())
-        elif any(line.strip().startswith(opt) for opt in yes_no_options):
-            options.append(line.strip())
+            option_text = line.strip().split(") ", 1)[1]
+            option_key = line.strip().split(")")[0]
+            options.append(option_text)
+        elif line.strip().startswith("Ans:"):
+            weights_text = line.strip().split("[", 1)[1].strip("]").split(", ")
+            for weight in weights_text:
+                key, value = weight.split("=")
+                weights[key.strip()] = int(value.strip())
         else:
             if options:
                 options[-1] += ' ' + line.strip()
@@ -66,21 +77,30 @@ def parse_questions(text):
                 question += ' ' + line.strip()
 
     if question:
-        if options:
-            questions_data.append(
-                {'question': question.strip(), 'options': options})
+        if options and weights:
+            questions_data.append({
+                'question': question.strip(),
+                'options': [f"{prefix} {opt}" for prefix, opt in zip(option_prefixes, options)],
+                'weights': weights
+            })
         else:
-            questions_data.append(
-                {'question': question.strip(), 'options': None})
+            questions_data.append({
+                'question': question.strip(),
+                'options': [f"{prefix} {opt}" for prefix, opt in zip(option_prefixes, options)],
+                'weights': {}
+            })
 
     return questions_data
+
+
 
 
 def save_questions_to_db(questions_data):
     for item in questions_data:
         question_text = item['question']
         options_text = "\n".join(item['options']) if item['options'] else ""
-        question = Question(question=question_text, options=options_text)
+        weights_data = item['weights']
+        question = Question(question=question_text, options=options_text, weights=weights_data)
         db.session.add(question)
     db.session.commit()
 
@@ -91,7 +111,6 @@ def get_questions():
     output = [{'id': q.id, 'question': q.question, 'options': q.options}
               for q in questions]
     return jsonify({'questions': output})
-
 
 @questions_api.route('/save', methods=['POST'])
 def save_answers():
@@ -105,6 +124,9 @@ def save_answers():
         logging.error("Missing customerId")
         return jsonify({'error': 'Missing customerId'}), 400
 
+    total_score = 0
+    total_possible_score = 0
+
     for answer in answers:
         question_id = answer.get('question_id')
         answer_text = answer.get('answer')
@@ -113,17 +135,32 @@ def save_answers():
             logging.error(f"Invalid answer format: {answer}")
             return jsonify({'error': 'Invalid answer format'}), 400
         
+        # Normalize the answer text by removing trailing characters after the first ')'
+        normalized_answer = answer_text.split(') ')[0].strip()
+
         # Check if the answer for this question already exists for this customer
         existing_answer = Answer.query.filter_by(user_id=customer_id, question_id=question_id).first()
         if existing_answer:
             logging.debug(f"Answer already exists for customer {customer_id} and question {question_id}")
             continue
         
-        new_answer = Answer(user_id=customer_id, question_id=question_id, answer=answer_text)
+        question = Question.query.get(question_id)
+        if question:
+            weight = question.weights.get(normalized_answer, 0)
+            total_score += weight
+            # Calculate the maximum possible score for this question
+            max_weight = max(question.weights.values(), default=0)
+            total_possible_score += max_weight
+        
+        new_answer = Answer(user_id=customer_id, question_id=question_id, answer=normalized_answer)
         db.session.add(new_answer)
     
     db.session.commit()
-    return jsonify({'message': 'Answers saved successfully!'}), 201
+
+    # Calculate the percentage score
+    percentage_score = (total_score / total_possible_score) * 100 if total_possible_score else 0
+    
+    return jsonify({'message': 'Answers saved successfully!', 'total_score': percentage_score}), 201
 
 
 
