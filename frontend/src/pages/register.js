@@ -48,7 +48,7 @@ function RegisterForm() {
     setLoading(true);
 
     axios
-      .post(`${backend}register`, {
+      .post(`http://localhost:5000/register`, {
         username: name,
         email: email,
         password: password,
@@ -73,7 +73,7 @@ function RegisterForm() {
   const verifyToken = () => {
     // verify token
     axios
-      .post(`${backend}confirm-token`, { token })
+      .post(`http://localhost:5000/confirm-token`, { token })
       .then((response) => {
         setMessage("Account verified successfully!");
         setShowModal(false);

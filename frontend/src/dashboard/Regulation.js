@@ -15,6 +15,7 @@ import {
 } from "antd";
 import { useUser } from "../store/UserContext";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
 const { TextArea } = Input;
@@ -28,13 +29,11 @@ function Regulation() {
   const [questions, setQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { customerId } = useUser();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [score, setScore] = useState(0);
-  const [rating, setRating] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get(`${backend}questions/questions`)
+      .get(`http://localhost:5000/questions/questions`)
       .then((response) => {
         setQuestions(response.data.questions);
       })
@@ -42,15 +41,6 @@ function Regulation() {
         console.error("There was an error fetching the questions!", error);
       });
   }, []);
-
-  const getRating = (score) => {
-    if (score >= 75 && score <= 100)
-      return { text: "Excellent", color: "green" };
-    if (score >= 60 && score < 75) return { text: "Good", color: "green" };
-    if (score >= 45 && score < 60)
-      return { text: "Average", color: "lightgreen" };
-    return { text: "Poor", color: "red" };
-  };
 
   const handleSave = () => {
     form.validateFields().then((values) => {
@@ -66,14 +56,10 @@ function Regulation() {
 
       if (customerId && answers.length > 0) {
         axios
-          .post(`${backend}questions/save`, { customerId, answers })
+          .post(`http://localhost:5000/questions/save`, { customerId, answers })
           .then((response) => {
             console.log("Answers saved successfully!", response.data);
-            const score = response.data.total_score;
-            const rating = getRating(score);
-            setScore(score);
-            setRating(rating);
-            setIsModalVisible(true);
+            toast.success("Answers saved successfully!");
           })
           .catch((error) => {
             console.error("There was an error saving the answers!", error);
@@ -88,6 +74,47 @@ function Regulation() {
         console.error("No answers to save!");
         toast.error(
           "There was an error saving your answers. Please try again."
+        );
+      }
+    });
+  };
+
+  const handleSubmit = () => {
+    form.validateFields().then((values) => {
+      const answers = Object.keys(values)
+        .map((key) => {
+          const [prefix, id] = key.split("_");
+          return {
+            question_id: id,
+            answer: values[key] || "",
+          };
+        })
+        .filter((answer) => answer.answer.trim() !== "");
+
+      if (customerId && answers.length > 0) {
+        axios
+          .post(`http://localhost:5000/questions/submit`, {
+            customerId,
+            answers,
+          })
+          .then((response) => {
+            console.log("Answers submitted successfully!", response.data);
+            const score = response.data.total_score;
+            navigate("/score", { state: { score } });
+          })
+          .catch((error) => {
+            console.error("There was an error submitting the answers!", error);
+            toast.error(
+              "There was an error submitting your answers. Please try again."
+            );
+          });
+      } else if (!customerId) {
+        console.error("Customer ID is missing!");
+        toast.error("Customer ID is missing!");
+      } else {
+        console.error("No answers to submit!");
+        toast.error(
+          "There was an error submitting your answers. Please try again."
         );
       }
     });
@@ -160,21 +187,24 @@ function Regulation() {
                 >
                   Save
                 </Button>
+                <Button
+                  type="primary"
+                  style={{
+                    marginTop: "20px",
+                    marginLeft: "10px",
+                    width: "10rem",
+                    height: "2.8rem",
+                  }}
+                  className="fs-6"
+                  onClick={handleSubmit}
+                  disabled={!customerId}
+                >
+                  Submit
+                </Button>
               </div>
             </Form>
           </div>
         </Container>
-        <Modal
-          title="Your Score"
-          visible={isModalVisible}
-          onOk={() => setIsModalVisible(false)}
-          onCancel={() => setIsModalVisible(false)}
-        >
-          <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: "48px", color: rating.color }}>{score}</p>
-            <h2 style={{ color: rating.color }}>Rating: {rating.text}</h2>
-          </div>
-        </Modal>
       </Content>
     </Layout>
   );

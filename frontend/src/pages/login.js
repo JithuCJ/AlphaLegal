@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
 import { Form, Button, Container, Card } from "react-bootstrap";
-import axios from "axios"; // Import axios to make HTTP requests
+import axios from "axios";
 import "../style.css";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../store/auth";
+import { useUser } from "../store/UserContext";
 import { toast } from "react-toastify";
 
 const backend = process.env.REACT_APP_BACKEND_URL;
@@ -12,18 +13,18 @@ function LoginForm() {
   const [customer_id, setCustomer_id] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { storeToken } = useContext(AuthContext); // Use storeToken from AuthContext
+  const { storeToken } = useContext(AuthContext);
+  const { setCustomerId } = useUser();
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    // const backend = process.env.REACT_APP_BACKEND_URL;
-    // ${backend}login
     axios
-      .post(`${backend}login`, { customer_id, password })
+      .post(`http://localhost:5000/login`, { customer_id, password })
       .then((response) => {
         console.log("Login successful", response.data);
-        storeToken(response.data.token);
+        storeToken(response.data.access_token);
+        setCustomerId(response.data.customer_id);
         navigate("/dashboard");
         toast("Login successful!");
       })
@@ -42,7 +43,7 @@ function LoginForm() {
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>User ID</Form.Label>
               <Form.Control
-                type=""
+                type="text"
                 placeholder="Enter User ID"
                 value={customer_id}
                 onChange={(e) => setCustomer_id(e.target.value)}
