@@ -6,14 +6,19 @@ const UserContext = createContext();
 const backend = process.env.REACT_APP_BACKEND_URL;
 
 export const UserProvider = ({ children }) => {
-  const [customerId, setCustomerId] = useState(null); 
+  const [customerId, setCustomerId] = useState(null);
 
   useEffect(() => {
     const fetchCustomerId = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/customer_id`);
-        console.log("Fetched Customer ID Response:", response.data); 
-        setCustomerId(response.data.customer_id); 
+        const token = localStorage.getItem("token");
+        if (token) {
+          const response = await axios.get(`http://localhost:5000/customer_id`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          console.log("Fetched Customer ID Response:", response.data);
+          setCustomerId(response.data.customer_id);
+        }
       } catch (error) {
         console.error("Error fetching customer ID:", error);
       }

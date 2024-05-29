@@ -4,28 +4,22 @@ from config import ApplicationConfig
 from models import db, User, Question, Answer
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from itsdangerous import URLSafeTimedSerializer
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 import os
-
 
 from controllers.questions_api import questions_api
 
-
 load_dotenv()
-
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 
-
-app.secret_key = 'super-secret-key'
-
+app.secret_key = os.getenv('SECRET_KEY', 'super-secret-key')
 app.config.from_object(ApplicationConfig)
 
 bcrypt = Bcrypt(app)
@@ -33,10 +27,9 @@ db.init_app(app)
 jwt = JWTManager(app)
 migrate = Migrate(app, db)
 
-serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+serializer = URLSafeTimedSerializer(app.secret_key)
 
 with app.app_context():
-
     db.create_all()
 
 
@@ -90,7 +83,6 @@ def register():
         return jsonify({'message': 'User already exists'}), 400
 
     token = serializer.dumps(email, salt='email-confirm')
-
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     new_user = User(email=email, username=username,
@@ -137,15 +129,14 @@ def login():
         return jsonify({'message': 'Invalid credentials'}), 401
 
     access_token = create_access_token(identity=user.customer_id)
-
-    
-    return jsonify({'message': 'Login successful', 'access_token': access_token, }), 200
+    return jsonify({'message': 'Login successful', 'access_token': access_token, 'customer_id': user.customer_id}), 200
 
 
 @app.route('/customer_id', methods=['GET'])
+@jwt_required()
 def user():
-   
-    user = User.query.first() 
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(customer_id=current_user_id).first()
     if user is None:
         return jsonify({'message': 'User not found'}), 404
 
@@ -153,5 +144,4 @@ def user():
 
 
 if __name__ == '__main__':
-
     app.run(debug=True, host='0.0.0.0', port=5000)
