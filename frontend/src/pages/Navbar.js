@@ -5,6 +5,7 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 import Dashboard from "../dashboard/dashboard";
 import Regulation from "../dashboard/Regulation";
 import Profile from "../dashboard/Profile";
+import ScorePage from "../components/pages/ScorePage";
 import { AuthContext } from "../store/auth";
 import {
   UserOutlined,
@@ -13,6 +14,7 @@ import {
   LogoutOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
+  PieChartOutlined,
 } from "@ant-design/icons";
 
 const { Header, Sider, Content, Footer } = Layout;
@@ -21,7 +23,7 @@ function AppHeader() {
   const { isLoggedIn, logoutUser } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(true);
 
-  const toggleSidebar = () => { 
+  const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
 
@@ -67,11 +69,20 @@ function AppHeader() {
                   Profile
                 </Nav.Link>
               </Menu.Item>
-              <Menu.Item key="3" icon={<NotificationOutlined />}>
+              {/* <Menu.Item key="3" icon={<NotificationOutlined />}>
                 <Nav.Link as={NavLink} to="/regulation">
                   Regulation
                 </Nav.Link>
+              </Menu.Item> */}
+
+              <Menu.Item key="3" icon={<PieChartOutlined />}>
+                {" "}
+                {/* Add ScorePage menu item */}
+                <Nav.Link as={NavLink} to="/score">
+                  Score
+                </Nav.Link>
               </Menu.Item>
+
               <Menu.Item key="4" icon={<LogoutOutlined />} onClick={logoutUser}>
                 <Nav.Link as={NavLink} to="/">
                   Logout
@@ -103,10 +114,12 @@ function AppHeader() {
                 paddingTop: 24,
               }}
             >
+              {/* Routing */}
               <Routes>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/regulation" element={<Regulation />} />
+                <Route path="/score" element={<ScorePage />} />
               </Routes>
             </Content>
             <Footer style={{ textAlign: "center" }}>
@@ -142,11 +155,8 @@ function AppHeader() {
                 </Nav.Link>
               </Nav>
             </Navbar.Collapse>
-   
           </Container>
-          
         </Navbar>
-       
       )}
     </>
   );

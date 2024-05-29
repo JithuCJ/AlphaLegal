@@ -18,9 +18,9 @@ function LoginForm() {
     e.preventDefault();
 
     // const backend = process.env.REACT_APP_BACKEND_URL;
-    // ${backend}login
+    // http://localhost:5000/login
     axios
-      .post(`${backend}login`, { customer_id, password })
+      .post(`http://localhost:5000/login`, { customer_id, password })
       .then((response) => {
         console.log("Login successful", response.data);
         storeToken(response.data.token);
