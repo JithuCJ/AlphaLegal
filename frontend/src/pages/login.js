@@ -20,7 +20,7 @@ function LoginForm() {
     e.preventDefault();
 
     axios
-      .post(`${backend}login`, { customer_id, password })
+      .post(`http://localhost:5000/login`, { customer_id, password })
       .then((response) => {
         console.log("Login successful", response.data);
         storeToken(response.data.access_token);

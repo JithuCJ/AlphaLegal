@@ -7,7 +7,7 @@ const { Title } = Typography;
 function ScorePage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { score } = location.state || { score: 50 };
+  const { score } = location.state || { score: 66.66 };
 
   const getRating = (score) => {
     if (score >= 75 && score <= 100)
@@ -23,7 +23,10 @@ function ScorePage() {
   return (
     <Layout>
       <Content>
-        <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <div
+          className="shadow-sm bg-white border p-5"
+          style={{ textAlign: "center", marginTop: "50px" }}
+        >
           <Title>Your Score</Title>
           <p style={{ fontSize: "48px", color: rating.color }}>{score}</p>
           <h2 style={{ color: rating.color }}>Rating: {rating.text}</h2>

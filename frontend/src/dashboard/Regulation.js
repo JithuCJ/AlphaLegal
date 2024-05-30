@@ -18,22 +18,25 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
-const { TextArea } = Input;
 const { Title } = Typography;
 
 const QUESTIONS_PER_PAGE = 5;
 const backend = process.env.REACT_APP_BACKEND_URL;
-
 function Regulation() {
   const [form] = Form.useForm();
   const [questions, setQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [score, setScore] = useState(null);
   const { customerId } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/questions/questions`)
+      .get(`${backend}questions/questions`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((response) => {
         setQuestions(response.data.questions);
       })
@@ -56,10 +59,19 @@ function Regulation() {
 
       if (customerId && answers.length > 0) {
         axios
-          .post(`${backend}questions/save`, { customerId, answers })
+          .post(
+            `${backend}questions/save`,
+            { customerId, answers },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          )
           .then((response) => {
             console.log("Answers saved successfully!", response.data);
             toast.success("Answers saved successfully!");
+            setScore(response.data.total_score); // Set the score state
           })
           .catch((error) => {
             console.error("There was an error saving the answers!", error);
@@ -93,13 +105,22 @@ function Regulation() {
 
       if (customerId && answers.length > 0) {
         axios
-          .post(`${backend}questions/submit`, {
-            customerId,
-            answers,
-          })
+          .post(
+            `${backend}questions/submit`,
+            {
+              customerId,
+              answers,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          )
           .then((response) => {
             console.log("Answers submitted successfully!", response.data);
             const score = response.data.total_score;
+            setScore(response.data.total_score); // Set the score state
             navigate("/score", { state: { score } });
           })
           .catch((error) => {
@@ -146,14 +167,16 @@ function Regulation() {
             <Form form={form}>
               {currentQuestions.map((q) => (
                 <div key={q.id} style={{ marginBottom: "24px" }}>
-                  <Title level={4}>{q.question}</Title>
+                  <Title level={4}>
+                    {" "}
+                    {q.question}{" "}
+                    {q.attempted && <span style={{ color: "blue" }}>✔</span>}
+                  </Title>
                   <Form.Item
                     name={`question_${q.id}`}
-                    // rules={[
-                    //   { required: true, message: "Please select an option!" }
-                    // ]}
+                    initialValue={q.answer || ""}
                   >
-                    <Radio.Group>
+                    <Radio.Group disabled={q.attempted}>
                       <Row gutter={[16, 16]}>
                         {q.options.split("\n").map((option, index) => (
                           <Col span={12} key={index}>
@@ -216,5 +239,3 @@ function Regulation() {
 }
 
 export default Regulation;
-
-// ready
