@@ -33,7 +33,7 @@ function Regulation() {
 
   useEffect(() => {
     axios
-      .get(`${backend}questions/questions`)
+      .get(`http://localhost:5000/questions/questions`)
       .then((response) => {
         setQuestions(response.data.questions);
       })
@@ -149,7 +149,9 @@ function Regulation() {
                   <Title level={4}>{q.question}</Title>
                   <Form.Item
                     name={`question_${q.id}`}
-                    // rules={[{ required: true, message: 'Please select an option!' }]}
+                    // rules={[
+                    //   { required: true, message: "Please select an option!" }
+                    // ]}
                   >
                     <Radio.Group>
                       <Row gutter={[16, 16]}>
@@ -187,20 +189,23 @@ function Regulation() {
                 >
                   Save
                 </Button>
-                <Button
-                  type="primary"
-                  style={{
-                    marginTop: "20px",
-                    marginLeft: "10px",
-                    width: "10rem",
-                    height: "2.8rem",
-                  }}
-                  className="fs-6"
-                  onClick={handleSubmit}
-                  disabled={!customerId}
-                >
-                  Submit
-                </Button>
+                {currentPage ===
+                  Math.ceil(questions.length / QUESTIONS_PER_PAGE) && (
+                  <Button
+                    type="primary"
+                    style={{
+                      marginTop: "20px",
+                      marginLeft: "10px",
+                      width: "10rem",
+                      height: "2.8rem",
+                    }}
+                    className="fs-6"
+                    onClick={handleSubmit}
+                    disabled={!customerId}
+                  >
+                    Submit
+                  </Button>
+                )}
               </div>
             </Form>
           </div>
@@ -211,3 +216,5 @@ function Regulation() {
 }
 
 export default Regulation;
+
+// ready

@@ -212,26 +212,4 @@ def submit_answers():
 
 
 
-# question_with_answere
-@questions_api.route('/questions_with_answers', methods=['GET'])
-def get_questions_with_answers():
-    customer_id = request.args.get('customerId')
-    if not customer_id:
-        return jsonify({'error': 'Missing customerId'}), 400
-
-    questions = Question.query.all()
-    answers = Answer.query.filter_by(user_id=customer_id).all()
-
-    answered_questions = {answer.question_id: answer.answer for answer in answers}
-
-    questions_with_answers = []
-    for question in questions:
-        questions_with_answers.append({
-            'id': question.id,
-            'question': question.question,
-            'options': question.options,
-            'answer': answered_questions.get(question.id, '')
-        })
-
-    return jsonify({'questions': questions_with_answers}), 200
 

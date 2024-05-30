@@ -34,6 +34,9 @@ class Answer(db.Model):
     user_id = db.Column(db.String, db.ForeignKey('users.customer_id'), nullable=False)
     question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
     answer = db.Column(db.String(500), nullable=False)
+    # score = db.Column(db.Integer, nullable=False)  # Add this line
+
+    
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship('User', back_populates='answers')
