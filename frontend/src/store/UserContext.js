@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext,  useContext,  useEffect, useState } from "react";
 
 const UserContext = createContext();
 
@@ -13,7 +13,7 @@ export const UserProvider = ({ children }) => {
       try {
         const token = localStorage.getItem("token");
         if (token) {
-          const response = await axios.get(`http://localhost:5000/customer_id`, {
+          const response = await axios.get(`${backend}customer_id`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           console.log("Fetched Customer ID Response:", response.data);

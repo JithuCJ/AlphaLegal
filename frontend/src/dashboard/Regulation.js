@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Container } from "react-bootstrap";
 import {
   Button,
   Form,
   Radio,
-  Input,
   Layout,
   Pagination,
-  Modal,
   Row,
   Col,
   Typography,
