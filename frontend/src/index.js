@@ -10,8 +10,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "./store/auth";
 import { UserProvider } from "./store/UserContext";
 import "./style.css";
+import Footer from "./components/pages/Footer";
 
-import "./style.css";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
@@ -32,7 +32,7 @@ const App = () => {
         <Route path="/logout"  element={<Logout />} />
 
       </Routes>
-  
+  {/* <Footer /> */}
     </Router>
   );
 };
