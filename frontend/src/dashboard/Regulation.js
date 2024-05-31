@@ -18,8 +18,9 @@ import { useNavigate } from "react-router-dom";
 const { Content } = Layout;
 const { Title } = Typography;
 
-const QUESTIONS_PER_PAGE = 5;
+const QUESTIONS_PER_PAGE = 100;
 const backend = process.env.REACT_APP_BACKEND_URL;
+
 function Regulation() {
   const [form] = Form.useForm();
   const [questions, setQuestions] = useState([]);
@@ -59,7 +60,7 @@ function Regulation() {
         axios
           .post(
             `${backend}questions/save`,
-            { customerId, answers },
+            { answers },
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -69,7 +70,6 @@ function Regulation() {
           .then((response) => {
             console.log("Answers saved successfully!", response.data);
             toast.success("Answers saved successfully!");
-            setScore(response.data.total_score); // Set the score state
           })
           .catch((error) => {
             console.error("There was an error saving the answers!", error);
@@ -106,7 +106,6 @@ function Regulation() {
           .post(
             `${backend}questions/submit`,
             {
-              customerId,
               answers,
             },
             {
@@ -118,8 +117,9 @@ function Regulation() {
           .then((response) => {
             console.log("Answers submitted successfully!", response.data);
             const score = response.data.total_score;
-            setScore(response.data.total_score); // Set the score state
-            navigate("/score", { state: { score } });
+            setScore(score); // Set the score state
+            navigate("/score");
+            toast.success("Answers submitted successfully!");
           })
           .catch((error) => {
             console.error("There was an error submitting the answers!", error);
@@ -226,6 +226,11 @@ function Regulation() {
                   >
                     Submit
                   </Button>
+                )}
+                {score !== null && (
+                  <div style={{ marginTop: "20px" }}>
+                    <Title level={4}>Your Score: {score}</Title>
+                  </div>
                 )}
               </div>
             </Form>
