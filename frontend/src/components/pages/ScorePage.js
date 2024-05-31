@@ -1,13 +1,14 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Layout, Typography, Button } from "antd";
+
 const { Content } = Layout;
 const { Title } = Typography;
 
 function ScorePage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { score } = location.state || { score: 66.66 };
+  const { score } = location.state || { score: null };
 
   const getRating = (score) => {
     if (score >= 75 && score <= 100)
@@ -17,6 +18,28 @@ function ScorePage() {
       return { text: "Average", color: "lightgreen" };
     return { text: "Poor", color: "red" };
   };
+
+  if (score === null) {
+    return (
+      <Layout>
+        <Content>
+          <div
+            className="shadow-sm bg-white border p-5"
+            style={{ textAlign: "center", marginTop: "50px" }}
+          >
+            <Title>No Score Available</Title>
+            <Button
+              type="primary"
+              onClick={() => navigate("/dashboard")}
+              style={{ marginTop: "20px" }}
+            >
+              Go to Dashboard
+            </Button>
+          </div>
+        </Content>
+      </Layout>
+    );
+  }
 
   const rating = getRating(score);
 

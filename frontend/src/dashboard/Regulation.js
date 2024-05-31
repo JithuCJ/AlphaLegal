@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 const { Content } = Layout;
 const { Title } = Typography;
 
-const QUESTIONS_PER_PAGE = 100;
+const QUESTIONS_PER_PAGE = 5;
 const backend = process.env.REACT_APP_BACKEND_URL;
 
 function Regulation() {
@@ -117,9 +117,9 @@ function Regulation() {
           .then((response) => {
             console.log("Answers submitted successfully!", response.data);
             const score = response.data.total_score;
-            setScore(score); // Set the score state
-            navigate("/score");
+            setScore(score);
             toast.success("Answers submitted successfully!");
+            navigate("/score", { state: { score } }); // Navigate to ScorePage with the score
           })
           .catch((error) => {
             console.error("There was an error submitting the answers!", error);
@@ -166,7 +166,6 @@ function Regulation() {
               {currentQuestions.map((q) => (
                 <div key={q.id} style={{ marginBottom: "24px" }}>
                   <Title level={4}>
-                    {" "}
                     {q.question}{" "}
                     {q.attempted && <span style={{ color: "blue" }}>✔</span>}
                   </Title>
