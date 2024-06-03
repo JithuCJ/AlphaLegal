@@ -6,6 +6,7 @@
 body,
 html {
   height: 100%;
+  background-color: #f0f0f0; 
 }
 
 .container {
@@ -23,8 +24,8 @@ html {
 .question-btn {
   padding-top: 1rem;
   margin-left: 2rem;
- display: flex;
- gap: 1rem;
+  display: flex;
+  gap: 1rem;
 }
 
 .custom-navbar {

@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from models import db, Question, Answer, User
 import fitz
 import logging
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -9,8 +10,6 @@ logging.basicConfig(level=logging.DEBUG)
 questions_api = Blueprint('questions_api', __name__)
 
 
-
-# upload a pdf and text extract
 @questions_api.route('/upload', methods=['POST'])
 def upload_pdf():
     if 'pdf' not in request.files:
@@ -28,6 +27,7 @@ def upload_pdf():
     else:
         return jsonify({'error': 'Invalid file format. Only PDFs are allowed.'}), 400
 
+
 def extract_text_from_pdf(file):
     pdf_document = fitz.open(stream=file.read(), filetype="pdf")
     text = ""
@@ -36,162 +36,82 @@ def extract_text_from_pdf(file):
         text += page.get_text()
     return text
 
+
 def parse_questions(text):
     lines = text.splitlines()
     questions_data = []
-    question = ""
-    options = []
-    weights = {}
+    question, options, weights = "", [], {}
     option_prefixes = ('a)', 'b)', 'c)', 'd)')
-    
+
+    def add_question():
+        if question:
+            questions_data.append({
+                'question': question.strip(),
+                'options': [f"{prefix} {opt}" for prefix, opt in zip(option_prefixes, options)],
+                'weights': weights if weights else {}
+            })
+
     for line in lines:
-        if line.strip().startswith(tuple(f"{i}." for i in range(1, 101))):
-            if question:
-                if options and weights:
-                    questions_data.append({
-                        'question': question.strip(),
-                        'options': [f"{prefix} {opt}" for prefix, opt in zip(option_prefixes, options)],
-                        'weights': weights
-                    })
-                else:
-                    questions_data.append({
-                        'question': question.strip(),
-                        'options': [f"{prefix} {opt}" for prefix, opt in zip(option_prefixes, options)],
-                        'weights': {}
-                    })
-            question = line.strip()
-            options = []
-            weights = {}
-        elif any(line.strip().startswith(prefix) for prefix in option_prefixes):
-            option_text = line.strip().split(") ", 1)[1]
-            option_key = line.strip().split(")")[0]
+        stripped_line = line.strip()
+        if stripped_line.startswith(tuple(f"{i}." for i in range(1, 101))):
+            add_question()
+            question, options, weights = stripped_line, [], {}
+        elif any(stripped_line.startswith(prefix) for prefix in option_prefixes):
+            option_text = stripped_line.split(") ", 1)[1]
             options.append(option_text)
-        elif line.strip().startswith("Ans:"):
-            weights_text = line.strip().split("[", 1)[1].strip("]").split(", ")
-            for weight in weights_text:
-                key, value = weight.split("=")
-                weights[key.strip()] = int(value.strip())
+        elif stripped_line.startswith("Ans:"):
+            weights_text = stripped_line.split(
+                "[", 1)[1].strip("]").split(", ")
+            weights = {weight.split("=")[0].strip(): int(
+                weight.split("=")[1].strip()) for weight in weights_text}
         else:
             if options:
-                options[-1] += ' ' + line.strip()
+                options[-1] += ' ' + stripped_line
             else:
-                question += ' ' + line.strip()
+                question += ' ' + stripped_line
 
-    if question:
-        if options and weights:
-            questions_data.append({
-                'question': question.strip(),
-                'options': [f"{prefix} {opt}" for prefix, opt in zip(option_prefixes, options)],
-                'weights': weights
-            })
-        else:
-            questions_data.append({
-                'question': question.strip(),
-                'options': [f"{prefix} {opt}" for prefix, opt in zip(option_prefixes, options)],
-                'weights': {}
-            })
-
+    add_question()
     return questions_data
 
+
 def save_questions_to_db(questions_data):
+    questions = []
     for item in questions_data:
         question_text = item['question']
         options_text = "\n".join(item['options']) if item['options'] else ""
         weights_data = item['weights']
-        question = Question(question=question_text, options=options_text, weights=weights_data)
-        db.session.add(question)
+        question = Question(question=question_text,
+                            options=options_text, weights=weights_data)
+        questions.append(question)
+    db.session.bulk_save_objects(questions)
     db.session.commit()
 
 
-# get a questions
-@questions_api.route('/questions', methods=['GET'])
-def get_questions():
-    questions = Question.query.all()
-    output = [{'id': q.id, 'question': q.question, 'options': q.options}
-              for q in questions]
-    return jsonify({'questions': output})
-
-
-
-# Save the Question in db
 @questions_api.route('/save', methods=['POST'])
+@jwt_required()
 def save_answers():
+    current_user_id = get_jwt_identity()
     data = request.get_json()
     logging.debug(f"Received data: {data}")
-    
-    customer_id = data.get('customerId')
+
     answers = data.get('answers', [])
-
-    if not customer_id:
-        logging.error("Missing customerId")
-        return jsonify({'error': 'Missing customerId'}), 400
-
     total_score = 0
     total_possible_score = 0
+    new_answers = []
+    updated_answers = []
 
     for answer in answers:
         question_id = answer.get('question_id')
         answer_text = answer.get('answer')
 
-        if question_id is None or answer_text is None:
+        if not question_id or not answer_text:
             logging.error(f"Invalid answer format: {answer}")
             return jsonify({'error': 'Invalid answer format'}), 400
-        
-        # Normalize the answer text by removing trailing characters after the first ')'
+
         normalized_answer = answer_text.split(') ')[0].strip()
 
-        # Check if the answer for this question already exists for this customer
-        existing_answer = Answer.query.filter_by(user_id=customer_id, question_id=question_id).first()
-        if existing_answer:
-            logging.debug(f"Answer already exists for customer {customer_id} and question {question_id}")
-            continue
-        
-        question = Question.query.get(question_id)
-        if question:
-            weight = question.weights.get(normalized_answer, 0)
-            total_score += weight
-            # Calculate the maximum possible score for this question
-            max_weight = max(question.weights.values(), default=0)
-            total_possible_score += max_weight
-        
-        new_answer = Answer(user_id=customer_id, question_id=question_id, answer=normalized_answer)
-        db.session.add(new_answer)
-    
-    db.session.commit()
-
-    # Calculate the percentage score
-    percentage_score = (total_score / total_possible_score) * 100 if total_possible_score else 0
-    
-    return jsonify({'message': 'Answers saved successfully!', 'total_score': percentage_score}), 201
-
-
-# Submit then generate the score 
-
-@questions_api.route('/submit', methods=['POST'])
-def submit_answers():
-    data = request.get_json()
-    logging.debug(f"Received data: {data}")
-    
-    customer_id = data.get('customerId')
-    answers = data.get('answers', [])
-
-    if not customer_id:
-        logging.error("Missing customerId")
-        return jsonify({'error': 'Missing customerId'}), 400
-
-    total_score = 0
-    total_possible_score = 0
-
-    for answer in answers:
-        question_id = answer.get('question_id')
-        answer_text = answer.get('answer')
-
-        if question_id is None or answer_text is None:
-            logging.error(f"Invalid answer format: {answer}")
-            return jsonify({'error': 'Invalid answer format'}), 400
-        
-        # Normalize the answer text by removing trailing characters after the first ')'
-        normalized_answer = answer_text.split(') ')[0].strip()
+        existing_answer = Answer.query.filter_by(
+            user_id=current_user_id, question_id=question_id).first()
 
         question = Question.query.get(question_id)
         if question:
@@ -199,39 +119,113 @@ def submit_answers():
             total_score += weight
             max_weight = max(question.weights.values(), default=0)
             total_possible_score += max_weight
-        
-        new_answer = Answer(user_id=customer_id, question_id=question_id, answer=normalized_answer)
-        db.session.add(new_answer)
-    
+
+            if existing_answer:
+                logging.debug(
+                    f"Answer already exists for user {current_user_id} and question {question_id}, updating answer")
+                existing_answer.answer = normalized_answer
+                updated_answers.append(existing_answer)
+            else:
+                new_answer = Answer(user_id=current_user_id,
+                                    question_id=question_id, answer=normalized_answer)
+                new_answers.append(new_answer)
+
+    if new_answers:
+        db.session.bulk_save_objects(new_answers)
+
+    if updated_answers:
+        db.session.bulk_save_objects(updated_answers)
+
+    user = User.query.get(current_user_id)
+    user.score = total_score
     db.session.commit()
 
-    percentage_score = (total_score / total_possible_score) * 100 if total_possible_score else 0
-    
+    percentage_score = (total_score / total_possible_score) * \
+        100 if total_possible_score else 0
+
     return jsonify({'message': 'Answers submitted successfully!', 'total_score': percentage_score}), 201
 
 
+@questions_api.route('/questions', methods=['GET'])
+@jwt_required()
+def get_questions():
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(customer_id=current_user_id).first()
 
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
 
-# question_with_answere
-@questions_api.route('/questions_with_answers', methods=['GET'])
-def get_questions_with_answers():
-    customer_id = request.args.get('customerId')
-    if not customer_id:
-        return jsonify({'error': 'Missing customerId'}), 400
-
+    answers = {answer.question_id: answer for answer in user.answers}
     questions = Question.query.all()
-    answers = Answer.query.filter_by(user_id=customer_id).all()
+    output = []
 
-    answered_questions = {answer.question_id: answer.answer for answer in answers}
-
-    questions_with_answers = []
     for question in questions:
-        questions_with_answers.append({
+        attempted = question.id in answers
+        output.append({
             'id': question.id,
             'question': question.question,
             'options': question.options,
-            'answer': answered_questions.get(question.id, '')
+            'attempted': attempted,
+            'answer': answers[question.id].answer if attempted else None
         })
 
-    return jsonify({'questions': questions_with_answers}), 200
+    return jsonify({'questions': output})
 
+
+@questions_api.route('/submit', methods=['POST'])
+@jwt_required()
+def submit_answers():
+    current_user_id = get_jwt_identity()
+    data = request.get_json()
+    logging.debug(f"Received data: {data}")
+
+    answers = data.get('answers', [])
+    total_score = 0
+    total_possible_score = 0
+    new_answers = []
+    updated_answers = []
+
+    for answer in answers:
+        question_id = answer.get('question_id')
+        answer_text = answer.get('answer')
+
+        if not question_id or not answer_text:
+            logging.error(f"Invalid answer format: {answer}")
+            return jsonify({'error': 'Invalid answer format'}), 400
+
+        normalized_answer = answer_text.split(') ')[0].strip()
+
+        existing_answer = Answer.query.filter_by(
+            user_id=current_user_id, question_id=question_id).first()
+
+        question = Question.query.get(question_id)
+        if question:
+            weight = question.weights.get(normalized_answer, 0)
+            total_score += weight
+            max_weight = max(question.weights.values(), default=0)
+            total_possible_score += max_weight
+
+            if existing_answer:
+                logging.debug(
+                    f"Answer already exists for user {current_user_id} and question {question_id}, updating answer")
+                existing_answer.answer = normalized_answer
+                updated_answers.append(existing_answer)
+            else:
+                new_answer = Answer(user_id=current_user_id,
+                                    question_id=question_id, answer=normalized_answer)
+                new_answers.append(new_answer)
+
+    if new_answers:
+        db.session.bulk_save_objects(new_answers)
+
+    if updated_answers:
+        db.session.bulk_save_objects(updated_answers)
+
+    user = User.query.get(current_user_id)
+    user.score = total_score
+    db.session.commit()
+
+    percentage_score = (total_score / total_possible_score) * \
+        100 if total_possible_score else 0
+
+    return jsonify({'message': 'Answers submitted successfully!', 'total_score': percentage_score}), 201

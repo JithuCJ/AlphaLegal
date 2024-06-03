@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Container } from "react-bootstrap";
 import {
   Button,
   Form,
   Radio,
-  Input,
   Layout,
   Pagination,
-  Modal,
   Row,
   Col,
   Typography,
@@ -18,7 +16,6 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
-const { TextArea } = Input;
 const { Title } = Typography;
 
 const QUESTIONS_PER_PAGE = 5;
@@ -28,12 +25,17 @@ function Regulation() {
   const [form] = Form.useForm();
   const [questions, setQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [score, setScore] = useState(null);
   const { customerId } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/questions/questions`)
+      .get(`${backend}questions/questions`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((response) => {
         setQuestions(response.data.questions);
       })
@@ -56,7 +58,15 @@ function Regulation() {
 
       if (customerId && answers.length > 0) {
         axios
-          .post(`http://localhost:5000/questions/save`, { customerId, answers })
+          .post(
+            `${backend}questions/save`,
+            { answers },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          )
           .then((response) => {
             console.log("Answers saved successfully!", response.data);
             toast.success("Answers saved successfully!");
@@ -93,14 +103,23 @@ function Regulation() {
 
       if (customerId && answers.length > 0) {
         axios
-          .post(`http://localhost:5000/questions/submit`, {
-            customerId,
-            answers,
-          })
+          .post(
+            `${backend}questions/submit`,
+            {
+              answers,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          )
           .then((response) => {
             console.log("Answers submitted successfully!", response.data);
             const score = response.data.total_score;
-            navigate("/score", { state: { score } });
+            setScore(score);
+            toast.success("Answers submitted successfully!");
+            navigate("/score", { state: { score } }); // Navigate to ScorePage with the score
           })
           .catch((error) => {
             console.error("There was an error submitting the answers!", error);
@@ -146,12 +165,15 @@ function Regulation() {
             <Form form={form}>
               {currentQuestions.map((q) => (
                 <div key={q.id} style={{ marginBottom: "24px" }}>
-                  <Title level={4}>{q.question}</Title>
+                  <Title level={4}>
+                    {q.question}{" "}
+                    {q.attempted && <span style={{ color: "blue" }}>✔</span>}
+                  </Title>
                   <Form.Item
                     name={`question_${q.id}`}
-                    // rules={[{ required: true, message: 'Please select an option!' }]}
+                    initialValue={q.answer || ""}
                   >
-                    <Radio.Group>
+                    <Radio.Group disabled={q.attempted}>
                       <Row gutter={[16, 16]}>
                         {q.options.split("\n").map((option, index) => (
                           <Col span={12} key={index}>
@@ -187,20 +209,28 @@ function Regulation() {
                 >
                   Save
                 </Button>
-                <Button
-                  type="primary"
-                  style={{
-                    marginTop: "20px",
-                    marginLeft: "10px",
-                    width: "10rem",
-                    height: "2.8rem",
-                  }}
-                  className="fs-6"
-                  onClick={handleSubmit}
-                  disabled={!customerId}
-                >
-                  Submit
-                </Button>
+                {currentPage ===
+                  Math.ceil(questions.length / QUESTIONS_PER_PAGE) && (
+                  <Button
+                    type="primary"
+                    style={{
+                      marginTop: "20px",
+                      marginLeft: "10px",
+                      width: "10rem",
+                      height: "2.8rem",
+                    }}
+                    className="fs-6"
+                    onClick={handleSubmit}
+                    disabled={!customerId}
+                  >
+                    Submit
+                  </Button>
+                )}
+                {score !== null && (
+                  <div style={{ marginTop: "20px" }}>
+                    <Title level={4}>Your Score: {score}</Title>
+                  </div>
+                )}
               </div>
             </Form>
           </div>

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Form, Button, Container, Card } from "react-bootstrap";
+import { Form, Button, Container, Card, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import "../style.css";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,7 @@ function LoginForm() {
     e.preventDefault();
 
     axios
-      .post(`http://localhost:5000/login`, { customer_id, password })
+      .post(`${backend}login`, { customer_id, password })
       .then((response) => {
         console.log("Login successful", response.data);
         storeToken(response.data.access_token);
@@ -38,7 +38,7 @@ function LoginForm() {
     <Container className="mt-5 d-flex justify-content-center">
       <Card style={{ width: "24rem" }} className="shadow">
         <Card.Body className="mb-4">
-          <h2 className="text-center mb-4">Login</h2>
+          <h2 className="text-center mb-4">Login<hr/></h2>
           <Form onSubmit={onSubmit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>User ID</Form.Label>
@@ -66,6 +66,13 @@ function LoginForm() {
               Login
             </Button>
           </Form>
+          <Row className="mt-3 text-center">
+            <Col>
+              <a href="/login" style={{ textDecoration: "none", color: "#007bff" }}>
+                Forgot Password?
+              </a>
+            </Col>
+          </Row>
         </Card.Body>
       </Card>
     </Container>

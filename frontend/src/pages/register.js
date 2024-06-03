@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Card, Alert, Modal } from "react-bootstrap";
+import { Form, Button, Container, Card, Alert, Modal, Row, Col } from "react-bootstrap";
 import "../style.css";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -48,7 +48,7 @@ function RegisterForm() {
     setLoading(true);
 
     axios
-      .post(`http://localhost:5000/register`, {
+      .post(`${backend}register`, {
         username: name,
         email: email,
         password: password,
@@ -73,7 +73,7 @@ function RegisterForm() {
   const verifyToken = () => {
     // verify token
     axios
-      .post(`http://localhost:5000/confirm-token`, { token })
+      .post(`${backend}confirm-token`, { token })
       .then((response) => {
         setMessage("Account verified successfully!");
         setShowModal(false);
@@ -88,7 +88,7 @@ function RegisterForm() {
     <Container className="d-flex justify-content-center mt-5">
       <Card style={{ width: "28rem" }} className="shadow">
         <Card.Body className="mb-3">
-          <h2 className="text-center mb-4">Register</h2>
+          <h2 className="text-center mb-4">Register <hr/></h2>
           {message && <Alert variant="info">{message}</Alert>}
           <Form onSubmit={onSubmit}>
             {/* Name Input */}
@@ -144,6 +144,7 @@ function RegisterForm() {
             </Form.Group>
 
             {/* Submit Button */}
+            
             <Button
               variant="primary"
               type="submit"
@@ -152,7 +153,14 @@ function RegisterForm() {
             >
               {loading ? "Registering…" : "Register"}
             </Button>
-          </Form>
+          </Form><hr/>
+          <Row className="mt-3 text-center">
+            <Col><span>Have an Account ? </span>
+              <a href="/login" style={{ textDecoration: "none", color: "#007bff" }}>
+                Login Here
+              </a>
+            </Col>
+          </Row>
         </Card.Body>
       </Card>
 
