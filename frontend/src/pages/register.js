@@ -1,7 +1,17 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Card, Alert, Modal, Row, Col } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Container,
+  Card,
+  Alert,
+  Modal,
+  Row,
+  Col,
+} from "react-bootstrap";
 import "../style.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const backend = process.env.REACT_APP_BACKEND_URL;
@@ -17,6 +27,9 @@ function RegisterForm() {
   const [message, setMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [token, setToken] = useState("");
+  const [tokenError, setTokenError] = useState("");
+
+  const navigate = useNavigate();
 
   const { name, email, password, confirmPassword } = formData;
 
@@ -31,15 +44,6 @@ function RegisterForm() {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    if (
-      !email.endsWith(
-        "@gmail.com" && "yahoo.com" && "outlook.com" && "hotmail.com" && ""
-      )
-    ) {
-      setMessage("Please use your organization email to register.");
-      return;
-    }
-
     if (password !== confirmPassword) {
       setMessage("Passwords do not match.");
       return;
@@ -47,6 +51,7 @@ function RegisterForm() {
 
     setLoading(true);
 
+    console.log("backend server is", backend);
     axios
       .post(`${backend}register`, {
         username: name,
@@ -78,9 +83,10 @@ function RegisterForm() {
         setMessage("Account verified successfully!");
         setShowModal(false);
         toast.success("Account verified successfully!");
+        navigate("/account-verified");
       })
       .catch((error) => {
-        setMessage("Verification failed. Please try again.");
+        setTokenError("Invalid token. Please try again.");
       });
   };
 
@@ -88,7 +94,9 @@ function RegisterForm() {
     <Container className="d-flex justify-content-center mt-5">
       <Card style={{ width: "28rem" }} className="shadow">
         <Card.Body className="mb-3">
-          <h2 className="text-center mb-4">Register <hr/></h2>
+          <h2 className="text-center mb-4">
+            Register <hr />
+          </h2>
           {message && <Alert variant="info">{message}</Alert>}
           <Form onSubmit={onSubmit}>
             {/* Name Input */}
@@ -144,7 +152,6 @@ function RegisterForm() {
             </Form.Group>
 
             {/* Submit Button */}
-            
             <Button
               variant="primary"
               type="submit"
@@ -153,10 +160,15 @@ function RegisterForm() {
             >
               {loading ? "Registering…" : "Register"}
             </Button>
-          </Form><hr/>
+          </Form>
+          <hr />
           <Row className="mt-3 text-center">
-            <Col><span>Have an Account ? </span>
-              <a href="/login" style={{ textDecoration: "none", color: "#007bff" }}>
+            <Col>
+              <span>Have an Account ? </span>
+              <a
+                href="/login"
+                style={{ textDecoration: "none", color: "#007bff" }}
+              >
                 Login Here
               </a>
             </Col>
@@ -170,6 +182,7 @@ function RegisterForm() {
           <Modal.Title>Verify Your Account</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {tokenError && <Alert variant="danger">{tokenError}</Alert>}
           <Form>
             <Form.Group>
               <Form.Label>Verification Token</Form.Label>

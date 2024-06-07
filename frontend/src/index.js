@@ -1,11 +1,6 @@
 // import React from 'react'
 import ReactDOM from "react-dom";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "./store/auth";
 import { UserProvider } from "./store/UserContext";
@@ -16,10 +11,10 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import Header from "./pages/Navbar";
+import AccountVerified  from "./Models/AccountVerified";
 import { Logout } from "./pages/Logout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 
 const App = () => {
   return (
@@ -29,31 +24,30 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/logout"  element={<Logout />} />
-
+        <Route path="/logout" element={<Logout />} />
+        <Route path="/account-verified" element={<AccountVerified />} />
       </Routes>
-  {/* <Footer /> */}
+      {/* <Footer /> */}
     </Router>
   );
 };
 
 ReactDOM.render(
   <AuthProvider>
-    <UserProvider> 
-      
-    <App />
-    <ToastContainer
-      position="top-right"
-      autoClose={3000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="light"
-    />
+    <UserProvider>
+      <App />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </UserProvider>
   </AuthProvider>,
 

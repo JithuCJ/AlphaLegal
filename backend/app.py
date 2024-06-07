@@ -17,7 +17,7 @@ from controllers.questions_api import questions_api
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
+CORS(app, supports_credentials=True)
 
 app.secret_key = os.getenv('SECRET_KEY', 'super-secret-key')
 app.config.from_object(ApplicationConfig)
@@ -45,9 +45,16 @@ def send_email(recipient_email, token, customer_id):
     msg['To'] = recipient_email
     msg['Subject'] = "Email Confirmation Token"
 
-    # Email body
-    body = f"Your confirmation token is: {token}. Your customer ID is: {customer_id} "
-    msg.attach(MIMEText(body, 'plain'))
+    # Email body with URLs
+    body = f"""
+    <html>
+    <body>
+        <p>Confirmation token is  :  {token}</a></p>
+        <p>User ID is  :  <b>{customer_id}</b></a></p>
+    </body>
+    </html>
+    """
+    msg.attach(MIMEText(body, 'html'))
 
     try:
         # Change to your SMTP server
