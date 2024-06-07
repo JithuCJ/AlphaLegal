@@ -1,5 +1,5 @@
-// import React from 'react'
-import ReactDOM from "react-dom";
+import React from 'react';
+import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "./store/auth";
@@ -11,7 +11,7 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import Header from "./pages/Navbar";
-import AccountVerified  from "./Models/AccountVerified";
+import AccountVerified from "./Models/AccountVerified";
 import { Logout } from "./pages/Logout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,7 +32,10 @@ const App = () => {
   );
 };
 
-ReactDOM.render(
+const rootElement = document.getElementById("app");
+const root = createRoot(rootElement);
+
+root.render(
   <AuthProvider>
     <UserProvider>
       <App />
@@ -49,7 +52,5 @@ ReactDOM.render(
         theme="light"
       />
     </UserProvider>
-  </AuthProvider>,
-
-  document.getElementById("app")
+  </AuthProvider>
 );

@@ -41,7 +41,7 @@ function RegisterForm() {
     setToken(e.target.value);
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -51,43 +51,38 @@ function RegisterForm() {
 
     setLoading(true);
 
-    console.log("backend server is", backend);
-    axios
-      .post(`${backend}register`, {
+    try {
+      const response = await axios.post(`${backend}register`, {
         username: name,
         email: email,
         password: password,
-      })
-      .then((response) => {
-        console.log("Registration successful", response.data);
-        setMessage(
-          "Registration successful! Please check your email to confirm."
-        );
-        setShowModal(true);
-      })
-      .catch((error) => {
-        console.error("Registration error", error);
-        setMessage(
-          "Registration Failed! Error: " +
-            (error.response?.data?.message || "Token Error")
-        );
-      })
-      .finally(() => setLoading(false));
+      });
+      console.log("Registration successful", response.data);
+      setMessage(
+        "Registration successful! Please check your email to confirm."
+      );
+      setShowModal(true);
+    } catch (error) {
+      console.error("Registration error", error);
+      setMessage(
+        "Registration Failed! Error: " +
+          (error.response?.data?.message || "Token Error")
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const verifyToken = () => {
-    // verify token
-    axios
-      .post(`${backend}confirm-token`, { token })
-      .then((response) => {
-        setMessage("Account verified successfully!");
-        setShowModal(false);
-        toast.success("Account verified successfully!");
-        navigate("/account-verified");
-      })
-      .catch((error) => {
-        setTokenError("Invalid token. Please try again.");
-      });
+  const verifyToken = async () => {
+    try {
+      await axios.post(`${backend}confirm-token`, { token });
+      setMessage("Account verified successfully!");
+      setShowModal(false);
+      toast.success("Account verified successfully!");
+      navigate("/account-verified");
+    } catch (error) {
+      setTokenError("Invalid token. Please try again.");
+    }
   };
 
   return (

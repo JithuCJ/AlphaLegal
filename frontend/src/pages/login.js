@@ -16,22 +16,20 @@ function LoginForm() {
   const { storeToken } = useContext(AuthContext);
   const { setCustomerId } = useUser();
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    axios
-      .post(`${backend}login`, { customer_id, password })
-      .then((response) => {
-        console.log("Login successful", response.data);
-        storeToken(response.data.access_token);
-        setCustomerId(response.data.customer_id);
-        navigate("/dashboard");
-        toast("Login successful!");
-      })
-      .catch((error) => {
-        console.error("Login error", error);
-        toast("Login failed!");
-      });
+    try {
+      const response = await axios.post(`${backend}login`, { customer_id, password });
+      console.log("Login successful", response.data);
+      storeToken(response.data.access_token);
+      setCustomerId(response.data.customer_id);
+      navigate("/dashboard");
+      toast("Login successful!");
+    } catch (error) {
+      console.error("Login error", error);
+      toast("Login failed!");
+    }
   };
 
   return (
