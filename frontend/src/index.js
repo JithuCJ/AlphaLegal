@@ -11,7 +11,6 @@ import Register from "./pages/register";
 import AppHeader from "./pages/Navbar";
 import AccountVerified from "./Models/AccountVerified";
 import {Logout} from "./pages/Logout";
-import AdminLogin from "./components/admin/Admin-Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,7 +22,6 @@ const App = () => (
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/logout" element={<Logout />} />
-      <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/account-verified" element={<AccountVerified />} />
     </Routes>
     <ToastContainer
