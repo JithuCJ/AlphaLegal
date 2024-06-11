@@ -12,31 +12,22 @@ const backend = process.env.REACT_APP_BACKEND_URL;
 function LoginForm() {
   const [customer_id, setCustomer_id] = useState("");
   const [password, setPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-  const { storeToken, setUserRole } = useContext(AuthContext);
+  const { storeToken } = useContext(AuthContext);
   const { setCustomerId } = useUser();
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const endpoint = isAdmin ? `${backend}admin/login-admin` : `${backend}login`;
 
     try {
-      const response = await axios.post(endpoint, {
+      const response = await axios.post(`${backend}login`, {
         customer_id,
         password,
       });
       console.log("Login successful", response.data);
       storeToken(response.data.access_token);
       setCustomerId(response.data.customer_id);
-      setUserRole(response.data.role); // Assuming the role is returned in the response
-
-      if (isAdmin) {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
-      }
-      
+      navigate("/dashboard");
       toast("Login successful!");
     } catch (error) {
       console.error("Login error", error);
@@ -49,7 +40,7 @@ function LoginForm() {
       <Card style={{ width: "24rem" }} className="shadow">
         <Card.Body className="mb-4">
           <h2 className="text-center mb-4">
-            {isAdmin ? "Admin Login" : "User Login"}
+            Login
             <hr />
           </h2>
           <Form onSubmit={onSubmit}>
@@ -76,7 +67,7 @@ function LoginForm() {
             </Form.Group>
 
             <Button variant="primary" type="submit" className="w-100 mt-3">
-              {isAdmin ? "Admin Login" : "User Login"}
+              Login
             </Button>
           </Form>
           <Row className="mt-3 text-center">
@@ -87,17 +78,6 @@ function LoginForm() {
               >
                 Forgot Password?
               </a>
-            </Col>
-          </Row>
-          <Row className="mt-3 text-center">
-            <Col>
-              <Button
-                variant="link"
-                onClick={() => setIsAdmin(!isAdmin)}
-                style={{ textDecoration: "none", color: "#007bff" }}
-              >
-                {isAdmin ? "Switch to User Login" : "Switch to Admin Login"}
-              </Button>
             </Col>
           </Row>
         </Card.Body>
