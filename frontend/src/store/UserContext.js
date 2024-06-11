@@ -27,8 +27,26 @@ export const UserProvider = ({ children }) => {
     fetchCustomerId();
   }, []);
 
+  const updateUser = async (newCustomerId, newPassword) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `${backend}update-user`,
+        { new_customer_id: newCustomerId, new_password: newPassword },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("User updated successfully:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating user:", error);
+      throw error;
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ customerId, setCustomerId }}>
+    <UserContext.Provider value={{ customerId, setCustomerId, updateUser }}>
       {children}
     </UserContext.Provider>
   );

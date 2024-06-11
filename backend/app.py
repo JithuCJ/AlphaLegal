@@ -145,8 +145,6 @@ def login():
     return jsonify({'message': 'Login successful', 'access_token': access_token, 'customer_id': user.customer_id}), 200
 
 
-
-
 @app.route('/customer_id', methods=['GET'])
 @jwt_required()
 def user():
@@ -159,6 +157,33 @@ def user():
 
 # Add this route to handle password change requests
 
+
+@app.route('/update-user', methods=['PUT'])
+@jwt_required()
+def update_user():
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(customer_id=current_user_id).first()
+
+    if user is None:
+        return jsonify({'message': 'User not found'}), 404
+
+    new_customer_id = request.json.get('new_customer_id')
+    new_password = request.json.get('new_password')
+
+    if new_customer_id:
+        existing_user = User.query.filter_by(
+            customer_id=new_customer_id).first()
+        if existing_user:
+            return jsonify({'message': 'Customer ID already exists'}), 400
+        user.customer_id = new_customer_id
+
+    if new_password:
+        hashed_password = bcrypt.generate_password_hash(
+            new_password).decode('utf-8')
+        user.password = hashed_password
+
+    db.session.commit()
+    return jsonify({'message': 'User updated successfully'}), 200
 
 # The rest of the app remains the same
 

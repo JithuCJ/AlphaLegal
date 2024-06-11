@@ -38,3 +38,43 @@ html {
 /* .ant-layout {
   background-color: rgb(204, 204, 204);
 } */
+/* Profile.css */
+/* Profile.css */
+
+.profile-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* min-height: 100vh; */
+  background-color: #f0f2f5;
+}
+
+.profile-container {
+  max-width: 400px;
+  width: 100%;
+}
+
+.profile-card {
+  padding: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.profile-title {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+.ant-input,
+.ant-input-password {
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.ant-btn {
+  border-radius: 4px;
+}
