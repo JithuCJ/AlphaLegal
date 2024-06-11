@@ -88,7 +88,6 @@ def delete_customer():
 
 @admin_endpoint.route('/login-admin', methods=['POST'])
 def login_admin():
-
     customer_id = request.json.get('customer_id')
     password = request.json.get('password')
 
@@ -96,7 +95,12 @@ def login_admin():
 
     if admin:
         if bcrypt.check_password_hash(admin.password, password):
-            return jsonify({'message': 'Admin logged in successfully', 'admin_id': admin.customer_id}), 200
+            response = {
+                'message': 'Admin logged in successfully', 
+                'admin_id': admin.customer_id, 
+                'role': admin.get_role()
+            }
+            return jsonify(response), 200
         else:
             return jsonify({'error': 'Invalid password'}), 401
     else:

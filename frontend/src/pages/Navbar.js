@@ -29,7 +29,7 @@ const AppHeader = () => {
     setCollapsed(!collapsed);
   };
 
-  const loggedInLayout = (
+  const userLogin = (
     <Layout>
       <Sider
         trigger={null}
@@ -55,26 +55,26 @@ const AppHeader = () => {
           defaultSelectedKeys={["1"]}
           style={{ height: "100%" }}
         >
-          {role !== "admin" ? (
-            <>
-              <Menu.Item key="1" icon={<HomeOutlined />}>
-                <Nav.Link as={NavLink} to="/dashboard">Dashboard</Nav.Link>
-              </Menu.Item>
-              <Menu.Item key="2" icon={<UserOutlined />}>
-                <Nav.Link as={NavLink} to="/profile">Profile</Nav.Link>
-              </Menu.Item>
-              <Menu.Item key="3" icon={<PieChartOutlined />}>
-                <Nav.Link as={NavLink} to="/score">Score</Nav.Link>
-              </Menu.Item>
-            </>
-          ) : null}
-          {role === "admin" && (
-            <Menu.Item key="4" icon={<UserOutlined />}>
-              <Nav.Link as={NavLink} to="/admin">Admin</Nav.Link>
-            </Menu.Item>
-          )}
+          <Menu.Item key="1" icon={<HomeOutlined />}>
+            <Nav.Link as={NavLink} to="/dashboard">
+              Dashboard
+            </Nav.Link>
+          </Menu.Item>
+          <Menu.Item key="2" icon={<UserOutlined />}>
+            <Nav.Link as={NavLink} to="/profile">
+              Profile
+            </Nav.Link>
+          </Menu.Item>
+          <Menu.Item key="3" icon={<PieChartOutlined />}>
+            <Nav.Link as={NavLink} to="/score">
+              Score
+            </Nav.Link>
+          </Menu.Item>
+
           <Menu.Item key="5" icon={<LogoutOutlined />} onClick={logoutUser}>
-            <Nav.Link as={NavLink} to="/">Logout</Nav.Link>
+            <Nav.Link as={NavLink} to="/">
+              Logout
+            </Nav.Link>
           </Menu.Item>
         </Menu>
       </Sider>
@@ -91,9 +91,6 @@ const AppHeader = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/regulation" element={<Regulation />} />
             <Route path="/score" element={<ScorePage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="/upload" element={<Upload />} />
-            <Route path="/userstable" element={<UsersTable />} />
           </Routes>
         </Content>
         <Footer style={{ textAlign: "center" }}>
@@ -101,6 +98,70 @@ const AppHeader = () => {
         </Footer>
       </Layout>
     </Layout>
+  );
+
+  const adminLogin = (
+    <>
+      <Layout>
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          width={250}
+          style={{ height: "100vh", position: "fixed", left: 0 }}
+        >
+          <Button
+            type="text"
+            onClick={toggleSidebar}
+            style={{ margin: 24, marginLeft: 30 }}
+          >
+            {collapsed ? (
+              <MenuUnfoldOutlined
+                style={{ color: "white", fontSize: "26px" }}
+              />
+            ) : (
+              <MenuFoldOutlined style={{ color: "white", fontSize: "26px" }} />
+            )}
+          </Button>
+          <Menu
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={["1"]}
+            style={{ height: "100%" }}
+          >
+            <Menu.Item key="4" icon={<UserOutlined />}>
+              <Nav.Link as={NavLink} to="/admin">
+                Admin
+              </Nav.Link>
+            </Menu.Item>
+
+            <Menu.Item key="5" icon={<LogoutOutlined />} onClick={logoutUser}>
+              <Nav.Link as={NavLink} to="/">
+                Logout
+              </Nav.Link>
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout
+          style={{
+            marginLeft: collapsed ? 80 : 250,
+            transition: "0.5s ease",
+            minHeight: "100vh",
+          }}
+        >
+          <Content style={{ margin: "24px 16px 0", padding: 24 }}>
+            <Routes>
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/upload" element={<Upload />} />
+              <Route path="/userstable" element={<UsersTable />} />
+            </Routes>
+          </Content>
+          <Footer style={{ textAlign: "center" }}>
+            ©{new Date().getFullYear()} AlphaLegal | All rights reserved
+          </Footer>
+        </Layout>
+      </Layout>
+    </>
   );
 
   const loggedOutNavbar = (
@@ -135,7 +196,7 @@ const AppHeader = () => {
     </Navbar>
   );
 
-  return isLoggedIn ? loggedInLayout : loggedOutNavbar;
+ return isLoggedIn ? (role === "admin" ? adminLogin : userLogin) : loggedOutNavbar;
 };
 
 export default AppHeader;

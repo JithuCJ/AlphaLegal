@@ -1,10 +1,9 @@
 import React, { useContext, useState } from "react";
 import { Form, Button, Container, Card, Row, Col } from "react-bootstrap";
 import axios from "axios";
-import "../style.css";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../store/auth";
-import { useUser } from "../store/UserContext";
+import { AuthContext } from "../../store/auth";
+import { useUser } from "../../store/UserContext";
 import { toast } from "react-toastify";
 
 const backend = process.env.REACT_APP_BACKEND_URL;
@@ -12,25 +11,22 @@ const backend = process.env.REACT_APP_BACKEND_URL;
 function LoginForm() {
   const [customer_id, setCustomer_id] = useState("");
   const [password, setPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-  const { storeToken, storeRole } = useContext(AuthContext);
+  const { storeToken } = useContext(AuthContext);
   const { setCustomerId } = useUser();
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const endpoint = isAdmin ? "admin/login-admin" : "login";
 
     try {
-      const response = await axios.post(`${backend}${endpoint}`, {
+      const response = await axios.post(`${backend}login`, {
         customer_id,
         password,
       });
       console.log("Login successful", response.data);
       storeToken(response.data.access_token);
-      storeRole(response.data.role);
       setCustomerId(response.data.customer_id);
-      navigate(isAdmin ? "/admin" : "/dashboard"); // Redirect based on role
+      navigate("/dashboard");
       toast("Login successful!");
     } catch (error) {
       console.error("Login error", error);
@@ -69,15 +65,6 @@ function LoginForm() {
               />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicCheckbox">
-              <Form.Check
-                type="checkbox"
-                label="Login as Admin"
-                checked={isAdmin}
-                onChange={() => setIsAdmin(!isAdmin)}
-              />
-            </Form.Group>
-
             <Button variant="primary" type="submit" className="w-100 mt-3">
               Login
             </Button>
@@ -85,7 +72,7 @@ function LoginForm() {
           <Row className="mt-3 text-center">
             <Col>
               <a
-                href="/forgot-password"
+                href="/login"
                 style={{ textDecoration: "none", color: "#007bff" }}
               >
                 Forgot Password?
