@@ -29,6 +29,7 @@ function Regulation() {
   const { customerId } = useUser();
   const navigate = useNavigate();
 
+  const backend = process.env.REACT_APP_BACKEND_URL;
   useEffect(() => {
     async function fetchQuestions() {
       try {
@@ -37,6 +38,7 @@ function Regulation() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
+        console.log("Fetched Questions: ", response.data); // Debug statement
         setQuestions(response.data.questions);
       } catch (error) {
         console.error("There was an error fetching the questions!", error);

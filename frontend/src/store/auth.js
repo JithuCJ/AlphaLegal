@@ -1,33 +1,29 @@
-import { createContext, useState, useEffect } from "react";
+import React, { createContext, useState } from "react";
 
 export const AuthContext = createContext();
 
-
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState(null);
 
-  useEffect(() => {
-    // This effect runs only once on mount and whenever the token changes
-    const currentToken = localStorage.getItem("token");
-    if (currentToken !== token) {
-      setToken(currentToken);
-    }
-  }, [token]);
+  const storeToken = (token) => {
+    localStorage.setItem("authToken", token);
+    setIsLoggedIn(true);
+  };
 
-  const storeToken = (serverToken) => {
-    localStorage.setItem("token", serverToken);
-    setToken(serverToken);
+  const setUserRole = (userRole) => {
+    setRole(userRole);
   };
 
   const logoutUser = () => {
-    localStorage.removeItem("token");
-
-    setToken("");
+    localStorage.removeItem("authToken");
+    setIsLoggedIn(false);
+    setRole(null);
   };
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn: !!token, storeToken, logoutUser }}
+      value={{ isLoggedIn, role, storeToken, setUserRole, logoutUser }}
     >
       {children}
     </AuthContext.Provider>

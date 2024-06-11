@@ -1,18 +1,21 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from config import ApplicationConfig
-from models import db, User, Question, Answer
+from models import db, User, Question, Answer, Admin
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request, get_jwt
 from itsdangerous import URLSafeTimedSerializer
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from flask_migrate import Migrate
+
 import os
 
 from controllers.questions_api import questions_api
+from controllers.admin_endpoint import admin_endpoint
+
 
 load_dotenv()
 
@@ -71,6 +74,7 @@ def send_email(recipient_email, token, customer_id):
 # Routes
 
 app.register_blueprint(questions_api, url_prefix='/questions')
+app.register_blueprint(admin_endpoint, url_prefix='/admin')
 
 
 @app.route('/', methods=['GET'])
@@ -85,6 +89,7 @@ def register():
     email = request.json.get('email')
     username = request.json.get('username')
     password = request.json.get('password')
+    role = request.json.get('role', 'user')
 
     if User.query.filter_by(email=email).first():
         return jsonify({'message': 'User already exists'}), 400
@@ -98,6 +103,7 @@ def register():
     db.session.commit()
 
     user_id = new_user.customer_id
+    print(f"Registered user with customer_id: {user_id}")  # Debug statement
     send_email(email, token, user_id)
 
     return jsonify({'message': 'Registration successful. Please check your email to confirm.', 'user_id': user_id, 'token': token}), 201
@@ -139,6 +145,8 @@ def login():
     return jsonify({'message': 'Login successful', 'access_token': access_token, 'customer_id': user.customer_id}), 200
 
 
+
+
 @app.route('/customer_id', methods=['GET'])
 @jwt_required()
 def user():
@@ -148,6 +156,11 @@ def user():
         return jsonify({'message': 'User not found'}), 404
 
     return jsonify({'customer_id': user.customer_id, 'username': user.username, 'email': user.email, 'email_confirmed': user.email_confirmed}), 200
+
+# Add this route to handle password change requests
+
+
+# The rest of the app remains the same
 
 
 if __name__ == '__main__':

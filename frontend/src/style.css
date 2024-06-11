@@ -6,7 +6,7 @@
 body,
 html {
   height: 100%;
-  background-color: #f0f0f0; 
+  background-color: #f0f0f0;
 }
 
 .container {
@@ -31,3 +31,10 @@ html {
 .custom-navbar {
   border-bottom: 1px solid #ccc;
 }
+
+
+
+
+/* .ant-layout {
+  background-color: rgb(204, 204, 204);
+} */

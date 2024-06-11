@@ -10,6 +10,7 @@ def generate_customer_id():
     length = random.randint(6, 10)
     alphanumeric = ''.join(random.choices(
         string.ascii_letters + string.digits, k=length))
+    print(f"Generated customer_id: {alphanumeric}")  # Debug statement
     return alphanumeric
 
 
@@ -21,9 +22,23 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     email_confirmed = db.Column(db.Boolean, default=False)
+    # role = db.Column(db.String, default='user')
     score = db.Column(db.Integer, default=0)
     answers = db.relationship(
         'Answer', back_populates='user', cascade="all, delete-orphan")
+
+
+class Admin(db.Model):
+    __tablename__ = 'admin'
+    customer_id = db.Column(db.String, primary_key=True,
+                            unique=True, nullable=False, default=generate_customer_id)
+    username = db.Column(db.String, unique=False, nullable=False)
+    password = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
+    role = db.Column(db.String, default='admin')
+
+    def get_role(self):
+        return self.role
 
 
 class Question(db.Model):
