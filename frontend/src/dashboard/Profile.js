@@ -30,7 +30,9 @@ function Profile() {
       <Content className="profile-content">
         <div className="profile-container">
           <Card className="profile-card">
-            <Title level={2} className="profile-title">Profile Management</Title>
+            <Title level={2} className="profile-title">
+              Profile Management
+            </Title>
             <Form form={form} onFinish={handleUpdate} layout="vertical">
               <Form.Item
                 label="New Customer ID"
@@ -48,13 +50,21 @@ function Profile() {
                 label="New Password"
                 name="newPassword"
                 rules={[
-                  { required: true, message: "Please input your new password!" },
+                  {
+                    required: true,
+                    message: "Please input your new password!",
+                  },
                 ]}
               >
                 <Input.Password placeholder="Enter your new password" />
               </Form.Item>
               <Form.Item>
-                <Button type="primary" htmlType="submit" loading={loading} block>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  block
+                >
                   Update
                 </Button>
               </Form.Item>
