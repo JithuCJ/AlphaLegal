@@ -12,17 +12,25 @@ const backend = process.env.REACT_APP_BACKEND_URL;
 function LoginForm() {
   const [customer_id, setCustomer_id] = useState("");
   const [password, setPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const { storeToken, storeRole } = useContext(AuthContext);
   const { setCustomerId } = useUser();
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const endpoint = isAdmin ? "admin/login-admin" : "login";
+
+    // Hardcoded admin check
+    if (customer_id === "admin" && password === "alpha@2023") {
+      storeToken("admin_token"); // Mock token for admin
+      storeRole("admin");
+      setCustomerId("admin");
+      navigate("/admin"); // Redirect to admin page
+      toast("Admin login successful!");
+      return;
+    }
 
     try {
-      const response = await axios.post(`${backend}${endpoint}`, {
+      const response = await axios.post(`${backend}login`, {
         customer_id,
         password,
       });
@@ -30,7 +38,7 @@ function LoginForm() {
       storeToken(response.data.access_token);
       storeRole(response.data.role);
       setCustomerId(response.data.customer_id);
-      navigate(isAdmin ? "/admin" : "/dashboard"); // Redirect based on role
+      navigate("/dashboard"); // Redirect to user dashboard
       toast("Login successful!");
     } catch (error) {
       console.error("Login error", error);
@@ -66,15 +74,6 @@ function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicCheckbox">
-              <Form.Check
-                type="checkbox"
-                label="Login as Admin"
-                checked={isAdmin}
-                onChange={() => setIsAdmin(!isAdmin)}
               />
             </Form.Group>
 
