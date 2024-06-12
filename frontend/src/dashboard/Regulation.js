@@ -29,23 +29,27 @@ function Regulation() {
   const { customerId } = useUser();
   const navigate = useNavigate();
 
+  const backend = process.env.REACT_APP_BACKEND_URL;
   useEffect(() => {
-    axios
-      .get(`${backend}questions/questions`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
+    async function fetchQuestions() {
+      try {
+        const response = await axios.get(`${backend}questions/questions`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        console.log("Fetched Questions: ", response.data); // Debug statement
         setQuestions(response.data.questions);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("There was an error fetching the questions!", error);
-      });
+      }
+    }
+    fetchQuestions();
   }, []);
 
-  const handleSave = () => {
-    form.validateFields().then((values) => {
+  const handleSave = async () => {
+    try {
+      const values = await form.validateFields();
       const answers = Object.keys(values)
         .map((key) => {
           const [prefix, id] = key.split("_");
@@ -57,26 +61,17 @@ function Regulation() {
         .filter((answer) => answer.answer.trim() !== "");
 
       if (customerId && answers.length > 0) {
-        axios
-          .post(
-            `${backend}questions/save`,
-            { answers },
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          )
-          .then((response) => {
-            console.log("Answers saved successfully!", response.data);
-            toast.success("Answers saved successfully!");
-          })
-          .catch((error) => {
-            console.error("There was an error saving the answers!", error);
-            toast.error(
-              "There was an error saving your answers. Please try again."
-            );
-          });
+        const response = await axios.post(
+          `${backend}questions/save`,
+          { answers },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        console.log("Answers saved successfully!", response.data);
+        toast.success("Answers saved successfully!");
       } else if (!customerId) {
         console.error("Customer ID is missing!");
         toast.error("Customer ID is missing!");
@@ -86,11 +81,15 @@ function Regulation() {
           "There was an error saving your answers. Please try again."
         );
       }
-    });
+    } catch (error) {
+      console.error("There was an error saving the answers!", error);
+      toast.error("There was an error saving your answers. Please try again.");
+    }
   };
 
-  const handleSubmit = () => {
-    form.validateFields().then((values) => {
+  const handleSubmit = async () => {
+    try {
+      const values = await form.validateFields();
       const answers = Object.keys(values)
         .map((key) => {
           const [prefix, id] = key.split("_");
@@ -102,31 +101,22 @@ function Regulation() {
         .filter((answer) => answer.answer.trim() !== "");
 
       if (customerId && answers.length > 0) {
-        axios
-          .post(
-            `${backend}questions/submit`,
-            {
-              answers,
+        const response = await axios.post(
+          `${backend}questions/submit`,
+          {
+            answers,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          )
-          .then((response) => {
-            console.log("Answers submitted successfully!", response.data);
-            const score = response.data.total_score;
-            setScore(score);
-            toast.success("Answers submitted successfully!");
-            navigate("/score", { state: { score } }); // Navigate to ScorePage with the score
-          })
-          .catch((error) => {
-            console.error("There was an error submitting the answers!", error);
-            toast.error(
-              "There was an error submitting your answers. Please try again."
-            );
-          });
+          }
+        );
+        console.log("Answers submitted successfully!", response.data);
+        const score = response.data.total_score;
+        setScore(score);
+        toast.success("Answers submitted successfully!");
+        navigate("/score", { state: { score } }); // Navigate to ScorePage with the score
       } else if (!customerId) {
         console.error("Customer ID is missing!");
         toast.error("Customer ID is missing!");
@@ -136,7 +126,12 @@ function Regulation() {
           "There was an error submitting your answers. Please try again."
         );
       }
-    });
+    } catch (error) {
+      console.error("There was an error submitting the answers!", error);
+      toast.error(
+        "There was an error submitting your answers. Please try again."
+      );
+    }
   };
 
   const indexOfLastQuestion = currentPage * QUESTIONS_PER_PAGE;

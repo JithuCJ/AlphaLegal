@@ -146,34 +146,7 @@ def save_answers():
     return jsonify({'message': 'Answers submitted successfully!', 'total_score': percentage_score}), 201
 
 
-@questions_api.route('/questions', methods=['GET'])
-@jwt_required()
-def get_questions():
-    current_user_id = get_jwt_identity()
-    user = User.query.filter_by(customer_id=current_user_id).first()
-
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
-
-    answers = {answer.question_id: answer for answer in user.answers}
-    questions = Question.query.all()
-    output = []
-
-    for question in questions:
-        attempted = question.id in answers
-        output.append({
-            'id': question.id,
-            'question': question.question,
-            'options': question.options,
-            'attempted': attempted,
-            'answer': answers[question.id].answer if attempted else None
-        })
-
-    return jsonify({'questions': output})
-
-
 @questions_api.route('/submit', methods=['POST'])
-@jwt_required()
 def submit_answers():
     current_user_id = get_jwt_identity()
     data = request.get_json()
@@ -229,3 +202,55 @@ def submit_answers():
         100 if total_possible_score else 0
 
     return jsonify({'message': 'Answers submitted successfully!', 'total_score': percentage_score}), 201
+
+
+# GET Requiest
+
+
+# GET All Question
+@questions_api.route('/data', methods=['GET'])
+def get_data():
+
+    questions = Question.query.all()
+    output = []
+
+    for question in questions:
+
+        output.append({
+            'id': question.id,
+            'question': question.question,
+            'options': question.options,
+
+        })
+
+    print("Questions data:", output)  # Debug statement
+
+    return jsonify({'questions': output})
+
+
+@questions_api.route('/questions', methods=['GET'])
+@jwt_required()
+def get_questions():
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(customer_id=current_user_id).first()
+
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    answers = {answer.question_id: answer for answer in user.answers}
+    questions = Question.query.all()
+    output = []
+
+    for question in questions:
+        attempted = question.id in answers
+        output.append({
+            'id': question.id,
+            'question': question.question,
+            'options': question.options,
+            'attempted': attempted,
+            'answer': answers[question.id].answer if attempted else None
+        })
+        
+    print("Questions data:", output)  # Debug statement
+
+    return jsonify({'questions': output})
