@@ -188,5 +188,72 @@ def update_user():
 # The rest of the app remains the same
 
 
+# Forget & Reset Password endpoint
+
+@app.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    email = request.json.get('email')
+    user = User.query.filter_by(email=email).first()
+
+    if user is None:
+        return jsonify({'message': 'User not found'}), 404
+
+    token = serializer.dumps(email, salt='password-reset')
+    send_password_reset_email(email, token)
+
+    return jsonify({'message': 'Password reset email sent'}), 200
+
+
+def send_password_reset_email(recipient_email, token):
+    sender_email = "shubhamkharche01@gmail.com"
+    sender_password = "lzkt yfio ftds aklq"
+    smtp_port = 587
+    smtp_server = 'smtp.gmail.com'
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = recipient_email
+    msg['Subject'] = "Password Reset Token"
+
+    body = f"""
+    <html>
+    <body>
+        <p>Click the link to reset your password: <a href="http://localhost:3000/reset-password/{token}">Reset Password</a></p>
+    </body>
+    </html>
+    """
+    msg.attach(MIMEText(body, 'html'))
+
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, recipient_email, msg.as_string())
+        server.quit()
+        print("Password reset email sent successfully!")
+    except Exception as e:
+        print("Error sending password reset email:", str(e))
+
+
+@app.route('/reset-password/<token>', methods=['POST'])
+def reset_password(token):
+    try:
+        email = serializer.loads(token, salt='password-reset', max_age=122)
+    except Exception as e:
+        return jsonify({'message': 'The reset link is invalid or has expired.'}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+        return jsonify({'message': 'User not found'}), 404
+
+    new_password = request.json.get('new_password')
+    hashed_password = bcrypt.generate_password_hash(
+        new_password).decode('utf-8')
+    user.password = hashed_password
+    db.session.commit()
+
+    return jsonify({'message': 'Password reset successful'}), 200
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -85,7 +85,7 @@ function LoginForm() {
           <Row className="mt-3 text-center">
             <Col>
               <a
-                href="/forgot-password"
+                href="/forget-password"
                 style={{ textDecoration: "none", color: "#007bff" }}
               >
                 Forgot Password?

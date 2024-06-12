@@ -10,7 +10,9 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import AppHeader from "./pages/Navbar";
 import AccountVerified from "./Models/AccountVerified";
-import {Logout} from "./pages/Logout";
+import ForgotPassword from "./components/Password/ForgotPassword";
+import ResetPassword from "./components/Password/ResetPassword";
+import { Logout } from "./pages/Logout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,6 +25,8 @@ const App = () => (
       <Route path="/register" element={<Register />} />
       <Route path="/logout" element={<Logout />} />
       <Route path="/account-verified" element={<AccountVerified />} />
+      <Route path="/forget-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
     </Routes>
     <ToastContainer
       position="top-right"
