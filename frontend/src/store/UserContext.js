@@ -7,7 +7,9 @@ const backend = process.env.REACT_APP_BACKEND_URL;
 
 export const UserProvider = ({ children }) => {
   const [customerId, setCustomerId] = useState(null);
+  const [userDetails, setUserDetails] = useState({});
 
+  // fetch customer ID
   useEffect(() => {
     const fetchCustomerId = async () => {
       try {
@@ -27,12 +29,34 @@ export const UserProvider = ({ children }) => {
     fetchCustomerId();
   }, []);
 
-  const updateUser = async (newCustomerId, newPassword) => {
+  // fetch a user Details
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const response = await axios.get(`${backend}user-details`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          console.log("Fetched User Details Response:", response.data);
+          setUserDetails(response.data.user_details);
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, [setUserDetails]);
+
+  // update the userID and Password
+  const updateUser = async (newPassword) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
         `${backend}update-user`,
-        { new_customer_id: newCustomerId, new_password: newPassword },
+        { new_password: newPassword },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -46,7 +70,15 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ customerId, setCustomerId, updateUser }}>
+    <UserContext.Provider
+      value={{
+        customerId,
+        setCustomerId,  
+        userDetails,
+        setUserDetails,
+        updateUser,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

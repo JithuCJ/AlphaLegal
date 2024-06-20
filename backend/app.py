@@ -38,8 +38,8 @@ with app.app_context():
 
 def send_email(recipient_email, token, customer_id):
 
-    sender_email = "shubhamkharche01@gmail.com"
-    sender_password = "lzkt yfio ftds aklq"
+    sender_email = os.getenv('Email')
+    sender_password = os.getenv('Password')
     smtp_port = 587
     smtp_server = 'smtp.gmail.com'  # Default SMTP server for Gmail
 
@@ -167,15 +167,15 @@ def update_user():
     if user is None:
         return jsonify({'message': 'User not found'}), 404
 
-    new_customer_id = request.json.get('new_customer_id')
+    # new_customer_id = request.json.get('new_customer_id')
     new_password = request.json.get('new_password')
 
-    if new_customer_id:
-        existing_user = User.query.filter_by(
-            customer_id=new_customer_id).first()
-        if existing_user:
-            return jsonify({'message': 'Customer ID already exists'}), 400
-        user.customer_id = new_customer_id
+    # if new_customer_id:
+    #     existing_user = User.query.filter_by(
+    #         customer_id=new_customer_id).first()
+    #     if existing_user:
+    #         return jsonify({'message': 'Customer ID already exists'}), 400
+    #     user.customer_id = new_customer_id
 
     if new_password:
         hashed_password = bcrypt.generate_password_hash(
@@ -183,7 +183,7 @@ def update_user():
         user.password = hashed_password
 
     db.session.commit()
-    return jsonify({'message': 'User updated successfully'}), 200
+    return jsonify({'message': 'Change password'}), 200
 
 # The rest of the app remains the same
 
@@ -205,8 +205,8 @@ def forgot_password():
 
 
 def send_password_reset_email(recipient_email, token):
-    sender_email = "shubhamkharche01@gmail.com"
-    sender_password = "lzkt yfio ftds aklq"
+    sender_email = os.getenv('Email')
+    sender_password = os.getenv('Password')
     smtp_port = 587
     smtp_server = 'smtp.gmail.com'
 
@@ -253,6 +253,25 @@ def reset_password(token):
     db.session.commit()
 
     return jsonify({'message': 'Password reset successful'}), 200
+
+
+@app.route('/user-details', methods=['GET'])
+@jwt_required()
+def user_details():
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(customer_id=current_user_id).first()
+
+    if user is None:
+        return jsonify({'message': 'User not found'}), 404
+
+    user_details = {
+        'customer_id': user.customer_id,
+        'username': user.username,
+        'email': user.email,
+        # Add any other fields you want to include
+    }
+
+    return jsonify({'user_details': user_details}), 200
 
 
 if __name__ == '__main__':

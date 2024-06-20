@@ -5,8 +5,7 @@ import {
   UserOutlined,
   QuestionCircleOutlined,
 } from "@ant-design/icons";
-import "bootstrap/dist/css/bootstrap.min.css";
-
+import { Container } from "react-bootstrap";
 const { Header, Content } = Layout;
 
 // Array of card data
@@ -41,23 +40,27 @@ const AdminDashboard = () => {
       <Header className="text-center bg-light py-3">
         <h1>Welcome to Admin Dashboard</h1>
       </Header>
-      <Content className="container mt-5">
-        <Row gutter={[32, 32]} justify="center">
-          {cardData.map((card, index) => (
-            <Col key={index} xs={24} sm={12} md={8} lg={24}>
-              <Card
-                title={card.title}
-                bordered={false}
-                hoverable
-                className="text-center"
-                onClick={() => handleNavigation(card.path)}
-              >
-                {card.icon}
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </Content>
+
+      <Container>
+        <Content className=" mt-5">
+          <Row gutter={[16, 16]}>
+            {cardData.map((card, index) => (
+              <Col key={index} xs={24} sm={12} md={8} lg={24}>
+                <Card
+                  title={card.title}
+                  bordered={false}
+                  hoverable
+                  className="text-center"
+                  style={{ width: "50%" }}
+                  onClick={() => handleNavigation(card.path)}
+                >
+                  {card.icon}
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </Content>
+      </Container>
     </Layout>
   );
 };

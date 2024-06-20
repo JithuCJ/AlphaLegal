@@ -1,79 +1,130 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Layout, Typography, Card } from "antd";
+import React, { useEffect, useState } from "react";
+import { Layout, Tabs, Form, Input, Button } from "antd";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../CSS/Profile.css";
+import { Container } from "react-bootstrap";
 import { useUser } from "../store/UserContext";
 import { toast } from "react-toastify";
-// import "../styles/Profile.css"; // Assuming you have a custom CSS file for additional styles
 
 const { Content } = Layout;
-const { Title } = Typography;
+const { TabPane } = Tabs;
 
-function Profile() {
+const ProfileManagement = () => {
+  const [activeKey, setActiveKey] = useState("1");
+  const { userDetails, updateUser } = useUser();
   const [form] = Form.useForm();
-  const { customerId, updateUser } = useUser();
-  const [loading, setLoading] = useState(false);
+  const [securityForm] = Form.useForm();
 
-  const handleUpdate = async (values) => {
-    setLoading(true);
+  const formFields = [
+    { label: "Name", name: "name" },
+    { label: "User ID", name: "userId" },
+    { label: "Email", name: "email" },
+  ];
+
+  const securityFields = [
+    {
+      label: "New Password",
+      name: "newPassword",
+      rules: [{ required: true, message: "Please enter your new password" }],
+    },
+    {
+      label: "Confirm New Password",
+      name: "confirmPassword",
+      dependencies: ["newPassword"],
+      rules: [
+        { required: true, message: "Please confirm your new password" },
+        ({ getFieldValue }) => ({
+          validator(_, value) {
+            if (!value || getFieldValue("newPassword") === value) {
+              return Promise.resolve();
+            }
+            return Promise.reject(new Error("Passwords do not match!"));
+          },
+        }),
+      ],
+    },
+  ];
+
+  const handleTabChange = (key) => {
+    setActiveKey(key);
+  };
+
+  useEffect(() => {
+    form.setFieldsValue({
+      userId: userDetails.customer_id,
+      email: userDetails.email,
+      name: userDetails.username,
+    });
+  }, [userDetails, form]);
+
+  const handleSubmit = async (values) => {
+    console.log("Submitted values: ", values);
     try {
-      const { newCustomerId, newPassword } = values;
-      await updateUser(newCustomerId, newPassword);
-      toast.success("User updated successfully!");
+      await updateUser(values.newPassword);
+      toast.success("Password updated successfully");
     } catch (error) {
-      toast.error("Error updating user: " + error.response.data.message);
-    } finally {
-      setLoading(false);
+      toast.error("Failed to update password");
     }
   };
 
   return (
-    <Layout>
-      <Content className="profile-content">
-        <div className="profile-container">
-          <Card className="profile-card">
-            <Title level={2} className="profile-title">
-              Profile Management
-            </Title>
-            <Form form={form} onFinish={handleUpdate} layout="vertical">
-              <Form.Item
-                label="New Customer ID"
-                name="newCustomerId"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your new customer ID!",
-                  },
-                ]}
-              >
-                <Input placeholder="Enter your new customer ID" />
-              </Form.Item>
-              <Form.Item
-                label="New Password"
-                name="newPassword"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your new password!",
-                  },
-                ]}
-              >
-                <Input.Password placeholder="Enter your new password" />
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={loading}
-                  block
-                >
-                  Update
-                </Button>
-              </Form.Item>
-            </Form>
-          </Card>
-        </div>
-      </Content>
-    </Layout>
-  );
-}
+    <Container>
+      <Layout className="bg-white shadow-sm border p-5">
+        <Content>
+          <div>
+            <h2>Profile Management</h2>
+          </div>
+          <hr />
+          <Tabs
+            activeKey={activeKey}
+            onChange={handleTabChange}
+            tabBarGutter={30}
+            tabBarStyle={{ fontSize: "18px", fontWeight: "bold" }} // Increase tab text size
+          >
+            {/* Profile Details */}
+            <TabPane tab="Profile" key="1">
+              <Form layout="vertical" form={form}>
+                <div className="row">
+                  {formFields.map((field, index) => (
+                    <div key={index} className="col-md-6 col-12">
+                      <Form.Item label={field.label} name={field.name}>
+                        <Input readOnly />
+                      </Form.Item>
+                    </div>
+                  ))}
+                </div>
+              </Form>
+            </TabPane>
 
-export default Profile;
+            {/* Password Update */}
+            <TabPane tab="Security" key="2">
+              <Form layout="vertical" form={securityForm} onFinish={handleSubmit}>
+                <div className="row">
+                  {securityFields.map((field, index) => (
+                    <div key={index} className="col-md-6 col-12">
+                      <Form.Item
+                        label={field.label}
+                        name={field.name}
+                        rules={field.rules}
+                        dependencies={field.dependencies}
+                      >
+                        <Input.Password placeholder={field.label} />
+                      </Form.Item>
+                    </div>
+                  ))}
+                </div>
+                <Form.Item>
+                  <Button type="primary" htmlType="submit">
+                    Confirm
+                  </Button>
+                </Form.Item>
+              </Form>
+            </TabPane>
+          </Tabs>
+        </Content>
+      </Layout>
+    </Container>
+  );
+};
+
+export default ProfileManagement;

@@ -1,0 +1,17 @@
+.ant-tabs-nav .ant-tabs-tab {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.ant-tabs-nav .ant-tabs-tab:hover {
+  color: #1890ff;
+}
+
+.ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #1890ff;
+}
+
+.container {
+  height: 100%;
+  /* display: flex; */
+}
