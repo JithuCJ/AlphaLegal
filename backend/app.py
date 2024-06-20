@@ -38,8 +38,8 @@ with app.app_context():
 
 def send_email(recipient_email, token, customer_id):
 
-    sender_email = "shubhamkharche01@gmail.com"
-    sender_password = "lzkt yfio ftds aklq"
+    sender_email = os.getenv('Email')
+    sender_password = os.getenv('Password')
     smtp_port = 587
     smtp_server = 'smtp.gmail.com'  # Default SMTP server for Gmail
 
@@ -205,8 +205,8 @@ def forgot_password():
 
 
 def send_password_reset_email(recipient_email, token):
-    sender_email = "shubhamkharche01@gmail.com"
-    sender_password = "lzkt yfio ftds aklq"
+    sender_email = os.getenv('Email')
+    sender_password = os.getenv('Password')
     smtp_port = 587
     smtp_server = 'smtp.gmail.com'
 
