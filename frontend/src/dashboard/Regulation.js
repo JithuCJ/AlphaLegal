@@ -19,8 +19,7 @@ const { Content } = Layout;
 const { Title } = Typography;
 
 const QUESTIONS_PER_PAGE = 5;
-const backend = process.env.REACT_APP_BACKEND_URL;
-
+ const backend = process.env.REACT_APP_BACKEND_URL;
 function Regulation() {
   const [form] = Form.useForm();
   const [questions, setQuestions] = useState([]);
@@ -29,7 +28,7 @@ function Regulation() {
   const { customerId } = useUser();
   const navigate = useNavigate();
 
-  const backend = process.env.REACT_APP_BACKEND_URL;
+ 
   useEffect(() => {
     async function fetchQuestions() {
       try {

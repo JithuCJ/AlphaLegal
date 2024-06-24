@@ -42,28 +42,44 @@ def parse_questions(text):
     questions_data = []
     question, options, weights = "", [], {}
     option_prefixes = ('a)', 'b)', 'c)', 'd)')
+    yes_no_options = ("Yes", "No")
 
     def add_question():
         if question:
+            if options:
+                formatted_options = [
+                    f"{prefix} {opt}" for prefix, opt in zip(option_prefixes, options)]
+            else:
+                formatted_options = [f"{opt}" for opt in yes_no_options]
             questions_data.append({
                 'question': question.strip(),
-                'options': [f"{prefix} {opt}" for prefix, opt in zip(option_prefixes, options)],
+                'options': formatted_options,
                 'weights': weights if weights else {}
             })
 
     for line in lines:
         stripped_line = line.strip()
-        if stripped_line.startswith(tuple(f"{i}." for i in range(1, 101))):
+        if stripped_line.startswith(tuple(f"{i}." for i in range(1, 100001))):
             add_question()
             question, options, weights = stripped_line, [], {}
         elif any(stripped_line.startswith(prefix) for prefix in option_prefixes):
             option_text = stripped_line.split(") ", 1)[1]
             options.append(option_text)
         elif stripped_line.startswith("Ans:"):
-            weights_text = stripped_line.split(
-                "[", 1)[1].strip("]").split(", ")
-            weights = {weight.split("=")[0].strip(): int(
-                weight.split("=")[1].strip()) for weight in weights_text}
+            if "[" in stripped_line and "]" in stripped_line:
+                weights_text = stripped_line.split(
+                    "[", 1)[1].strip("]").split(", ")
+                weights = {
+                    weight.split("=")[0].strip(): int(weight.split("=")[1].strip())
+                    for weight in weights_text
+                }
+            else:
+                yes_no_weights = stripped_line.split(
+                    "Ans:")[1].strip().split(", ")
+                weights = {
+                    item.split("=")[0].strip(): int(item.split("=")[1].strip())
+                    for item in yes_no_weights
+                }
         else:
             if options:
                 options[-1] += ' ' + stripped_line
@@ -251,7 +267,7 @@ def get_questions():
             'attempted': attempted,
             'answer': answers[question.id].answer if attempted else None
         })
-        
+
     print("Questions data:", output)  # Debug statement
 
     return jsonify({'questions': output})
