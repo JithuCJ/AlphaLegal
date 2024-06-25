@@ -1,56 +1,40 @@
 import React from "react";
 import { Layout, Card, Row, Col } from "antd";
-import {
-  UploadOutlined,
-  UserOutlined,
-  QuestionCircleOutlined,
-  EditOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, ReadOutlined } from "@ant-design/icons";
 import { Container } from "react-bootstrap";
 const { Header, Content } = Layout;
 
-//  card data
-const cardData = [
+// Array of card data for Post Blog
+const postBlogCardData = [
   {
-    title: "Upload Questions PDF",
-    icon: <UploadOutlined style={{ fontSize: "48px", color: "#1890ff" }} />,
-    path: "/upload",
-  },
-  {
-    title: "Customer - ID",
-    icon: <UserOutlined style={{ fontSize: "48px", color: "#1890ff" }} />,
-    path: "/userstable",
-  },
-  {
-    title: "Question",
-    icon: (
-      <QuestionCircleOutlined style={{ fontSize: "48px", color: "#1890ff" }} />
-    ),
-    path: "/questions",
+    title: "Post Blog",
+    icon: <EditOutlined style={{ fontSize: "48px", color: "#1890ff" }} />,
+    path: "/post-blog",
   },
   {
     title: "Blog",
-    icon: <EditOutlined style={{ fontSize: "48px", color: "#1890ff" }} />,
+    icon: <ReadOutlined style={{ fontSize: "48px", color: "#1890ff" }} />,
     path: "/blog",
   },
 ];
 
-const AdminDashboard = () => {
+export const Blog = () => {
   // Handle card click navigation
   const handleNavigation = (path) => {
     window.location.href = path;
   };
 
   return (
+    // admin page to show a option a Post Blogs and Blogs
     <Layout>
       <Header className="text-center bg-light py-3">
-        <h1>Welcome to Admin Dashboard</h1>
+        <h1>Post Blog Section</h1>
       </Header>
 
       <Container>
         <Content className="mt-5">
           <Row gutter={[16, 16]}>
-            {cardData.map((card, index) => (
+            {postBlogCardData.map((card, index) => (
               <Col
                 key={index}
                 xs={24}
@@ -76,4 +60,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default Blog;

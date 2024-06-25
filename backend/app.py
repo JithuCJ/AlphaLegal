@@ -15,6 +15,7 @@ import os
 
 from controllers.questions_api import questions_api
 from controllers.admin_endpoint import admin_endpoint
+from controllers.Blog import blog_endpoint
 
 
 load_dotenv()
@@ -34,6 +35,14 @@ serializer = URLSafeTimedSerializer(app.secret_key)
 
 with app.app_context():
     db.create_all()
+    
+    
+# Routes
+
+app.register_blueprint(questions_api, url_prefix='/questions')
+app.register_blueprint(admin_endpoint, url_prefix='/admin')
+app.register_blueprint(blog_endpoint, url_prefix='/blog')
+
 
 
 def send_email(recipient_email, token, customer_id):
@@ -71,10 +80,6 @@ def send_email(recipient_email, token, customer_id):
         print("Error sending email:", str(e))
 
 
-# Routes
-
-app.register_blueprint(questions_api, url_prefix='/questions')
-app.register_blueprint(admin_endpoint, url_prefix='/admin')
 
 
 @app.route('/', methods=['GET'])
