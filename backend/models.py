@@ -64,3 +64,10 @@ class Answer(db.Model):
 
     user = db.relationship('User', back_populates='answers')
     question = db.relationship('Question', back_populates='answers')
+
+
+class Blog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    date_posted = db.Column(db.DateTime, default=datetime.utcnow)

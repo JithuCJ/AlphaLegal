@@ -8,6 +8,7 @@ import Profile from "../dashboard/Profile";
 import ScorePage from "../components/pages/ScorePage";
 import AdminPage from "../components/admin/admin";
 import UsersTable from "../components/admin/User-Data";
+import Blog from "../components/admin/Post-Blog";
 import Upload from "../components/admin/Upload-pdf";
 import { AuthContext } from "../store/auth";
 import {
@@ -18,6 +19,7 @@ import {
   MenuFoldOutlined,
   PieChartOutlined,
 } from "@ant-design/icons";
+import { Post_Blog } from "../components/Blog/Post-Blog";
 
 const { Sider, Content, Footer } = Layout;
 
@@ -154,6 +156,8 @@ const AppHeader = () => {
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/upload" element={<Upload />} />
               <Route path="/userstable" element={<UsersTable />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/post-blog" element={<Post_Blog />} />
             </Routes>
           </Content>
           <Footer style={{ textAlign: "center" }}>
@@ -165,7 +169,7 @@ const AppHeader = () => {
   );
 
   const loggedOutNavbar = (
-    <Navbar bg="light" expand="lg" className="p-3">
+    <Navbar bg="light" expand="lg" className="p-3 shadow-sm Navbar">
       <Container>
         <Navbar.Brand as={NavLink} to="/">
           <img src="/external/logo.png" alt="logo" height="30" />
@@ -182,6 +186,9 @@ const AppHeader = () => {
             <Nav.Link as={NavLink} to="/">
               Career
             </Nav.Link>
+            <Nav.Link as={NavLink} to="/blog">
+              Blog
+            </Nav.Link>
           </Nav>
           <Nav>
             <Nav.Link as={NavLink} to="/login">
@@ -195,8 +202,11 @@ const AppHeader = () => {
       </Container>
     </Navbar>
   );
-
- return isLoggedIn ? (role === "admin" ? adminLogin : userLogin) : loggedOutNavbar;
+  return isLoggedIn
+    ? role === "admin"
+      ? adminLogin
+      : userLogin
+    : loggedOutNavbar;
 };
 
 export default AppHeader;

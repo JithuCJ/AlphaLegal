@@ -1,3 +1,4 @@
+// index.js
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -13,8 +14,12 @@ import AccountVerified from "./Models/AccountVerified";
 import ForgotPassword from "./components/Password/ForgotPassword";
 import ResetPassword from "./components/Password/ResetPassword";
 import { Logout } from "./pages/Logout";
+import { Blog } from "./components/Blog/Blog";
+import { BlogDetail } from "./components/Blog/Blog-Details";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Footer from "./components/pages/Footer";
 
 const App = () => (
   <Router>
@@ -24,9 +29,15 @@ const App = () => (
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/logout" element={<Logout />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:id" element={<BlogDetail />} />
       <Route path="/account-verified" element={<AccountVerified />} />
       <Route path="/forget-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route
+        path="*"
+        element={<div className="container mt-5">Page not found</div>}
+      />
     </Routes>
     <ToastContainer
       position="top-right"
@@ -40,6 +51,7 @@ const App = () => (
       pauseOnHover
       theme="light"
     />
+    <Footer />
   </Router>
 );
 
