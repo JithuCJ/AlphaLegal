@@ -31,7 +31,7 @@ const cardData = [
   {
     title: "Blog",
     icon: <EditOutlined style={{ fontSize: "48px", color: "#1890ff" }} />,
-    path: "/blog",
+    path: "/admin-blog",
   },
 ];
 

@@ -6,7 +6,8 @@
 body,
 html {
   height: 100%;
-  background-color: #EAEAEA;
+  font-family: "Helvetica", "Sans-serif";
+  /* background-color: #EAEAEA; */
 }
 
 /* General Navbar Styling */
@@ -136,7 +137,7 @@ html {
 }
 
 /* Button Styling */
-.ant-btn-primary {
+/* .ant-btn-primary {
   width: 100%;
   font-size: 1rem;
   height: 45px;
@@ -150,7 +151,7 @@ html {
 .ant-btn-primary:focus {
   background-color: #005582;
   border-color: #005582;
-}
+} */
 
 .ant-btn[disabled] {
   opacity: 0.6;

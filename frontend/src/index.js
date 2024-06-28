@@ -23,7 +23,7 @@ import Footer from "./components/pages/Footer";
 
 const App = () => (
   <Router>
-    <AppHeader />
+    <AppHeader  />
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
@@ -34,10 +34,7 @@ const App = () => (
       <Route path="/account-verified" element={<AccountVerified />} />
       <Route path="/forget-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
-      <Route
-        path="*"
-        element={<div className="container mt-5">Page not found</div>}
-      />
+      
     </Routes>
     <ToastContainer
       position="top-right"

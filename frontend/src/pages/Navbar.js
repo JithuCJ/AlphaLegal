@@ -156,7 +156,7 @@ const AppHeader = () => {
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/upload" element={<Upload />} />
               <Route path="/userstable" element={<UsersTable />} />
-              <Route path="/blog" element={<Blog />} />
+              <Route path="/admin-blog" element={<Blog />} />
               <Route path="/post-blog" element={<Post_Blog />} />
             </Routes>
           </Content>
@@ -169,27 +169,27 @@ const AppHeader = () => {
   );
 
   const loggedOutNavbar = (
-    <Navbar bg="light" expand="lg" className="p-3 shadow-sm Navbar">
+    <Navbar bg="" expand="lg" className="p-3 border-bottom Navbar">
       <Container>
         <Navbar.Brand as={NavLink} to="/">
-          <img src="/external/logo.png" alt="logo" height="30" />
+          <img src="/external/logo.png" alt="logo" height="40" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/">
-              Home
-            </Nav.Link>
-            <Nav.Link as={NavLink} to="/">
-              Services
-            </Nav.Link>
-            <Nav.Link as={NavLink} to="/">
-              Career
-            </Nav.Link>
-            <Nav.Link as={NavLink} to="/blog">
-              Blog
-            </Nav.Link>
-          </Nav>
+          {/* <Nav className="me-auto">
+              <Nav.Link as={NavLink} to="/">
+                Home
+              </Nav.Link>
+              <Nav.Link as={NavLink} to="/">
+                Services
+              </Nav.Link>
+              <Nav.Link as={NavLink} to="/">
+                Career
+              </Nav.Link>
+              <Nav.Link as={NavLink} to="/blog">
+                Blog
+              </Nav.Link>
+            </Nav> */}
           <Nav>
             <Nav.Link as={NavLink} to="/login">
               Login

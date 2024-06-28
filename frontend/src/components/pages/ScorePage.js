@@ -76,7 +76,7 @@ function ScorePage() {
             <Button
               type="primary"
               onClick={() => navigate("/dashboard")}
-              style={{ marginTop: "20px" }}
+              style={{ width: "10rem", fontSize: "1rem", height: "40px", borderRadius: "8px", marginTop: "20px" }}
             >
               Go to Dashboard
             </Button>

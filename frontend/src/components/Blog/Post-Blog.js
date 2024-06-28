@@ -70,7 +70,10 @@ export const Post_Blog = () => {
             <TextArea placeholder="Enter the content of your blog" rows={6} />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading}>
+            <Button type="primary" htmlType="submit"
+             style={{ width: "100%", fontSize: "1rem", height: "45px", borderRadius: "8px" }}
+            
+            loading={loading}>
               {loading ? <Spin /> : "Post Blog"}
             </Button>
           </Form.Item>
