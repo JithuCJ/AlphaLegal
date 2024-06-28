@@ -86,7 +86,8 @@ function RegisterForm() {
   };
 
   return (
-    <Container className="d-flex justify-content-center mt-5">
+    <div className="login-register-section">
+    <Container className="d-flex mb-5 justify-content-center mt-5">
       <Card style={{ width: "28rem" }} className="shadow">
         <Card.Body className="mb-3">
           <h2 className="text-center mb-4">
@@ -200,6 +201,7 @@ function RegisterForm() {
         </Modal.Footer>
       </Modal>
     </Container>
+    </div>
   );
 }
 

@@ -176,9 +176,9 @@ const AppHeader = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          {/* <Nav className="me-auto">
-              <Nav.Link as={NavLink} to="/">
-                Home
+          <Nav className="me-auto">
+            {/* <Nav.Link as={NavLink} to="/">
+                About Us
               </Nav.Link>
               <Nav.Link as={NavLink} to="/">
                 Services
@@ -188,13 +188,21 @@ const AppHeader = () => {
               </Nav.Link>
               <Nav.Link as={NavLink} to="/blog">
                 Blog
-              </Nav.Link>
-            </Nav> */}
-          <Nav>
-            <Nav.Link as={NavLink} to="/login">
+              </Nav.Link> */}
+          </Nav>
+          <Nav className="Login-Register">
+            <Nav.Link
+              as={NavLink}
+              to="/login"
+              className="btn login-register-btn"
+            >
               Login
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/register">
+            <Nav.Link
+              as={NavLink}
+              to="/register"
+              className="btn login-register-btn"
+            >
               Register
             </Nav.Link>
           </Nav>
