@@ -168,7 +168,7 @@ function Home() {
                   className="card-title"
                   title={service.title}
                   style={{
-                    height: "100%",
+                    height: "260px",
                     width: "100%",
                     backgroundColor: "#0a2239",
                     transition: "width 0.3s ease, border-radius 0.3s ease",
