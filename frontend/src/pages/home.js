@@ -140,14 +140,17 @@ function Home() {
           <Row className="mt-5">
             {WhyChoose.map((service, index) => (
               <Col md={6} key={index} className="mb-4">
-                <div className="why-item text-center p-4 shadow-sm rounded bg-white">
+                <div
+                  className="why-item text-center p-4 shadow-sm rounded bg-white"
+                  style={{}}
+                >
                   <FontAwesomeIcon
                     icon={service.icon}
                     size="3x"
                     className="text-primary mb-3"
                   />
                   <h4 className="mb-3">{service.title}</h4>
-                  <p>{service.description}</p>
+                  <p style={{ textAlign: "justify" }}>{service.description}</p>
                 </div>
               </Col>
             ))}
@@ -156,38 +159,32 @@ function Home() {
       </div>
       {/* Services */}
       <div className="services-section">
-      <Container>
-        <h1 className="Service-title mt-5">Services</h1>
-        <Row className="mt-5">
-          {services.map((service, index) => (
-            <Col md={6} key={index} className="mb-4 card-container">
-              <Card
-                className="card-title"
-                title={service.title}
-                style={{
-                  height: '250px',
-                  width: '100%',
-                  backgroundColor: '#0a2239',
-                  transition: 'width 0.3s ease, border-radius 0.3s ease'
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.backgroundColor = '#061624';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.backgroundColor = '#0a2239';
-                }}
-              >
-                <ul>
-                  {service.description.map((item, idx) => (
-                    <li key={idx}>{item}</li>
-                  ))}
-                </ul>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </Container>
-    </div>
+        <Container>
+          <h1 className="Service-title mt-5">Services</h1>
+          <Row className="mt-5">
+            {services.map((service, index) => (
+              <Col md={6} key={index} className="mb-4 card-container">
+                <Card
+                  className="card-title"
+                  title={service.title}
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    backgroundColor: "#0a2239",
+                    transition: "width 0.3s ease, border-radius 0.3s ease",
+                  }}
+                >
+                  <ul>
+                    {service.description.map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
+                  </ul>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </div>
     </>
   );
 }

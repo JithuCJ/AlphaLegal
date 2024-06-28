@@ -106,11 +106,13 @@ html {
 }
 .ant-card-body {
   overflow-y: auto;
+  
 }
 
 .card-title {
   background-color: #0a2239;
   border-radius: 16px;
+  
 }
 
 .card-title .ant-card-head-title {
@@ -122,6 +124,9 @@ html {
 
 .card-title ul {
   padding-left: 20px;
+  text-align: justify;
+
+  
 }
 
 .card-title li {
@@ -166,18 +171,19 @@ html {
 
 .why-item {
   transition: transform 0.3s ease;
+  height: 100%;
 }
 
-.why-item:hover {
+/* .why-item:hover {
   transform: translateY(-5px);
-}
+} */
 
 .text-primary {
   color: #10b7ff !important;
 }
 
 .shadow-sm {
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+  box-shadow: 0 0.125rem 0.25rem rgba(145, 69, 69, 0.075) !important;
 }
 
 .text-center {
@@ -194,6 +200,7 @@ html {
 
 .p-4 {
   padding: 1.5rem !important;
+  
 }
 
 .p-5 {
