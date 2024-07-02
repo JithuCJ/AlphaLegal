@@ -114,7 +114,7 @@ const ProfileManagement = () => {
                   ))}
                 </div>
                 <Form.Item>
-                  <Button type="primary" htmlType="submit">
+                  <Button type="primary" htmlType="submit" style={{ width: "8rem", fontSize: "1rem", height: "40px", borderRadius: "8px" }}>
                     Confirm
                   </Button>
                 </Form.Item>

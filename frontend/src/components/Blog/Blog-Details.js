@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchBlogById } from "../../API/Blog-Api"; 
+import { fetchBlogById } from "../../API/Blog-Api";
 import {
   Skeleton,
   message,
@@ -13,6 +13,7 @@ import {
 } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Container } from "react-bootstrap";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -61,9 +62,10 @@ export const BlogDetail = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <Container className="mt-5 pb-5 ">
+     
       <Row justify="center">
-        <Col xs={24} sm={22} md={20} lg={18}>
+        <Col xs={24} sm={22} md={20} lg={20}>
           <Button
             onClick={() => navigate("/blog")}
             className="mb-4"
@@ -77,7 +79,7 @@ export const BlogDetail = () => {
             className="shadow-sm p-4"
             style={{ borderRadius: "10px" }}
           >
-            <Title level={2} className="mb-3">
+            <Title level={1} className="mb-3">
               {blog.title}
             </Title>
             <Divider />
@@ -91,7 +93,7 @@ export const BlogDetail = () => {
           </Card>
         </Col>
       </Row>
-    </div>
+    </Container>
   );
 };
 

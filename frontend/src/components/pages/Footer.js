@@ -10,10 +10,16 @@ const Footer = () => {
   }
   return (
     <footer
-      className="bg-light text-black mt-5"
-      style={{ bottom: 0, position: "relative", width: "100%" }}
+      className="text-black"
+      style={{
+        bottom: 0,
+        zIndex: 1000,
+        position: "relative",
+        width: "100%",
+        background: "#0A2239",
+      }}
     >
-      <Container className="text-center py-4 ">
+      <Container className="text-center py-4" style={{ color: "white" }}>
         ©{new Date().getFullYear()} AlphaLegal | All rights reserved
       </Container>
     </footer>

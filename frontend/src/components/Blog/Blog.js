@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { List, Card, Skeleton, message } from "antd";
+import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { fetchBlogs } from "../../API/Blog-Api"; 
-import "bootstrap/dist/css/bootstrap.min.css";
+import { fetchBlogs } from "../../API/Blog-Api";
 
-const dummyImage = "https://via.placeholder.com/300"; // Placeholder image URL
+const dummyImage = "https://via.placeholder.com/300"; // Dummy Data
 
 export const Blog = () => {
   const [blogs, setBlogs] = useState([]);
@@ -36,7 +36,7 @@ export const Blog = () => {
   };
 
   return (
-    <div className="container mt-5 ">
+    <Container className=" mt-5 pb-5">
       <div className="section-header">
         <h2 className="section-title">Blog Posts</h2>
         <div className="section-line">
@@ -73,7 +73,7 @@ export const Blog = () => {
           )}
         />
       )}
-    </div>
+    </Container>
   );
 };
 

@@ -47,7 +47,8 @@ function LoginForm() {
   };
 
   return (
-    <Container className="mt-5 d-flex justify-content-center">
+    <div className="login-register-section">
+    <Container className="mt-5 mb-5 d-flex justify-content-center">
       <Card style={{ width: "24rem" }} className="shadow">
         <Card.Body className="mb-4">
           <h2 className="text-center mb-4">
@@ -94,6 +95,7 @@ function LoginForm() {
         </Card.Body>
       </Card>
     </Container>
+    </div>
   );
 }
 
