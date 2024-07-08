@@ -44,6 +44,7 @@ class Admin(db.Model):
 class Question(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
     question = db.Column(db.Text, nullable=False)
     options = db.Column(db.Text, nullable=False)
     weights = db.Column(db.JSON, nullable=True)
