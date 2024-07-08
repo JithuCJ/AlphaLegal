@@ -10,7 +10,10 @@ import {
   Row,
   Col,
   Typography,
+  Progress,
+  Avatar,
 } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 import { useUser } from "../store/UserContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -29,9 +32,13 @@ function Regulation() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTitle, setSelectedTitle] = useState(null);
   const [score, setScore] = useState(null);
-  const { customerId } = useUser();
+  const [progress, setProgress] = useState(0); // New state for progress
+
+  const { customerId, fetchUserProgress, userDetails } = useUser();
+  const { username, email, customer_id } = userDetails;
   const navigate = useNavigate();
 
+  // CustomerId
   useEffect(() => {
     async function fetchQuestions() {
       try {
@@ -49,6 +56,19 @@ function Regulation() {
     }
     fetchQuestions();
   }, []);
+
+  // user Progress
+  useEffect(() => {
+    async function fetchProgress() {
+      try {
+        const progressData = await fetchUserProgress();
+        setProgress(progressData.progress_percentage);
+      } catch (error) {
+        console.error("There was an error fetching the user progress!", error);
+      }
+    }
+    fetchProgress();
+  }, [fetchUserProgress]);
 
   const handleSave = async () => {
     try {
@@ -164,26 +184,56 @@ function Regulation() {
   return (
     <Layout>
       <Content>
-      
         <div className="custom-container shadow-sm bg-white ">
           <div className="scrollable-questions">
             <Row>
-
               {/* Title and Progress   */}
               <Col xs={24} md={6}>
                 <div className="titles-container">
+                  {/* User Information */}
+                
+                  <div className="user-info mb-4">
+                    <Row>
+                      <Col span={8} className="text-center">
+                        <Avatar size={64} icon={<UserOutlined />} />
+                      </Col>
+                      <Col span={12} className="text-left ">
+                        <h4 className="text-white">{username}</h4>
+                        <p className="text-white">{email}</p>
+                        {/* <p className="text-white">{customer_id}</p> */}
+                      </Col>
+                    </Row>
+                  </div>
 
-                <hr/>
-                  <Title className="p-2" style={{ color: "white" }} level={3}>
-                  Questions Titles
+                  {/* User Progress */}
+                  <div className="user-progress  mb-4">
+                   
+                    <div className="progress-bar-container">
+                      <div className="progress-bar">
+                        <div
+                          className="progress-fill"
+                          style={{ width: `${progress}%` }}
+                        >
+                          <span className="progress-text">{progress}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <hr className="text-white" />
+                  <Title className="p-2 text-white" level={3}>
+                    Questions Titles
                   </Title>
-                  <ul className="titles-list">
+                  <ul className="titles-list list-unstyled">
                     {[...new Set(questions.map((q) => q.title))].map(
                       (title, index) => (
                         <li
                           key={index}
-                          className={`title-item ${
-                            selectedTitle === title ? "selected" : ""
+                          className={`title-item p-2 rounded ${
+                            selectedTitle === title
+                              ? "bg-primary text-white"
+                              : "text-white"
                           }`}
                           onClick={() => handleTitleClick(title)}
                         >

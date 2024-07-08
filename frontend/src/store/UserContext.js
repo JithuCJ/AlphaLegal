@@ -29,6 +29,8 @@ export const UserProvider = ({ children }) => {
     fetchCustomerId();
   }, []);
 
+
+  
   // fetch a user Details
 
   useEffect(() => {
@@ -50,6 +52,8 @@ export const UserProvider = ({ children }) => {
     fetchUserDetails();
   }, [setUserDetails]);
 
+
+
   // update the userID and Password
   const updateUser = async (newPassword) => {
     try {
@@ -69,6 +73,27 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+
+  
+// fetch user progress
+const fetchUserProgress = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const response = await axios.get(`${backend}questions/progress`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("Fetched User Progress Response:", response.data);
+      return response.data;
+    }
+  } catch (error) {
+    console.error("Error fetching user progress:", error);
+    throw error;
+  }
+};
+
+
+
   return (
     <UserContext.Provider
       value={{
@@ -76,6 +101,7 @@ export const UserProvider = ({ children }) => {
         setCustomerId,  
         userDetails,
         setUserDetails,
+        fetchUserProgress,
         updateUser,
       }}
     >

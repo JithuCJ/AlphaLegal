@@ -84,4 +84,132 @@
     font-size: 14px;
   }
 }
-/*  */
+
+/* UI  */
+
+.custom-container {
+  padding: 20px;
+}
+
+.titles-container {
+  background-color: #001529;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.titles-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.title-item {
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+}
+
+.title-item.selected {
+  background-color: #1890ff;
+}
+
+.questions-container {
+  background-color: #f0f2f5;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.question-item {
+  margin-bottom: 20px;
+}
+
+.save-button,
+.submit-button {
+  margin-top: 20px;
+  margin-right: 10px;
+}
+
+.score-display {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.titles-container {
+  background-color: #0a2239;
+  padding: 2rem;
+
+  box-shadow: 0 4px 8px rgba(246, 196, 196, 0.1);
+}
+
+.user-info h4,
+.user-info p {
+  margin: 1;
+}
+
+.user-progress {
+  margin-bottom: 1.5rem;
+}
+
+.progress-bar-container {
+  width: 80%;
+  background-color: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: auto; /* Center the progress bar container */
+}
+
+.progress-bar {
+  height: 15px;
+  background-color: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff626e, #3cff00d2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-weight: bold;
+  transition: width 0.5s ease-in-out;
+  position: relative;
+}
+
+.progress-text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.title-item {
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.title-item:hover {
+  background-color: #00c8ff30;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .titles-container {
+    padding: 0.5rem;
+  }
+
+  .user-info {
+    text-align: center;
+  }
+
+  .user-info .ant-col-8,
+  .user-info .ant-col-16 {
+    text-align: center;
+  }
+
+  .user-info h4,
+  .user-info p {
+    font-size: 0.9rem;
+  }
+}
