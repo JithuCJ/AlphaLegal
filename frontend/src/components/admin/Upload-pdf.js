@@ -4,12 +4,12 @@ import {
   Typography,
   Upload,
   Button,
-  message,
   Space,
   Card,
   Progress,
   Row,
   Col,
+  Input,
 } from "antd";
 import {
   UploadOutlined,
@@ -19,7 +19,7 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const { Content, Header, Footer } = Layout;
+const { Content } = Layout;
 const { Title } = Typography;
 const { Dragger } = Upload;
 
@@ -28,6 +28,7 @@ const backend = process.env.REACT_APP_BACKEND_URL;
 const AdminPage = () => {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [title, setTitle] = useState("");
 
   const handleUpload = async () => {
     if (fileList.length === 0) {
@@ -35,7 +36,13 @@ const AdminPage = () => {
       return;
     }
 
+    if (!title) {
+      toast.error("Please provide a title for the questions.");
+      return;
+    }
+
     const formData = new FormData();
+    formData.append("title", title);
     fileList.forEach((file) => {
       formData.append("pdf", file);
     });
@@ -44,7 +51,7 @@ const AdminPage = () => {
 
     try {
       const response = await axios.post(
-        `${backend}questions/upload`,
+        `${backend}/questions/upload`,
         formData,
         {
           headers: {
@@ -54,6 +61,7 @@ const AdminPage = () => {
       );
       toast.success(response.data.message);
       setFileList([]);
+      setTitle("");
     } catch (error) {
       const errorMsg = error.response?.data?.error || "Upload failed";
       toast.error(errorMsg);
@@ -71,7 +79,7 @@ const AdminPage = () => {
       return false;
     },
     fileList,
-    multiple: true,
+    multiple: false, // Since it's for a single PDF upload
     showUploadList: true,
   };
 
@@ -98,6 +106,12 @@ const AdminPage = () => {
           <Title level={3} style={{ marginBottom: 20 }}>
             Upload Questions PDF
           </Title>
+          <Input
+            placeholder="Enter title for the questions"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={{ marginBottom: 20 }}
+          />
           <Dragger
             {...uploadProps}
             style={{ padding: "20px", borderRadius: 10 }}
@@ -105,10 +119,8 @@ const AdminPage = () => {
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
             </p>
-            <p className="ant-upload-text">Drop Your File Here</p>
-            <p className="ant-upload-hint">Or</p>
-            <Button type="primary">Browse</Button>
-            <p className="ant-upload-hint">Maximum File Size 4 MB</p>
+            <p className="ant-upload-text">Drop your file here or click to browse</p>
+            <p className="ant-upload-hint">Maximum file size: 4 MB</p>
           </Dragger>
           <Space
             direction="vertical"
@@ -128,7 +140,7 @@ const AdminPage = () => {
               icon={<CloudUploadOutlined />}
               onClick={handleUpload}
               loading={uploading}
-              disabled={fileList.length === 0}
+              disabled={fileList.length === 0 || !title}
               style={{ width: "100%" }}
             >
               {uploading ? "Uploading" : "Upload PDF"}

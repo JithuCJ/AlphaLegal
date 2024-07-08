@@ -14,21 +14,24 @@ import {
 import { useUser } from "../store/UserContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import "../CSS/Regulation.css"; // Import the custom CSS
 
 const { Content } = Layout;
 const { Title } = Typography;
 
-const QUESTIONS_PER_PAGE = 5;
- const backend = process.env.REACT_APP_BACKEND_URL;
+const QUESTIONS_PER_PAGE = 10;
+const backend = process.env.REACT_APP_BACKEND_URL;
+
 function Regulation() {
   const [form] = Form.useForm();
   const [questions, setQuestions] = useState([]);
+  const [filteredQuestions, setFilteredQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedTitle, setSelectedTitle] = useState(null);
   const [score, setScore] = useState(null);
   const { customerId } = useUser();
   const navigate = useNavigate();
 
- 
   useEffect(() => {
     async function fetchQuestions() {
       try {
@@ -39,6 +42,7 @@ function Regulation() {
         });
         console.log("Fetched Questions: ", response.data); // Debug statement
         setQuestions(response.data.questions);
+        setFilteredQuestions(response.data.questions);
       } catch (error) {
         console.error("There was an error fetching the questions!", error);
       }
@@ -135,7 +139,7 @@ function Regulation() {
 
   const indexOfLastQuestion = currentPage * QUESTIONS_PER_PAGE;
   const indexOfFirstQuestion = indexOfLastQuestion - QUESTIONS_PER_PAGE;
-  const currentQuestions = questions.slice(
+  const currentQuestions = filteredQuestions.slice(
     indexOfFirstQuestion,
     indexOfLastQuestion
   );
@@ -151,84 +155,119 @@ function Regulation() {
     return originalElement;
   };
 
+  const handleTitleClick = (title) => {
+    setSelectedTitle(title);
+    setFilteredQuestions(questions.filter((q) => q.title === title));
+    setCurrentPage(1);
+  };
+
   return (
     <Layout>
       <Content>
-        <Container className="shadow-sm bg-white border">
-          <div className="container m-4">
-            <Form form={form}>
-              {currentQuestions.map((q) => (
-                <div key={q.id} style={{ marginBottom: "24px" }}>
-                  <Title level={4}>
-                    {q.question}{" "}
-                    {q.attempted && <span style={{ color: "blue" }}>✔</span>}
+      
+        <div className="custom-container shadow-sm bg-white ">
+          <div className="scrollable-questions">
+            <Row>
+
+              {/* Title and Progress   */}
+              <Col xs={24} md={6}>
+                <div className="titles-container">
+
+                <hr/>
+                  <Title className="p-2" style={{ color: "white" }} level={3}>
+                  Questions Titles
                   </Title>
-                  <Form.Item
-                    name={`question_${q.id}`}
-                    initialValue={q.answer || ""}
-                  >
-                    <Radio.Group disabled={q.attempted}>
-                      <Row gutter={[16, 16]}>
-                        {q.options.split("\n").map((option, index) => (
-                          <Col span={12} key={index}>
-                            <Radio value={option}>{option}</Radio>
-                          </Col>
-                        ))}
-                      </Row>
-                    </Radio.Group>
-                  </Form.Item>
+                  <ul className="titles-list">
+                    {[...new Set(questions.map((q) => q.title))].map(
+                      (title, index) => (
+                        <li
+                          key={index}
+                          className={`title-item ${
+                            selectedTitle === title ? "selected" : ""
+                          }`}
+                          onClick={() => handleTitleClick(title)}
+                        >
+                          {title}
+                        </li>
+                      )
+                    )}
+                  </ul>
                 </div>
-              ))}
-              <hr />
-              <div style={{ textAlign: "center", marginTop: "24px" }}>
-                <Pagination
-                  current={currentPage}
-                  pageSize={QUESTIONS_PER_PAGE}
-                  total={questions.length}
-                  onChange={handlePageChange}
-                  showSizeChanger={false}
-                  showQuickJumper
-                  itemRender={itemRender}
-                />
-                <Button
-                  type="primary"
-                  style={{
-                    marginTop: "20px",
-                    width: "10rem",
-                    height: "2.8rem",
-                  }}
-                  className="fs-6"
-                  onClick={handleSave}
-                  disabled={!customerId}
-                >
-                  Save
-                </Button>
-                {currentPage ===
-                  Math.ceil(questions.length / QUESTIONS_PER_PAGE) && (
-                  <Button
-                    type="primary"
-                    style={{
-                      marginTop: "20px",
-                      marginLeft: "10px",
-                      width: "10rem",
-                      height: "2.8rem",
-                    }}
-                    className="fs-6"
-                    onClick={handleSubmit}
-                    disabled={!customerId}
-                  >
-                    Submit
-                  </Button>
-                )}
-                {score !== null && (
-                  <div style={{ marginTop: "20px" }}>
-                    <Title level={4}>Your Score: {score}</Title>
-                  </div>
-                )}
-              </div>
-            </Form>
+              </Col>
+
+              {/* Question Colume */}
+              <Col className="p-3" xs={24} md={18}>
+                <div className="questions-container">
+                  <Form form={form}>
+                    {currentQuestions.map((q) => (
+                      <div key={q.id} className="question-item">
+                        <Title level={4}>
+                          {q.question}{" "}
+                          {q.attempted && (
+                            <span style={{ color: "blue" }}>✔</span>
+                          )}
+                        </Title>
+                        <Form.Item
+                          name={`question_${q.id}`}
+                          initialValue={q.answer || ""}
+                        >
+                          <Radio.Group disabled={q.attempted}>
+                            <Row gutter={[36, 36]}>
+                              {q.options.split("\n").map((option, index) => (
+                                <Col span={12} key={index}>
+                                  <Radio value={option}>{option}</Radio>
+                                </Col>
+                              ))}
+                            </Row>
+                          </Radio.Group>
+                        </Form.Item>
+                      </div>
+                    ))}
+                  </Form>
+                </div>
+              </Col>
+            </Row>
           </div>
-        </Container>
+          {/* <hr /> */}
+
+          {/* Pagination  */}
+          <div className="pagination-container">
+            <Pagination
+              current={currentPage}
+              pageSize={QUESTIONS_PER_PAGE}
+              total={filteredQuestions.length}
+              onChange={handlePageChange}
+              showSizeChanger={false}
+              showQuickJumper
+              itemRender={itemRender}
+            />
+            <Button
+              type="primary"
+              className="save-button"
+              onClick={handleSave}
+              disabled={!customerId}
+            >
+              Save
+            </Button>
+            {currentPage ===
+              Math.ceil(filteredQuestions.length / QUESTIONS_PER_PAGE) && (
+              <Button
+                type="primary"
+                className="submit-button"
+                onClick={handleSubmit}
+                disabled={!customerId}
+              >
+                Submit
+              </Button>
+            )}
+            {score !== null && (
+              <div className="score-display">
+                <Title level={4}>Your Score: {score}</Title>
+              </div>
+            )}
+          </div>
+        </div>
+        {/* </Container> */}
       </Content>
     </Layout>
   );

@@ -8,9 +8,9 @@ const { Content } = Layout;
 function Dashboard() {
   const navigate = useNavigate();
   return (
-    <Layout>
+    <Layout className="bg-white shadow-sm border p-5">
       <Content className="" style={{ padding: "10px", overflow: "auto" }}>
-        <Container className="text-center shadow-sm border p-3 mb-5 bg-white rounded">
+        <Container className="text-center shadow-sm border bg-white p-3 mb-5 bg-white rounded">
           <div className="p-md-5 p-sm-3">
             <h1 className="mb-4">
               Welcome To AI Infrastructure Audit Questionnaire!
