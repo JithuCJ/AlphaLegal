@@ -29,10 +29,7 @@ export const UserProvider = ({ children }) => {
     fetchCustomerId();
   }, []);
 
-
-  
-  // fetch a user Details
-
+  // fetch user details
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -50,11 +47,9 @@ export const UserProvider = ({ children }) => {
     };
 
     fetchUserDetails();
-  }, [setUserDetails]);
+  }, []); // Empty dependency array to ensure it runs only once
 
-
-
-  // update the userID and Password
+  // update the user ID and password
   const updateUser = async (newPassword) => {
     try {
       const token = localStorage.getItem("token");
@@ -73,32 +68,28 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-
-  
-// fetch user progress
-const fetchUserProgress = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const response = await axios.get(`${backend}questions/progress`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log("Fetched User Progress Response:", response.data);
-      return response.data;
+  // fetch user progress
+  const fetchUserProgress = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const response = await axios.get(`${backend}questions/progress`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("Fetched User Progress Response:", response.data);
+        return response.data;
+      }
+    } catch (error) {
+      console.error("Error fetching user progress:", error);
+      throw error;
     }
-  } catch (error) {
-    console.error("Error fetching user progress:", error);
-    throw error;
-  }
-};
-
-
+  };
 
   return (
     <UserContext.Provider
       value={{
         customerId,
-        setCustomerId,  
+        setCustomerId,
         userDetails,
         setUserDetails,
         fetchUserProgress,
