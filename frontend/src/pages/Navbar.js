@@ -36,83 +36,53 @@ const AppHeader = () => {
 
   const userLogin = (
     <Layout>
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        width={250}
-        style={{ height: "100vh", position: "fixed", left: 0 }}
-        breakpoint="lg"
-        collapsedWidth="80"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          style={{ height: "100%", padding: "10px" }}
-        >
-          <Menu.Item key="1" icon={<HomeOutlined />}>
-            <Nav.Link as={NavLink} to="/dashboard">
-              Dashboard
-            </Nav.Link>
-          </Menu.Item>
-          <Menu.Item key="2" icon={<UserOutlined />}>
-            <Nav.Link as={NavLink} to="/profile">
-              Profile
-            </Nav.Link>
-          </Menu.Item>
-          <Menu.Item key="3" icon={<PieChartOutlined />}>
-            <Nav.Link as={NavLink} to="/score">
-              Score
-            </Nav.Link>
-          </Menu.Item>
-          <Menu.Item key="5" icon={<LogoutOutlined />} onClick={logoutUser}>
-            <Nav.Link as={NavLink} to="/">
-              Logout
-            </Nav.Link>
-          </Menu.Item>
-        </Menu>
-      </Sider>
-      <Layout
-        style={{
-          marginLeft: collapsed ? 80 : 250,
-          transition: "0.3s ease",
-          minHeight: "100vh",
-        }}
-      >
-        <Header
-          className="border-bottom"
-          style={{ width: "100%", background: "white", height: "4rem" }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "0 24px",
-            }}
-          >
+    
+    <Navbar bg="light" expand="lg" className="border-bottom" style={{ height: "4rem" }}>
+    <div className="container d-flex justify-content-between">  {/* Updated this div to use flex */}
+        <Navbar.Brand>
             <img
-              src="/external/logo.png"
-              alt="logo"
-              height="50"
-              style={{ marginRight: "auto" }}
+                src="/external/logo.png"
+                alt="logo"
+                height="50"
+                className="d-inline-block align-top"
             />
-          </div>
-        </Header>
-        <Content className="content-background">
-          <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/regulation" element={<Regulation />} />
-            <Route path="/score" element={<ScorePage />} />
-          </Routes>
-        </Content>
-        <Footer style={{ textAlign: "center" }}>
-          ©{new Date().getFullYear()} AlphaLegal | All rights reserved
-        </Footer>
-      </Layout>
+        </Navbar.Brand>
+        <div>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="ml-auto" style={{ lineHeight: "4rem" }}>
+                    <Nav.Link as={NavLink} to="/dashboard">
+                        Dashboard
+                    </Nav.Link>
+                    <Nav.Link as={NavLink} to="/profile">
+                        Profile
+                    </Nav.Link>
+                    <Nav.Link as={NavLink} to="/score">
+                        Score
+                    </Nav.Link>
+                    <Nav.Link as={NavLink} to="/" onClick={logoutUser}>
+                        Logout
+                    </Nav.Link>
+                </Nav>
+            </Navbar.Collapse>
+        </div>
+    </div>
+</Navbar>
+
+
+
+      <Content className="content-background">
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/regulation" element={<Regulation />} />
+          <Route path="/score" element={<ScorePage />} />
+        </Routes>
+      </Content>
+      <Footer style={{ textAlign: "center" }}>
+        ©{new Date().getFullYear()} AlphaLegal | All rights reserved
+      </Footer>
+      {/* </Layout> */}
     </Layout>
   );
 
