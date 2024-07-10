@@ -18,6 +18,7 @@ import {
   PieChartOutlined,
 } from "@ant-design/icons";
 import { Post_Blog } from "../components/Blog/Post-Blog";
+import TermsAndConditions from "../dashboard/TermsAndConditions";
 // import backgroundImage from '../CSS/ai.jpg'
 
 const { Sider, Content, Footer, Header } = Layout;
@@ -81,6 +82,7 @@ const AppHeader = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/regulation" element={<Regulation />} />
           <Route path="/score" element={<ScorePage />} />
+          <Route path="/terms" element={<TermsAndConditions />} />
         </Routes>
       </Content>
       <Footer style={{ textAlign: "center" }}>
