@@ -36,40 +36,44 @@ const AppHeader = () => {
 
   const userLogin = (
     <Layout>
-    
-    <Navbar bg="light" expand="lg" className="border-bottom" style={{ height: "4rem" }}>
-    <div className="container d-flex justify-content-between">  {/* Updated this div to use flex */}
-        <Navbar.Brand>
+      <Navbar
+        bg="light"
+        expand="lg"
+        className="border-bottom"
+        style={{ height: "4rem" }}
+      >
+        <div className="container d-flex justify-content-between">
+          {" "}
+          {/* Updated this div to use flex */}
+          <Navbar.Brand>
             <img
-                src="/external/logo.png"
-                alt="logo"
-                height="50"
-                className="d-inline-block align-top"
+              src="/external/logo.png"
+              alt="logo"
+              height="50"
+              className="d-inline-block align-top"
             />
-        </Navbar.Brand>
-        <div>
+          </Navbar.Brand>
+          <div>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="ml-auto" style={{ lineHeight: "4rem" }}>
-                    <Nav.Link as={NavLink} to="/dashboard">
-                        Dashboard
-                    </Nav.Link>
-                    <Nav.Link as={NavLink} to="/profile">
-                        Profile
-                    </Nav.Link>
-                    <Nav.Link as={NavLink} to="/score">
-                        Score
-                    </Nav.Link>
-                    <Nav.Link as={NavLink} to="/" onClick={logoutUser}>
-                        Logout
-                    </Nav.Link>
-                </Nav>
+              <Nav className="ml-auto" style={{ lineHeight: "4rem" }}>
+                <Nav.Link as={NavLink} to="/dashboard">
+                  Dashboard
+                </Nav.Link>
+                <Nav.Link as={NavLink} to="/profile">
+                  Profile
+                </Nav.Link>
+                <Nav.Link as={NavLink} to="/score">
+                  Score
+                </Nav.Link>
+                <Nav.Link as={NavLink} to="/" onClick={logoutUser}>
+                  Logout
+                </Nav.Link>
+              </Nav>
             </Navbar.Collapse>
+          </div>
         </div>
-    </div>
-</Navbar>
-
-
+      </Navbar>
 
       <Content className="content-background">
         <Routes>
