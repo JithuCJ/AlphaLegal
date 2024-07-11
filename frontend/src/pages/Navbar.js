@@ -11,6 +11,7 @@ import UsersTable from "../components/admin/User-Data";
 import Blog from "../components/admin/Post-Blog";
 import Upload from "../components/admin/Upload-pdf";
 import { AuthContext } from "../store/auth";
+
 import {
   UserOutlined,
   HomeOutlined,
@@ -19,6 +20,7 @@ import {
 } from "@ant-design/icons";
 import { Post_Blog } from "../components/Blog/Post-Blog";
 import TermsAndConditions from "../dashboard/TermsAndConditions";
+import ContactInfo from "../dashboard/ContactInfo";
 // import backgroundImage from '../CSS/ai.jpg'
 
 const { Sider, Content, Footer, Header } = Layout;
@@ -83,6 +85,7 @@ const AppHeader = () => {
           <Route path="/regulation" element={<Regulation />} />
           <Route path="/score" element={<ScorePage />} />
           <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/contactinfo" element={<ContactInfo />} />
         </Routes>
       </Content>
       <Footer style={{ textAlign: "center" }}>
