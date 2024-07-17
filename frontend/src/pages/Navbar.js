@@ -173,19 +173,22 @@ const AppHeader = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            {/* <Nav.Link as={NavLink} to="/">
-                About Us
-              </Nav.Link>
-              <Nav.Link as={NavLink} to="/">
-                Services
-              </Nav.Link>
-              <Nav.Link as={NavLink} to="/">
-                Career
-              </Nav.Link>
-              <Nav.Link as={NavLink} to="/blog">
-                Blog
-              </Nav.Link> */}
+          <Nav className="mx-auto gap-5 fs-5">
+            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+              Services
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+              Industries
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+              Blog
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+              About Us
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+              Careers
+            </Nav.Link>
           </Nav>
           <Nav className="Login-Register">
             <Nav.Link

@@ -29,6 +29,7 @@ html {
 .Login-Register {
   display: flex;
   gap: 10px; /* Space between buttons */
+ 
 }
 
 .login-register-btn {
@@ -429,11 +430,20 @@ html {
 }
 
 .content-background {
-  background-image: url("./CSS/ai.jpg");
+  background-image: url("./CSS/a.avif");
   /* background: white; */
   background-size: cover;
 
   background-position: center;
   padding: 24px;
   min-height: 100vh;
+}
+
+.nav-link-hover {
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link-hover:hover {
+  color: #40a9ff !important; /* Change this to your desired color */
+  transform: scale(1.05); /* Slightly enlarge the text on hover */
 }
