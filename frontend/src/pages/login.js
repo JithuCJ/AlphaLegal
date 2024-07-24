@@ -7,7 +7,7 @@ import { AuthContext } from "../store/auth";
 import { useUser } from "../store/UserContext";
 import { toast } from "react-toastify";
 
-const backend = process.env.REACT_APP_BACKEND_URL;
+const backend = process.env.REACT_APP_BACKEND_URL; // glob sco[e]
 
 function LoginForm() {
   const [customer_id, setCustomer_id] = useState("");
@@ -48,53 +48,53 @@ function LoginForm() {
 
   return (
     <div className="login-register-section">
-    <Container className="mt-5 mb-5 d-flex justify-content-center">
-      <Card style={{ width: "24rem" }} className="shadow">
-        <Card.Body className="mb-4">
-          <h2 className="text-center mb-4">
-            Login
-            <hr />
-          </h2>
-          <Form onSubmit={onSubmit}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>User ID</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter User ID"
-                value={customer_id}
-                onChange={(e) => setCustomer_id(e.target.value)}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </Form.Group>
-
-            <Button variant="primary" type="submit" className="w-100 mt-3">
+      <Container className="mt-5 mb-5 d-flex justify-content-center">
+        <Card style={{ width: "24rem" }} className="shadow">
+          <Card.Body className="mb-4">
+            <h2 className="text-center mb-4">
               Login
-            </Button>
-          </Form>
-          <Row className="mt-3 text-center">
-            <Col>
-              <a
-                href="/forget-password"
-                style={{ textDecoration: "none", color: "#007bff" }}
-              >
-                Forgot Password?
-              </a>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-    </Container>
+              <hr />
+            </h2>
+            <Form onSubmit={onSubmit}>
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>User ID</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter User ID"
+                  value={customer_id}
+                  onChange={(e) => setCustomer_id(e.target.value)}
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </Form.Group>
+
+              <Button variant="primary" type="submit" className="w-100 mt-3">
+                Login
+              </Button>
+            </Form>
+            <Row className="mt-3 text-center">
+              <Col>
+                <a
+                  href="/forget-password"
+                  style={{ textDecoration: "none", color: "#007bff" }}
+                >
+                  Forgot Password?
+                </a>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
+      </Container>
     </div>
   );
 }

@@ -29,6 +29,7 @@ html {
 .Login-Register {
   display: flex;
   gap: 10px; /* Space between buttons */
+ 
 }
 
 .login-register-btn {
@@ -55,7 +56,7 @@ html {
 .login-register-btn:active {
   border: #004085;
   color: white;
-  background-color: #004085; 
+  background-color: #004085;
   transform: scale(0.95); /* Slightly shrink on click */
 }
 
@@ -420,4 +421,29 @@ html {
   .blog-date {
     font-size: 0.75rem;
   }
+}
+
+.scrollable-questions {
+  max-height: 60vh; /* Adjust this value as needed */
+  overflow-y: auto;
+  padding-right: 15px;
+}
+
+.content-background {
+  background-image: url("./CSS/a.avif");
+  /* background: white; */
+  background-size: cover;
+
+  background-position: center;
+  padding: 24px;
+  min-height: 100vh;
+}
+
+.nav-link-hover {
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link-hover:hover {
+  color: #40a9ff !important; /* Change this to your desired color */
+  transform: scale(1.05); /* Slightly enlarge the text on hover */
 }

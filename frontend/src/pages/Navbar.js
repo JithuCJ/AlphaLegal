@@ -11,27 +11,91 @@ import UsersTable from "../components/admin/User-Data";
 import Blog from "../components/admin/Post-Blog";
 import Upload from "../components/admin/Upload-pdf";
 import { AuthContext } from "../store/auth";
+
 import {
   UserOutlined,
   HomeOutlined,
   LogoutOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
   PieChartOutlined,
 } from "@ant-design/icons";
 import { Post_Blog } from "../components/Blog/Post-Blog";
+import TermsAndConditions from "../dashboard/TermsAndConditions";
+import ContactInfo from "../dashboard/ContactInfo";
+// import backgroundImage from '../CSS/ai.jpg'
 
-const { Sider, Content, Footer } = Layout;
+const { Sider, Content, Footer, Header } = Layout;
 
 const AppHeader = () => {
   const { isLoggedIn, logoutUser, role } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(true);
 
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
+  const handleMouseEnter = () => {
+    setCollapsed(false);
+  };
+
+  const handleMouseLeave = () => {
+    setCollapsed(true);
   };
 
   const userLogin = (
+    <Layout>
+      <Navbar
+        bg="light"
+        expand="lg"
+        className="border-bottom"
+        style={{ height: "4rem" }}
+      >
+        <div className="container d-flex justify-content-between">
+          {" "}
+          {/* Updated this div to use flex */}
+          <Navbar.Brand>
+            <img
+              src="/external/logo.png"
+              alt="logo"
+              height="50"
+              className="d-inline-block align-top"
+            />
+          </Navbar.Brand>
+          <div>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="ml-auto" style={{ lineHeight: "4rem" }}>
+                <Nav.Link as={NavLink} to="/dashboard">
+                  Dashboard
+                </Nav.Link>
+                <Nav.Link as={NavLink} to="/profile">
+                  Profile
+                </Nav.Link>
+                <Nav.Link as={NavLink} to="/score">
+                  Score
+                </Nav.Link>
+                <Nav.Link as={NavLink} to="/" onClick={logoutUser}>
+                  Logout
+                </Nav.Link>
+              </Nav>
+            </Navbar.Collapse>
+          </div>
+        </div>
+      </Navbar>
+
+      <Content className="content-background">
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/regulation" element={<Regulation />} />
+          <Route path="/score" element={<ScorePage />} />
+          <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/contactinfo" element={<ContactInfo />} />
+        </Routes>
+      </Content>
+      <Footer style={{ textAlign: "center" }}>
+        ©{new Date().getFullYear()} AlphaLegal | All rights reserved
+      </Footer>
+      {/* </Layout> */}
+    </Layout>
+  );
+
+  const adminLogin = (
     <Layout>
       <Sider
         trigger={null}
@@ -39,40 +103,22 @@ const AppHeader = () => {
         collapsed={collapsed}
         width={250}
         style={{ height: "100vh", position: "fixed", left: 0 }}
+        breakpoint="lg"
+        collapsedWidth="80"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        <Button
-          type="text"
-          onClick={toggleSidebar}
-          style={{ margin: 24, marginLeft: 30 }}
-        >
-          {collapsed ? (
-            <MenuUnfoldOutlined style={{ color: "white", fontSize: "26px" }} />
-          ) : (
-            <MenuFoldOutlined style={{ color: "white", fontSize: "26px" }} />
-          )}
-        </Button>
         <Menu
           theme="dark"
           mode="inline"
           defaultSelectedKeys={["1"]}
           style={{ height: "100%" }}
         >
-          <Menu.Item key="1" icon={<HomeOutlined />}>
-            <Nav.Link as={NavLink} to="/dashboard">
-              Dashboard
+          <Menu.Item key="4" icon={<UserOutlined />}>
+            <Nav.Link as={NavLink} to="/admin">
+              Admin
             </Nav.Link>
           </Menu.Item>
-          <Menu.Item key="2" icon={<UserOutlined />}>
-            <Nav.Link as={NavLink} to="/profile">
-              Profile
-            </Nav.Link>
-          </Menu.Item>
-          <Menu.Item key="3" icon={<PieChartOutlined />}>
-            <Nav.Link as={NavLink} to="/score">
-              Score
-            </Nav.Link>
-          </Menu.Item>
-
           <Menu.Item key="5" icon={<LogoutOutlined />} onClick={logoutUser}>
             <Nav.Link as={NavLink} to="/">
               Logout
@@ -83,16 +129,33 @@ const AppHeader = () => {
       <Layout
         style={{
           marginLeft: collapsed ? 80 : 250,
-          transition: "0.5s ease",
+          transition: "0.3s ease",
           minHeight: "100vh",
         }}
       >
+        <Header style={{ background: "#fff", padding: 0 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              padding: "0 24px",
+            }}
+          >
+            <img
+              src="/external/logo.png"
+              alt="logo"
+              height="40"
+              style={{ marginRight: "auto" }}
+            />
+          </div>
+        </Header>
         <Content style={{ margin: "24px 16px 0", padding: 24 }}>
           <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/regulation" element={<Regulation />} />
-            <Route path="/score" element={<ScorePage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/upload" element={<Upload />} />
+            <Route path="/userstable" element={<UsersTable />} />
+            <Route path="/admin-blog" element={<Blog />} />
+            <Route path="/post-blog" element={<Post_Blog />} />
           </Routes>
         </Content>
         <Footer style={{ textAlign: "center" }}>
@@ -100,72 +163,6 @@ const AppHeader = () => {
         </Footer>
       </Layout>
     </Layout>
-  );
-
-  const adminLogin = (
-    <>
-      <Layout>
-        <Sider
-          trigger={null}
-          collapsible
-          collapsed={collapsed}
-          width={250}
-          style={{ height: "100vh", position: "fixed", left: 0 }}
-        >
-          <Button
-            type="text"
-            onClick={toggleSidebar}
-            style={{ margin: 24, marginLeft: 30 }}
-          >
-            {collapsed ? (
-              <MenuUnfoldOutlined
-                style={{ color: "white", fontSize: "26px" }}
-              />
-            ) : (
-              <MenuFoldOutlined style={{ color: "white", fontSize: "26px" }} />
-            )}
-          </Button>
-          <Menu
-            theme="dark"
-            mode="inline"
-            defaultSelectedKeys={["1"]}
-            style={{ height: "100%" }}
-          >
-            <Menu.Item key="4" icon={<UserOutlined />}>
-              <Nav.Link as={NavLink} to="/admin">
-                Admin
-              </Nav.Link>
-            </Menu.Item>
-
-            <Menu.Item key="5" icon={<LogoutOutlined />} onClick={logoutUser}>
-              <Nav.Link as={NavLink} to="/">
-                Logout
-              </Nav.Link>
-            </Menu.Item>
-          </Menu>
-        </Sider>
-        <Layout
-          style={{
-            marginLeft: collapsed ? 80 : 250,
-            transition: "0.5s ease",
-            minHeight: "100vh",
-          }}
-        >
-          <Content style={{ margin: "24px 16px 0", padding: 24 }}>
-            <Routes>
-              <Route path="/admin" element={<AdminPage />} />
-              <Route path="/upload" element={<Upload />} />
-              <Route path="/userstable" element={<UsersTable />} />
-              <Route path="/admin-blog" element={<Blog />} />
-              <Route path="/post-blog" element={<Post_Blog />} />
-            </Routes>
-          </Content>
-          <Footer style={{ textAlign: "center" }}>
-            ©{new Date().getFullYear()} AlphaLegal | All rights reserved
-          </Footer>
-        </Layout>
-      </Layout>
-    </>
   );
 
   const loggedOutNavbar = (
@@ -176,19 +173,22 @@ const AppHeader = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            {/* <Nav.Link as={NavLink} to="/">
-                About Us
-              </Nav.Link>
-              <Nav.Link as={NavLink} to="/">
-                Services
-              </Nav.Link>
-              <Nav.Link as={NavLink} to="/">
-                Career
-              </Nav.Link>
-              <Nav.Link as={NavLink} to="/blog">
-                Blog
-              </Nav.Link> */}
+          <Nav className="mx-auto gap-5 fs-5">
+            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+              Services
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+              Industries
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+              Blog
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+              About Us
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+              Careers
+            </Nav.Link>
           </Nav>
           <Nav className="Login-Register">
             <Nav.Link
@@ -210,6 +210,7 @@ const AppHeader = () => {
       </Container>
     </Navbar>
   );
+
   return isLoggedIn
     ? role === "admin"
       ? adminLogin

@@ -10,25 +10,35 @@ import {
   Row,
   Col,
   Typography,
+  Progress,
+  Avatar,
 } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 import { useUser } from "../store/UserContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import "../CSS/Regulation.css"; // Import the custom CSS
 
 const { Content } = Layout;
 const { Title } = Typography;
 
-const QUESTIONS_PER_PAGE = 5;
- const backend = process.env.REACT_APP_BACKEND_URL;
+const QUESTIONS_PER_PAGE = 10;
+const backend = process.env.REACT_APP_BACKEND_URL;
+
 function Regulation() {
   const [form] = Form.useForm();
   const [questions, setQuestions] = useState([]);
+  const [filteredQuestions, setFilteredQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedTitle, setSelectedTitle] = useState(null);
   const [score, setScore] = useState(null);
-  const { customerId } = useUser();
+  const [progress, setProgress] = useState(0); // New state for progress
+
+  const { customerId, fetchUserProgress, userDetails } = useUser();
+  const { username, email, customer_id } = userDetails;
   const navigate = useNavigate();
 
- 
+  // CustomerId
   useEffect(() => {
     async function fetchQuestions() {
       try {
@@ -39,12 +49,26 @@ function Regulation() {
         });
         console.log("Fetched Questions: ", response.data); // Debug statement
         setQuestions(response.data.questions);
+        setFilteredQuestions(response.data.questions);
       } catch (error) {
         console.error("There was an error fetching the questions!", error);
       }
     }
     fetchQuestions();
   }, []);
+
+  // user Progress
+  useEffect(() => {
+    async function fetchProgress() {
+      try {
+        const progressData = await fetchUserProgress();
+        setProgress(progressData.progress_percentage);
+      } catch (error) {
+        console.error("There was an error fetching the user progress!", error);
+      }
+    }
+    fetchProgress();
+  }, [fetchUserProgress]);
 
   const handleSave = async () => {
     try {
@@ -135,7 +159,7 @@ function Regulation() {
 
   const indexOfLastQuestion = currentPage * QUESTIONS_PER_PAGE;
   const indexOfFirstQuestion = indexOfLastQuestion - QUESTIONS_PER_PAGE;
-  const currentQuestions = questions.slice(
+  const currentQuestions = filteredQuestions.slice(
     indexOfFirstQuestion,
     indexOfLastQuestion
   );
@@ -151,84 +175,149 @@ function Regulation() {
     return originalElement;
   };
 
+  const handleTitleClick = (title) => {
+    setSelectedTitle(title);
+    setFilteredQuestions(questions.filter((q) => q.title === title));
+    setCurrentPage(1);
+  };
+
   return (
     <Layout>
       <Content>
-        <Container className="shadow-sm bg-white border">
-          <div className="container m-4">
-            <Form form={form}>
-              {currentQuestions.map((q) => (
-                <div key={q.id} style={{ marginBottom: "24px" }}>
-                  <Title level={4}>
-                    {q.question}{" "}
-                    {q.attempted && <span style={{ color: "blue" }}>✔</span>}
-                  </Title>
-                  <Form.Item
-                    name={`question_${q.id}`}
-                    initialValue={q.answer || ""}
-                  >
-                    <Radio.Group disabled={q.attempted}>
-                      <Row gutter={[16, 16]}>
-                        {q.options.split("\n").map((option, index) => (
-                          <Col span={12} key={index}>
-                            <Radio value={option}>{option}</Radio>
-                          </Col>
-                        ))}
-                      </Row>
-                    </Radio.Group>
-                  </Form.Item>
-                </div>
-              ))}
-              <hr />
-              <div style={{ textAlign: "center", marginTop: "24px" }}>
-                <Pagination
-                  current={currentPage}
-                  pageSize={QUESTIONS_PER_PAGE}
-                  total={questions.length}
-                  onChange={handlePageChange}
-                  showSizeChanger={false}
-                  showQuickJumper
-                  itemRender={itemRender}
-                />
-                <Button
-                  type="primary"
-                  style={{
-                    marginTop: "20px",
-                    width: "10rem",
-                    height: "2.8rem",
-                  }}
-                  className="fs-6"
-                  onClick={handleSave}
-                  disabled={!customerId}
-                >
-                  Save
-                </Button>
-                {currentPage ===
-                  Math.ceil(questions.length / QUESTIONS_PER_PAGE) && (
-                  <Button
-                    type="primary"
-                    style={{
-                      marginTop: "20px",
-                      marginLeft: "10px",
-                      width: "10rem",
-                      height: "2.8rem",
-                    }}
-                    className="fs-6"
-                    onClick={handleSubmit}
-                    disabled={!customerId}
-                  >
-                    Submit
-                  </Button>
-                )}
-                {score !== null && (
-                  <div style={{ marginTop: "20px" }}>
-                    <Title level={4}>Your Score: {score}</Title>
+        <div className="custom-container shadow-sm bg-white ">
+          <div className="scrollable-questions">
+            <Row>
+              {/* Title and Progress   */}
+              <Col xs={24} md={6}>
+                <div className="titles-container">
+                  {/* User Information */}
+                
+                  <div className="user-info mb-4">
+                    <Row>
+                      <Col span={8} className="text-center">
+                        <Avatar size={64} icon={<UserOutlined />} />
+                      </Col>
+                      <Col span={12} className="text-left ">
+                        <h4 className="text-white">{username}</h4>
+                        <p className="text-white">{email}</p>
+                        {/* <p className="text-white">{customer_id}</p> */}
+                      </Col>
+                    </Row>
                   </div>
-                )}
-              </div>
-            </Form>
+
+                  {/* User Progress */}
+                  <div className="user-progress  mb-4">
+                   
+                    <div className="progress-bar-container">
+                      <div className="progress-bar">
+                        <div
+                          className="progress-fill"
+                          style={{ width: `${progress}%` }}
+                        >
+                          <span className="progress-text">{progress}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <hr className="text-white" />
+                  <Title className="p-2 text-white" level={3}>
+                    Questions Titles
+                  </Title>
+                  <ul className="titles-list list-unstyled">
+                    {[...new Set(questions.map((q) => q.title))].map(
+                      (title, index) => (
+                        <li
+                          key={index}
+                          className={`title-item p-2 rounded ${
+                            selectedTitle === title
+                              ? "bg-primary text-white"
+                              : "text-white"
+                          }`}
+                          onClick={() => handleTitleClick(title)}
+                        >
+                          {title}
+                        </li>
+                      )
+                    )}
+                  </ul>
+                </div>
+              </Col>
+
+              {/* Question Colume */}
+              <Col className="p-3" xs={24} md={18}>
+                <div className="questions-container">
+                  <Form form={form}>
+                    {currentQuestions.map((q) => (
+                      <div key={q.id} className="question-item">
+                        <Title level={4}>
+                          {q.question}{" "}
+                          {q.attempted && (
+                            <span style={{ color: "blue" }}>✔</span>
+                          )}
+                        </Title>
+                        <Form.Item
+                          name={`question_${q.id}`}
+                          initialValue={q.answer || ""}
+                        >
+                          <Radio.Group disabled={q.attempted}>
+                            <Row gutter={[36, 36]}>
+                              {q.options.split("\n").map((option, index) => (
+                                <Col span={12} key={index}>
+                                  <Radio value={option}>{option}</Radio>
+                                </Col>
+                              ))}
+                            </Row>
+                          </Radio.Group>
+                        </Form.Item>
+                      </div>
+                    ))}
+                  </Form>
+                </div>
+              </Col>
+            </Row>
           </div>
-        </Container>
+          {/* <hr /> */}
+
+          {/* Pagination  */}
+          <div className="pagination-container">
+            <Pagination
+              current={currentPage}
+              pageSize={QUESTIONS_PER_PAGE}
+              total={filteredQuestions.length}
+              onChange={handlePageChange}
+              showSizeChanger={false}
+              showQuickJumper
+              itemRender={itemRender}
+            />
+            <Button
+              type="primary"
+              className="save-button"
+              onClick={handleSave}
+              disabled={!customerId}
+            >
+              Save
+            </Button>
+            {currentPage ===
+              Math.ceil(filteredQuestions.length / QUESTIONS_PER_PAGE) && (
+              <Button
+                type="primary"
+                className="submit-button"
+                onClick={handleSubmit}
+                disabled={!customerId}
+              >
+                Submit
+              </Button>
+            )}
+            {score !== null && (
+              <div className="score-display">
+                <Title level={4}>Your Score: {score}</Title>
+              </div>
+            )}
+          </div>
+        </div>
+        {/* </Container> */}
       </Content>
     </Layout>
   );

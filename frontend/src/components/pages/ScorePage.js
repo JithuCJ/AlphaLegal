@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Layout, Typography, Button, Card } from "antd";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Container } from "react-bootstrap";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -10,9 +12,28 @@ const { Content } = Layout;
 const { Title, Text } = Typography;
 
 function ScorePage() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const { score } = location.state || { score: null };
+  const [score, setScore] = useState(null);
+
+  useEffect(() => {
+    const fetchScore = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/questions/score",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setScore(response.data.score);
+      } catch (error) {
+        console.error("Error fetching the score:", error);
+      }
+    };
+
+    fetchScore();
+  }, []);
 
   const getRating = (score) => {
     if (score >= 75 && score <= 100)
@@ -47,45 +68,6 @@ function ScorePage() {
     },
   };
 
-  if (score === null) {
-    return (
-      <Layout
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#f0f2f5",
-          padding: "20px",
-        }}
-      >
-        <Content style={{ width: "100%", maxWidth: "600px" }}>
-          <Card
-            className="shadow-sm bg-white border p-5"
-            style={{ textAlign: "center", borderRadius: "10px" }}
-          >
-            <Title level={2}>No Score Available</Title>
-            <div
-              style={{
-                position: "relative",
-                height: "300px",
-                marginBottom: "20px",
-              }}
-            >
-              <Pie data={noScoreData} options={noScoreOptions} />
-            </div>
-            <Button
-              type="primary"
-              onClick={() => navigate("/dashboard")}
-              style={{ width: "10rem", fontSize: "1rem", height: "40px", borderRadius: "8px", marginTop: "20px" }}
-            >
-              Go to Dashboard
-            </Button>
-          </Card>
-        </Content>
-      </Layout>
-    );
-  }
-
   const rating = getRating(score);
 
   const data = {
@@ -117,16 +99,11 @@ function ScorePage() {
   };
 
   return (
+
+    <Container >
     <Layout
-      style={{
-        minHeight: "",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "",
-      }}
-    >
-      <Content style={{ width: "100%", maxWidth: "600px" }}>
+    className="bg-white shadow-sm border "    >
+      <Content >
         <Card
           className="shadow-sm bg-white border p-5"
           style={{ textAlign: "center", borderRadius: "10px" }}
@@ -170,6 +147,7 @@ function ScorePage() {
         </Card>
       </Content>
     </Layout>
+    </Container>
   );
 }
 

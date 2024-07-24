@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import random
 import string
+import json
 
 db = SQLAlchemy()
 
@@ -26,6 +27,8 @@ class User(db.Model):
     score = db.Column(db.Integer, default=0)
     answers = db.relationship(
         'Answer', back_populates='user', cascade="all, delete-orphan")
+    company_info = db.relationship(
+        'CompanyInfo', back_populates='user', cascade="all, delete-orphan", uselist=False)
 
 
 class Admin(db.Model):
@@ -44,6 +47,7 @@ class Admin(db.Model):
 class Question(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
     question = db.Column(db.Text, nullable=False)
     options = db.Column(db.Text, nullable=False)
     weights = db.Column(db.JSON, nullable=True)
@@ -71,3 +75,30 @@ class Blog(db.Model):
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class CompanyInfo(db.Model):
+    __tablename__ = 'company_info'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String, db.ForeignKey(
+        'users.customer_id'), nullable=False)
+    company_name = db.Column(db.String(255), nullable=False)
+    industry = db.Column(db.String(255), nullable=False)
+    company_size = db.Column(db.String(50), nullable=False)
+    annual_revenue = db.Column(db.String(50), nullable=False)
+    locations = db.Column(db.String(255), nullable=False)
+    contact_name = db.Column(db.String(255), nullable=False)
+    contact_position = db.Column(db.String(255), nullable=False)
+    contact_email = db.Column(db.String(255), nullable=False)
+    contact_phone = db.Column(db.String(50), nullable=False)
+    ai_applications = db.Column(db.JSON, nullable=True)
+    compliance_requirements = db.Column(db.JSON, nullable=True)
+    ai_governance = db.Column(db.Boolean, default=False)
+    ai_vendors = db.Column(db.String(255), nullable=True)
+
+    user = db.relationship('User', back_populates='company_info')
+
+
+# Adding relationship in the User model
+User.company_info = db.relationship(
+    'CompanyInfo', back_populates='user', cascade="all, delete-orphan", uselist=False)
