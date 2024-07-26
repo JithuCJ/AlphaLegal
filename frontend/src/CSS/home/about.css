@@ -1,0 +1,161 @@
+/* Base styles */
+.about-container1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url("./about.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.about-background {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 95%;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.about-content h1 {
+  color: white;
+  font-size: 2.5rem; /* Responsive font size */
+  margin-bottom: 20px;
+}
+
+.about-content p {
+  color: white;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Media Queries for Responsive Adjustments */
+@media (min-width: 768px) {
+  .about-background {
+    max-width: 800px; /* Fixed max width for larger screens */
+    padding: 80px;
+  }
+
+  .about-content h1 {
+    font-size: 4rem;
+  }
+
+  .about-content p {
+    font-size: 1.2rem;
+  }
+}
+
+/* about.css */
+
+.header {
+  background-color: #000; /* Dark background for contrast */
+  color: #fff;
+  padding: 2rem 0;
+  margin-bottom: 5rem;
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds subtle shadows for depth */
+  transition: transform 0.3s ease-in-out; /* Smooth transformation on hover */
+  gap: 0.5rem;
+}
+
+.card:hover {
+  /* transform: translateY(-1px); */
+}
+
+.card-img-top {
+  height: 100%;
+  object-fit: cover; /* Ensures images are well-fitted and look clean */
+}
+
+.card-title {
+  color: #333; /* Dark color for better readability */
+}
+
+.card-text {
+  color: #666; /* Lighter text color for descriptions */
+  font-size: 0.9rem;
+  padding: 0.2rem;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem 0; /* Reduce padding on smaller screens */
+  }
+
+  .card-img-top {
+    height: 100%; /* Smaller images on smaller screens */
+  }
+}
+
+/* Contact form */
+
+
+.text-center {
+  margin-bottom: 30px;
+}
+
+.text-center h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.text-center1 p {
+  font-size: 1.2rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.contact-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.contact-form .form-group label {
+  font-weight: bold;
+  color: #333;
+}
+
+.contact-form .form-control {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.contact-form .btn {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+  font-size: 1.2rem;
+  padding: 5px 20px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.contact-form .btn:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+/* .Contact-Con {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url("./about.jpg");
+  background-size: cover;
+  background-position: center;
+
+} */

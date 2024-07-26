@@ -2,6 +2,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "./store/auth";
 import { UserProvider } from "./store/UserContext";
@@ -16,14 +17,24 @@ import ResetPassword from "./components/Password/ResetPassword";
 import { Logout } from "./pages/Logout";
 import { Blog } from "./components/Blog/Blog";
 import { BlogDetail } from "./components/Blog/Blog-Details";
-
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from "./components/pages/Footer";
+import { SEOProvider } from "./store/SEOContext";
+import CareerPage from "./components/Home/Career";
+import AboutUs from "./components/Home/About";
+import Industries from "./components/Home/Industries";
+import ContactPage from "./components/Home/Contact";
+
+const defaultSEO = {
+  title: "AlphaLegal",
+  description: "",
+  keywords: "",
+};
 
 const App = () => (
   <Router>
-    <AppHeader  />
+    <AppHeader />
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
@@ -34,7 +45,10 @@ const App = () => (
       <Route path="/account-verified" element={<AccountVerified />} />
       <Route path="/forget-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
-      
+      <Route path="/careers" element={<CareerPage />} />
+      <Route path="/about" element={<AboutUs />} />
+      <Route path="/industries" element={<Industries />} />
+      <Route path="/contact" element={<ContactPage />} />
     </Routes>
     <ToastContainer
       position="top-right"
@@ -58,7 +72,11 @@ const root = createRoot(rootElement);
 root.render(
   <AuthProvider>
     <UserProvider>
-      <App />
+      <HelmetProvider>
+        <SEOProvider defaultSEO={defaultSEO}>
+          <App />
+        </SEOProvider>
+      </HelmetProvider>
     </UserProvider>
   </AuthProvider>
 );

@@ -177,16 +177,16 @@ const AppHeader = () => {
             <Nav.Link as={NavLink} to="/" className="nav-link-hover">
               Services
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+            <Nav.Link as={NavLink} to="/industries" className="nav-link-hover">
               Industries
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+            <Nav.Link as={NavLink} to="/blog" className="nav-link-hover">
               Blog
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+            <Nav.Link as={NavLink} to="/about" className="nav-link-hover">
               About Us
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/" className="nav-link-hover">
+            <Nav.Link as={NavLink} to="/careers" className="nav-link-hover">
               Careers
             </Nav.Link>
           </Nav>
