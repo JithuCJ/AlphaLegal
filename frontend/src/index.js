@@ -25,6 +25,7 @@ import CareerPage from "./components/Home/Career";
 import AboutUs from "./components/Home/About";
 import Industries from "./components/Home/Industries";
 import ContactPage from "./components/Home/Contact";
+import Services from "./components/Home/Services";
 
 const defaultSEO = {
   title: "AlphaLegal",
@@ -49,6 +50,7 @@ const App = () => (
       <Route path="/about" element={<AboutUs />} />
       <Route path="/industries" element={<Industries />} />
       <Route path="/contact" element={<ContactPage />} />
+      <Route path="/services" element={<Services />} />
     </Routes>
     <ToastContainer
       position="top-right"

@@ -9,19 +9,19 @@ const industries = [
     title: "Healthcare",
     description:
       "With the growing adoption of AI in healthcare, ensuring compliance with regulatory standards is crucial. We assist healthcare organizations in developing AI systems that meet the requirements of healthcare regulators, such as privacy and security regulations (e.g., HIPAA), clinical validation, and ethical considerations.",
-    imageUrl: "healthcare.jpg",
+    imageUrl: "industries/h.png",
   },
   {
     title: "Finance",
     description:
       "AI is transforming the financial sector, enabling advanced data analytics, fraud detection, and personalized customer experiences. We help financial institutions navigate regulatory challenges related to risk management, algorithmic transparency, anti-money laundering (AML), and customer data protection (e.g., GDPR and CCPA).",
-    imageUrl: "healthcare.jpg",
+    imageUrl: "industries/f.png",
   },
   {
     title: "Retail And E-Commerce",
     description:
       "In the era of AI-driven personalization and smart retail solutions, compliance with consumer protection laws, data privacy regulations, and fairness principles is essential. Our firm assists retail and e-commerce companies in implementing AI technologies while addressing legal and ethical concerns surrounding customer data, pricing algorithms, and targeted marketing.",
-    imageUrl: "healthcare.jpg",
+    imageUrl: "industries/r.png",
   },
 
   //
@@ -30,21 +30,21 @@ const industries = [
     title: "Transportation And Logistics",
     description:
       "Autonomous vehicles, predictive maintenance, and intelligent supply chain management are revolutionizing the transportation and logistics industry. We support companies in adhering to safety standards, privacy regulations, and liability frameworks associated with AI-powered transportation systems.",
-    imageUrl: "healthcare.jpg",
+    imageUrl: "industries/t.png",
   },
 
   {
     title: "Manufacturing",
     description:
       "AI applications in manufacturing, such as predictive maintenance, quality control, and optimization, offer significant benefits. Our experts guide manufacturers in complying with industry-specific regulations, including worker safety, product quality standards, and intellectual property protection.",
-    imageUrl: "healthcare.jpg",
+    imageUrl: "industries/m.png",
   },
 
   {
     title: "Public Sector",
     description:
       "AI adoption in government and public sector organizations brings various challenges, including ethical considerations, transparency, and accountability. We assist public entities in formulating AI governance frameworks, ensuring fair and unbiased AI algorithms, and maintaining compliance with legal and regulatory requirements.",
-    imageUrl: "healthcare.jpg",
+    imageUrl: "industries/p.png",
   },
 ];
 
