@@ -1,0 +1,35 @@
+/* Job Post */
+.form-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #1890ff;
+}
+
+.job-form .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.job-form .ant-form-item-label > label {
+  font-weight: 600;
+}
+
+.submit-button {
+  width: 100%;
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.submit-button:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}

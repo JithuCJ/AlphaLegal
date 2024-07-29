@@ -24,7 +24,7 @@ const Footer = () => {
         zIndex: 1000,
         position: "relative",
         width: "100%",
-        background: "#0A2239",
+        background: "black",
       }}
     >
       <Container

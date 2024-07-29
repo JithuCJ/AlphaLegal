@@ -31,3 +31,5 @@ def get_blog(id):
     blog_data = {'id': blog.id, 'title': blog.title,
                  'content': blog.content, 'date_posted': blog.date_posted}
     return jsonify({"blog": blog_data})
+
+

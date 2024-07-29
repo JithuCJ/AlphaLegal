@@ -7,7 +7,7 @@ import { AuthContext } from "../store/auth";
 import { useUser } from "../store/UserContext";
 import { toast } from "react-toastify";
 
-const backend = process.env.REACT_APP_BACKEND_URL; // glob sco[e]
+const backend = process.env.REACT_APP_BACKEND_URL;
 
 function LoginForm() {
   const [customer_id, setCustomer_id] = useState("");
