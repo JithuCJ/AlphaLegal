@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "../../CSS/home/about.css"; // Verify the path is correct
 
 const backend = process.env.REACT_APP_BACKEND_URL;
@@ -159,7 +159,6 @@ const ContactPage = () => {
           {isSubmitting ? "Submitting..." : "Submit"}
         </button>
       </form>
-      <ToastContainer />
     </div>
   );
 };

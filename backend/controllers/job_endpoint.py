@@ -4,8 +4,6 @@ from datetime import datetime
 
 job_endpoint = Blueprint('job_endpoint', __name__)
 
-
-
 @job_endpoint.route('/add_job', methods=['POST'])
 def add_job():
     data = request.get_json()
@@ -23,7 +21,6 @@ def add_job():
     db.session.commit()
     return jsonify({'message': 'Job added successfully'}), 201
 
-
 @job_endpoint.route('/get_jobs', methods=['GET'])
 def get_jobs():
     jobs = Job.query.all()
@@ -32,12 +29,24 @@ def get_jobs():
         jobs_list.append({
             'id': job.id,
             'position': job.position,
-            'description': job.description,
-            'responsibility': job.responsibility,
-            'qualification': job.qualification,
-            'benefits': job.benefits,
             'job_type': job.job_type,
             'job_category': job.job_category,
             'location': job.location
         })
     return jsonify(jobs_list), 200
+
+@job_endpoint.route('/get_jobs/<int:id>', methods=['GET'])
+def get_job(id):
+    job = Job.query.get_or_404(id)
+    job_data = {
+        'id': job.id,
+        'position': job.position,
+        'description': job.description,
+        'responsibility': job.responsibility,
+        'qualification': job.qualification,
+        'benefits': job.benefits,
+        'job_type': job.job_type,
+        'job_category': job.job_category,
+        'location': job.location
+    }
+    return jsonify({'job': job_data}), 200

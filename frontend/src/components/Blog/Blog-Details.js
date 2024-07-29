@@ -63,7 +63,6 @@ export const BlogDetail = () => {
 
   return (
     <Container className="mt-5 pb-5 ">
-     
       <Row justify="center">
         <Col xs={24} sm={22} md={20} lg={20}>
           <Button
