@@ -78,6 +78,15 @@ export const BlogDetail = () => {
             className="shadow-sm p-4"
             style={{ borderRadius: "10px" }}
           >
+            {blog.image_url && (
+              <div className="text-center mb-4">
+                <img
+                  src={blog.image_url}
+                  alt={blog.title}
+                  style={{ maxWidth: "100%", borderRadius: "10px" }}
+                />
+              </div>
+            )}
             <Title level={1} className="mb-3">
               {blog.title}
             </Title>
@@ -88,6 +97,8 @@ export const BlogDetail = () => {
               <Text type="secondary">
                 Posted on: {new Date(blog.date_posted).toLocaleDateString()}
               </Text>
+              <br />
+              <Text type="secondary">Author: {blog.author}</Text>
             </Paragraph>
           </Card>
         </Col>

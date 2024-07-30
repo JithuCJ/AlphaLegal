@@ -75,6 +75,8 @@ class Blog(db.Model):
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+    author = db.Column(db.String(50), nullable=False)
+    image_file = db.Column(db.String(20), nullable=True)
 
 
 class CompanyInfo(db.Model):

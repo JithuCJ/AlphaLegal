@@ -3,9 +3,6 @@ import { List, Card, Skeleton, message } from "antd";
 import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { fetchBlogs } from "../../API/Blog-Api";
-
-const dummyImage = "https://via.placeholder.com/300"; // Dummy Data
-
 export const Blog = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,12 +28,11 @@ export const Blog = () => {
   }, []);
 
   const handleCardClick = (id) => {
-    console.log("Blog ID clicked:", id); // Debugging log
     navigate(`/blog/${id}`);
   };
 
   return (
-    <Container className=" mt-5 pb-5">
+    <Container className="mt-5 pb-5">
       <div className="section-header">
         <h2 className="section-title">Blog Posts</h2>
         <div className="section-line">
@@ -54,7 +50,7 @@ export const Blog = () => {
               <Card
                 hoverable
                 className="blog-card"
-                cover={<img alt="example" src={dummyImage} />}
+                cover={<img alt={item.title} src={item.image_url} className="blog-card-img" />}
                 onClick={() => handleCardClick(item.id)}
               >
                 <div className="blog-meta">
@@ -66,6 +62,9 @@ export const Blog = () => {
                     <small>
                       {new Date(item.date_posted).toLocaleDateString()}
                     </small>
+                  </p>
+                  <p className="blog-author">
+                    <small>{item.author}</small>
                   </p>
                 </div>
               </Card>
