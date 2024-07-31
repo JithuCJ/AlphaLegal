@@ -14,6 +14,7 @@ import {
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container } from "react-bootstrap";
+import ContactSection from "../Home/ContactSection";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -62,48 +63,51 @@ export const BlogDetail = () => {
   };
 
   return (
-    <Container className="mt-5 pb-5 ">
-      <Row justify="center">
-        <Col xs={24} sm={22} md={20} lg={20}>
-          <Button
-            onClick={() => navigate("/blog")}
-            className="mb-4"
-            icon={<ArrowLeftOutlined />}
-            style={{ marginBottom: "20px" }}
-          >
-            Back to Blogs
-          </Button>
-          <Card
-            bordered={false}
-            className="shadow-sm p-4"
-            style={{ borderRadius: "10px" }}
-          >
-            {blog.image_url && (
-              <div className="text-center mb-4">
-                <img
-                  src={blog.image_url}
-                  alt={blog.title}
-                  style={{ maxWidth: "100%", borderRadius: "10px" }}
-                />
-              </div>
-            )}
-            <Title level={1} className="mb-3">
-              {blog.title}
-            </Title>
-            <Divider />
-            {renderParagraphs(blog.content)}
-            <Divider />
-            <Paragraph>
-              <Text type="secondary">
-                Posted on: {new Date(blog.date_posted).toLocaleDateString()}
-              </Text>
-              <br />
-              <Text type="secondary">Author: {blog.author}</Text>
-            </Paragraph>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+    <>
+      <Container className="mt-5 pb-5 ">
+        <Row justify="center">
+          <Col xs={24} sm={22} md={20} lg={20}>
+            <Button
+              onClick={() => navigate("/blog")}
+              className="mb-4"
+              icon={<ArrowLeftOutlined />}
+              style={{ marginBottom: "20px" }}
+            >
+              Back to Blogs
+            </Button>
+            <Card
+              bordered={false}
+              className="shadow-sm p-4"
+              style={{ borderRadius: "10px" }}
+            >
+              {blog.image_url && (
+                <div className="text-center mb-4">
+                  <img
+                    src={blog.image_url}
+                    alt={blog.title}
+                    style={{ maxWidth: "100%", borderRadius: "10px" }}
+                  />
+                </div>
+              )}
+              <Title level={1} className="mb-3">
+                {blog.title}
+              </Title>
+              <Divider />
+              {renderParagraphs(blog.content)}
+              <Divider />
+              <Paragraph>
+                <Text type="secondary">
+                  Posted on: {new Date(blog.date_posted).toLocaleDateString()}
+                </Text>
+                <br />
+                <Text type="secondary">Author: {blog.author}</Text>
+              </Paragraph>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+      <ContactSection />
+    </>
   );
 };
 

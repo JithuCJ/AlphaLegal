@@ -13,6 +13,7 @@ import {
 import { UserOutlined, EditOutlined, UploadOutlined } from "@ant-design/icons";
 import { addBlog } from "../../API/Blog-Api";
 import { toast } from "react-toastify";
+import "../../CSS/Blog.css"
 
 const { TextArea } = Input;
 
@@ -89,12 +90,7 @@ export const Post_Blog = () => {
             <Button
               type="primary"
               htmlType="submit"
-              style={{
-                width: "100%",
-                fontSize: "1rem",
-                height: "45px",
-                borderRadius: "8px",
-              }}
+              className="submit-button"
               loading={loading}
             >
               {loading ? <Spin /> : "Post Blog"}

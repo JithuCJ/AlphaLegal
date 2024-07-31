@@ -7,7 +7,7 @@ from datetime import datetime
 blog_endpoint = Blueprint('blog_endpoint', __name__)
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 @blog_endpoint.route('/add_blog', methods=['POST'])
 def add_blog():

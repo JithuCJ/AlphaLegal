@@ -50,11 +50,19 @@ export const Blog = () => {
               <Card
                 hoverable
                 className="blog-card"
-                cover={<img alt={item.title} src={item.image_url} className="blog-card-img" />}
+                cover={
+                  <img
+                    alt={item.title}
+                    src={item.image_url}
+                    className="blog-card-img"
+                  />
+                }
                 onClick={() => handleCardClick(item.id)}
               >
                 <div className="blog-meta">
-                  <h2 className="blog-title">{item.title}</h2>
+                  <h2 className="blog-title">
+                    {item.title.substring(0, 50)}...
+                  </h2>
                   <p className="blog-description">
                     {item.content.substring(0, 100)}...
                   </p>
