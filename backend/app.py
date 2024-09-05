@@ -16,6 +16,7 @@ import os
 from controllers.questions_api import questions_api
 from controllers.admin_endpoint import admin_endpoint
 from controllers.Blog import blog_endpoint
+from controllers.job_endpoint import job_endpoint
 
 
 load_dotenv()
@@ -42,6 +43,7 @@ with app.app_context():
 app.register_blueprint(questions_api, url_prefix='/questions')
 app.register_blueprint(admin_endpoint, url_prefix='/admin')
 app.register_blueprint(blog_endpoint, url_prefix='/blog')
+app.register_blueprint(job_endpoint, url_prefix='/job')
 
 
 def send_email(recipient_email, token, customer_id):

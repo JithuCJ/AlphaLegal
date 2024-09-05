@@ -22,7 +22,11 @@ export const fetchBlogs = async () => {
 
 export const addBlog = async (blogData) => {
   try {
-    await axios.post(`${backend}blog/add_blog`, blogData);
+    await axios.post(`${backend}blog/add_blog`, blogData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   } catch (error) {
     throw new Error("Failed to add blog post. Please try again.");
   }

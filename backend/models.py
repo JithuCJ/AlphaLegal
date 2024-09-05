@@ -75,6 +75,8 @@ class Blog(db.Model):
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+    author = db.Column(db.String(50), nullable=False)
+    image_file = db.Column(db.String(20), nullable=True)
 
 
 class CompanyInfo(db.Model):
@@ -102,3 +104,23 @@ class CompanyInfo(db.Model):
 # Adding relationship in the User model
 User.company_info = db.relationship(
     'CompanyInfo', back_populates='user', cascade="all, delete-orphan", uselist=False)
+
+class Job(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    position = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    responsibility = db.Column(db.Text, nullable=False)
+    qualification = db.Column(db.Text, nullable=False)
+    benefits = db.Column(db.Text, nullable=False)
+    job_type = db.Column(db.String(50), nullable=False)
+    job_category = db.Column(db.String(50), nullable=False)
+    location = db.Column(db.String(100), nullable=False)
+    
+    
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(15), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    message = db.Column(db.Text, nullable=False)

@@ -3,15 +3,17 @@ import {
   Layout,
   Form,
   Input,
- Button,
+  Button,
   Card,
   Avatar,
   Spin,
   Space,
+  Upload,
 } from "antd";
-import { UserOutlined, EditOutlined } from "@ant-design/icons";
-import { addBlog } from "../../API/Blog-Api"; 
+import { UserOutlined, EditOutlined, UploadOutlined } from "@ant-design/icons";
+import { addBlog } from "../../API/Blog-Api";
 import { toast } from "react-toastify";
+import "../../CSS/Blog.css"
 
 const { TextArea } = Input;
 
@@ -21,8 +23,16 @@ export const Post_Blog = () => {
 
   const onFinish = async (values) => {
     setLoading(true);
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("content", values.content);
+    formData.append("author", values.author);
+    if (values.image && values.image.file) {
+      formData.append("image", values.image.file);
+    }
+
     try {
-      await addBlog(values);
+      await addBlog(formData);
       toast.success("Blog post added successfully!");
       form.resetFields();
     } catch (error) {
@@ -33,7 +43,6 @@ export const Post_Blog = () => {
   };
 
   return (
-    // admin page to Post a latest Blogs
     <Layout className="layout">
       <Card className="post-card shadow">
         <Space align="center" className="post-header">
@@ -69,11 +78,21 @@ export const Post_Blog = () => {
           >
             <TextArea placeholder="Enter the content of your blog" rows={6} />
           </Form.Item>
+          <Form.Item name="author" initialValue="admin">
+            <Input placeholder="Enter the author of the blog" />
+          </Form.Item>
+          <Form.Item name="image" valuePropName="file">
+            <Upload maxCount={1} beforeUpload={() => false}>
+              <Button icon={<UploadOutlined />}>Upload Image</Button>
+            </Upload>
+          </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit"
-             style={{ width: "100%", fontSize: "1rem", height: "45px", borderRadius: "8px" }}
-            
-            loading={loading}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="submit-button"
+              loading={loading}
+            >
               {loading ? <Spin /> : "Post Blog"}
             </Button>
           </Form.Item>

@@ -12,7 +12,7 @@ class ApplicationConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True
 
-    # Flask-Mail Configuration
+
    
 
     # JWT Configuration

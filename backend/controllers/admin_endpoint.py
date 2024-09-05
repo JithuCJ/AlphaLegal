@@ -1,7 +1,7 @@
 from functools import wraps
 from flask_jwt_extended import verify_jwt_in_request, get_jwt, jwt_required
 from flask import Blueprint, request, jsonify
-from models import db, Admin, User
+from models import db, Admin, User, Feedback
 from flask_bcrypt import Bcrypt
 
 
@@ -105,3 +105,42 @@ def login_admin():
             return jsonify({'error': 'Invalid password'}), 401
     else:
         return jsonify({'error': 'Admin with this email does not exist'}), 404
+
+
+
+# Feedback endpoint
+
+@admin_endpoint.route('/feedback', methods=['POST'])
+def add_feedback():
+    data = request.get_json()
+
+    name = data.get('name')
+    phone = data.get('phone')
+    email = data.get('email')
+    message = data.get('message')
+
+    feedback = Feedback(name=name, phone=phone, email=email, message=message)
+    db.session.add(feedback)
+    db.session.commit()
+
+    return jsonify({'message': 'Feedback added successfully'}), 201
+
+
+@admin_endpoint.route('/get-feedback', methods=["GET"])
+def get_feedback(): 
+
+    feedback_list = Feedback.query.all()
+    feedbacks = []
+    for feedback in feedback_list:
+        feedback_data = {
+            'id': feedback.id,
+            'name': feedback.name,
+            'phone': feedback.phone,
+            'email': feedback.email,
+            'message': feedback.message
+        }
+        feedbacks.append(feedback_data)
+
+    return jsonify({'feedbacks': feedbacks}), 200
+    
+    
