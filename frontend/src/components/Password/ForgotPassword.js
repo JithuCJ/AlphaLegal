@@ -4,6 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+const backend = process.env.REACT_APP_BACKEND_URL;
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -11,10 +12,9 @@ const ForgotPassword = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/forgot-password",
-        { email }
-      );
+      const response = await axios.post(`${backend}/forgot-password`, {
+        email,
+      });
       toast.success(response.data.message);
       setError("");
     } catch (err) {

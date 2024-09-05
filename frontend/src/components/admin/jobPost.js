@@ -6,6 +6,9 @@ import "../../CSS/admin.css";
 const { TextArea } = Input;
 const { Title } = Typography;
 
+
+
+const backend = process.env.REACT_APP_BACKEND_URL;
 const JobForm = () => {
   const [jobData, setJobData] = useState({
     position: "",
@@ -26,7 +29,7 @@ const JobForm = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/job/add_job",
+        `${backend}/job/add_job`,
         jobData
       );
       message.success(response.data.message || "Job added successfully!");

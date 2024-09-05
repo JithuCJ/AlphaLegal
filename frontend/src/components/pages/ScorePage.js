@@ -6,6 +6,7 @@ import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Container } from "react-bootstrap";
 
+const backend = process.env.REACT_APP_BACKEND_URL;
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const { Content } = Layout;
@@ -18,14 +19,11 @@ function ScorePage() {
   useEffect(() => {
     const fetchScore = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/questions/score",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await axios.get(`${backend}questions/score`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setScore(response.data.score);
       } catch (error) {
         console.error("Error fetching the score:", error);
@@ -99,54 +97,52 @@ function ScorePage() {
   };
 
   return (
-
-    <Container >
-    <Layout
-    className="bg-white shadow-sm border "    >
-      <Content >
-        <Card
-          className="shadow-sm bg-white border p-5"
-          style={{ textAlign: "center", borderRadius: "10px" }}
-        >
-          <Title level={2}>Your Score</Title>
-          <div
-            style={{
-              position: "relative",
-              height: "300px",
-              marginBottom: "20px",
-            }}
+    <Container>
+      <Layout className="bg-white shadow-sm border ">
+        <Content>
+          <Card
+            className="shadow-sm bg-white border p-5"
+            style={{ textAlign: "center", borderRadius: "10px" }}
           >
-            <Pie data={data} options={options} />
-          </div>
-          <Text
-            style={{
-              fontSize: "48px",
-              color: rating.color,
-              fontWeight: "bold",
-              marginTop: "20px",
-            }}
-          >
-            {score}%
-          </Text>
-          <h2 style={{ color: rating.color, marginTop: "20px" }}>
-            Rating: {rating.text}
-          </h2>
-          <Button
-            type="primary"
-            onClick={() => navigate("/dashboard")}
-            style={{
-              marginTop: "20px",
-              marginLeft: "10px",
-              width: "10rem",
-              height: "2.8rem",
-            }}
-            className="fs-6"
-          >
-            Go to Dashboard
-          </Button>
-        </Card>
-      </Content>
-    </Layout>
+            <Title level={2}>Your Score</Title>
+            <div
+              style={{
+                position: "relative",
+                height: "300px",
+                marginBottom: "20px",
+              }}
+            >
+              <Pie data={data} options={options} />
+            </div>
+            <Text
+              style={{
+                fontSize: "48px",
+                color: rating.color,
+                fontWeight: "bold",
+                marginTop: "20px",
+              }}
+            >
+              {score}%
+            </Text>
+            <h2 style={{ color: rating.color, marginTop: "20px" }}>
+              Rating: {rating.text}
+            </h2>
+            <Button
+              type="primary"
+              onClick={() => navigate("/dashboard")}
+              style={{
+                marginTop: "20px",
+                marginLeft: "10px",
+                width: "10rem",
+                height: "2.8rem",
+              }}
+              className="fs-6"
+            >
+              Go to Dashboard
+            </Button>
+          </Card>
+        </Content>
+      </Layout>
     </Container>
   );
 }
