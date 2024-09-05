@@ -159,19 +159,19 @@ const AppHeader = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mx-auto gap-5 fs-5">
-            <Nav.Link as={NavLink} to="/services" className="nav-link-hover">
+            <Nav.Link as={NavLink} to="/services"  className="nav-link-hover" activeClassName="active">
               Services
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/industries" className="nav-link-hover">
+            <Nav.Link as={NavLink} to="/industries" className="nav-link-hover" activeClassName="active">
               Industries
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/blog" className="nav-link-hover">
+            <Nav.Link as={NavLink} to="/blog" className="nav-link-hover" activeClassName="active">
               Blog
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/about" className="nav-link-hover">
+            <Nav.Link as={NavLink} to="/about" className="nav-link-hover" activeClassName="active">
               About Us
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/careers" className="nav-link-hover">
+            <Nav.Link as={NavLink} to="/careers" className="nav-link-hover" activeClassName="active">
               Careers
             </Nav.Link>
           </Nav>

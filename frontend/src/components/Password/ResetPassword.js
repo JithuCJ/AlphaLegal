@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+const backend = process.env.REACT_APP_BACKEND_URL;
 const ResetPassword = () => {
   const { token } = useParams();
   const [newPassword, setNewPassword] = useState("");
@@ -14,10 +15,9 @@ const ResetPassword = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        `http://localhost:5000/reset-password/${token}`,
-        { new_password: newPassword }
-      );
+      const response = await axios.post(`${backend}reset-password/${token}`, {
+        new_password: newPassword,
+      });
       toast.success(response.data.message);
       navigate("/login");
     } catch (err) {
