@@ -4,7 +4,14 @@ from config import ApplicationConfig
 from models import db, User, Question, Answer, Admin
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request, get_jwt
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    jwt_required,
+    get_jwt_identity,
+    verify_jwt_in_request,
+    get_jwt,
+)
 from itsdangerous import URLSafeTimedSerializer
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -22,9 +29,9 @@ from controllers.job_endpoint import job_endpoint
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app)
 
-app.secret_key = os.getenv('SECRET_KEY', 'super-secret-key')
+app.secret_key = os.getenv("SECRET_KEY", "super-secret-key")
 app.config.from_object(ApplicationConfig)
 
 bcrypt = Bcrypt(app)
@@ -40,23 +47,23 @@ with app.app_context():
 
 # Routes
 
-app.register_blueprint(questions_api, url_prefix='/questions')
-app.register_blueprint(admin_endpoint, url_prefix='/admin')
-app.register_blueprint(blog_endpoint, url_prefix='/blog')
-app.register_blueprint(job_endpoint, url_prefix='/job')
+app.register_blueprint(questions_api, url_prefix="/questions")
+app.register_blueprint(admin_endpoint, url_prefix="/admin")
+app.register_blueprint(blog_endpoint, url_prefix="/blog")
+app.register_blueprint(job_endpoint, url_prefix="/job")
 
 
 def send_email(recipient_email, token, customer_id):
 
-    sender_email = os.getenv('Email')
-    sender_password = os.getenv('Password')
+    sender_email = os.getenv("Email")
+    sender_password = os.getenv("Password")
     smtp_port = 587
-    smtp_server = 'smtp.gmail.com'  # Default SMTP server for Gmail
+    smtp_server = "smtp.gmail.com"  # Default SMTP server for Gmail
 
     msg = MIMEMultipart()
-    msg['From'] = sender_email
-    msg['To'] = recipient_email
-    msg['Subject'] = "Email Confirmation Token"
+    msg["From"] = sender_email
+    msg["To"] = recipient_email
+    msg["Subject"] = "Email Confirmation Token"
 
     # Email body with URLs
     body = f"""
@@ -67,7 +74,7 @@ def send_email(recipient_email, token, customer_id):
     </body>
     </html>
     """
-    msg.attach(MIMEText(body, 'html'))
+    msg.attach(MIMEText(body, "html"))
 
     try:
         # Change to your SMTP server
@@ -81,28 +88,30 @@ def send_email(recipient_email, token, customer_id):
         print("Error sending email:", str(e))
 
 
-@app.route('/', methods=['GET'])
+@app.route("/", methods=["GET"])
 def me():
-    return jsonify({'message': 'Server is up and running!'})
+    return jsonify({"message": "Server is up and running!"})
 
 
 #  Auth Routes
 
-@app.route('/register', methods=['POST'])
+
+@app.route("/register", methods=["POST"])
 def register():
-    email = request.json.get('email')
-    username = request.json.get('username')
-    password = request.json.get('password')
-    role = request.json.get('role', 'user')
+    email = request.json.get("email")
+    username = request.json.get("username")
+    password = request.json.get("password")
+    role = request.json.get("role", "user")
 
     if User.query.filter_by(email=email).first():
-        return jsonify({'message': 'User already exists'}), 400
+        return jsonify({"message": "User already exists"}), 400
 
-    token = serializer.dumps(email, salt='email-confirm')
-    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    token = serializer.dumps(email, salt="email-confirm")
+    hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
-    new_user = User(email=email, username=username,
-                    password=hashed_password, email_confirmed=False)
+    new_user = User(
+        email=email, username=username, password=hashed_password, email_confirmed=False
+    )
     db.session.add(new_user)
     db.session.commit()
 
@@ -110,69 +119,101 @@ def register():
     print(f"Registered user with customer_id: {user_id}")  # Debug statement
     send_email(email, token, user_id)
 
-    return jsonify({'message': 'Registration successful. Please check your email to confirm.', 'user_id': user_id, 'token': token}), 201
+    return (
+        jsonify(
+            {
+                "message": "Registration successful. Please check your email to confirm.",
+                "user_id": user_id,
+                "token": token,
+            }
+        ),
+        201,
+    )
 
 
-@app.route('/confirm-token', methods=['POST'])
+@app.route("/confirm-token", methods=["POST"])
 def confirm_email():
-    token = request.json.get('token')
+    token = request.json.get("token")
     try:
-        email = serializer.loads(token, salt='email-confirm', max_age=3600)
+        email = serializer.loads(token, salt="email-confirm", max_age=3600)
     except:
-        return jsonify({'message': 'The confirmation link is invalid or has expired.'}), 400
+        return (
+            jsonify({"message": "The confirmation link is invalid or has expired."}),
+            400,
+        )
 
     user = User.query.filter_by(email=email).first()
     if user.email_confirmed:
-        return jsonify({'message': 'Account already confirmed.'}), 200
+        return jsonify({"message": "Account already confirmed."}), 200
 
     user.email_confirmed = True
     db.session.commit()
-    return jsonify({'message': 'You have confirmed your account. Thanks!'}), 200
+    return jsonify({"message": "You have confirmed your account. Thanks!"}), 200
 
 
-@app.route('/login', methods=['POST'])
+@app.route("/login", methods=["POST"])
 def login():
-    customer_id = request.json.get('customer_id')
-    password = request.json.get('password')
+    customer_id = request.json.get("customer_id")
+    password = request.json.get("password")
     user = User.query.filter_by(customer_id=customer_id).first()
 
     if user is None:
-        return jsonify({'message': 'User not found'}), 404
+        return jsonify({"message": "User not found"}), 404
 
     if not user.email_confirmed:
-        return jsonify({'message': 'Please confirm your email first.'}), 403
+        return jsonify({"message": "Please confirm your email first."}), 403
 
     if not bcrypt.check_password_hash(user.password, password):
-        return jsonify({'message': 'Invalid credentials'}), 401
+        return jsonify({"message": "Invalid credentials"}), 401
 
     access_token = create_access_token(identity=user.customer_id)
-    return jsonify({'message': 'Login successful', 'access_token': access_token, 'customer_id': user.customer_id}), 200
+    return (
+        jsonify(
+            {
+                "message": "Login successful",
+                "access_token": access_token,
+                "customer_id": user.customer_id,
+            }
+        ),
+        200,
+    )
 
 
-@app.route('/customer_id', methods=['GET'])
+@app.route("/customer_id", methods=["GET"])
 @jwt_required()
 def user():
     current_user_id = get_jwt_identity()
     user = User.query.filter_by(customer_id=current_user_id).first()
     if user is None:
-        return jsonify({'message': 'User not found'}), 404
+        return jsonify({"message": "User not found"}), 404
 
-    return jsonify({'customer_id': user.customer_id, 'username': user.username, 'email': user.email, 'email_confirmed': user.email_confirmed}), 200
+    return (
+        jsonify(
+            {
+                "customer_id": user.customer_id,
+                "username": user.username,
+                "email": user.email,
+                "email_confirmed": user.email_confirmed,
+            }
+        ),
+        200,
+    )
+
 
 # Add this route to handle password change requests
 
 
-@app.route('/update-user', methods=['PUT'])
+@app.route("/update-user", methods=["PUT"])
 @jwt_required()
 def update_user():
     current_user_id = get_jwt_identity()
     user = User.query.filter_by(customer_id=current_user_id).first()
 
     if user is None:
-        return jsonify({'message': 'User not found'}), 404
+        return jsonify({"message": "User not found"}), 404
 
     # new_customer_id = request.json.get('new_customer_id')
-    new_password = request.json.get('new_password')
+    new_password = request.json.get("new_password")
 
     # if new_customer_id:
     #     existing_user = User.query.filter_by(
@@ -182,42 +223,43 @@ def update_user():
     #     user.customer_id = new_customer_id
 
     if new_password:
-        hashed_password = bcrypt.generate_password_hash(
-            new_password).decode('utf-8')
+        hashed_password = bcrypt.generate_password_hash(new_password).decode("utf-8")
         user.password = hashed_password
 
     db.session.commit()
-    return jsonify({'message': 'Change password'}), 200
+    return jsonify({"message": "Change password"}), 200
+
 
 # The rest of the app remains the same
 
 
 # Forget & Reset Password endpoint
 
-@app.route('/forgot-password', methods=['POST'])
+
+@app.route("/forgot-password", methods=["POST"])
 def forgot_password():
-    email = request.json.get('email')
+    email = request.json.get("email")
     user = User.query.filter_by(email=email).first()
 
     if user is None:
-        return jsonify({'message': 'User not found'}), 404
+        return jsonify({"message": "User not found"}), 404
 
-    token = serializer.dumps(email, salt='password-reset')
+    token = serializer.dumps(email, salt="password-reset")
     send_password_reset_email(email, token)
 
-    return jsonify({'message': 'Password reset email sent'}), 200
+    return jsonify({"message": "Password reset email sent"}), 200
 
 
 def send_password_reset_email(recipient_email, token):
-    sender_email = os.getenv('Email')
-    sender_password = os.getenv('Password')
+    sender_email = os.getenv("Email")
+    sender_password = os.getenv("Password")
     smtp_port = 587
-    smtp_server = 'smtp.gmail.com'
+    smtp_server = "smtp.gmail.com"
 
     msg = MIMEMultipart()
-    msg['From'] = sender_email
-    msg['To'] = recipient_email
-    msg['Subject'] = "Password Reset Token"
+    msg["From"] = sender_email
+    msg["To"] = recipient_email
+    msg["Subject"] = "Password Reset Token"
 
     body = f"""
     <html>
@@ -226,7 +268,7 @@ def send_password_reset_email(recipient_email, token):
     </body>
     </html>
     """
-    msg.attach(MIMEText(body, 'html'))
+    msg.attach(MIMEText(body, "html"))
 
     try:
         server = smtplib.SMTP(smtp_server, smtp_port)
@@ -239,44 +281,43 @@ def send_password_reset_email(recipient_email, token):
         print("Error sending password reset email:", str(e))
 
 
-@app.route('/reset-password/<token>', methods=['POST'])
+@app.route("/reset-password/<token>", methods=["POST"])
 def reset_password(token):
     try:
-        email = serializer.loads(token, salt='password-reset', max_age=122)
+        email = serializer.loads(token, salt="password-reset", max_age=122)
     except Exception as e:
-        return jsonify({'message': 'The reset link is invalid or has expired.'}), 400
+        return jsonify({"message": "The reset link is invalid or has expired."}), 400
 
     user = User.query.filter_by(email=email).first()
     if user is None:
-        return jsonify({'message': 'User not found'}), 404
+        return jsonify({"message": "User not found"}), 404
 
-    new_password = request.json.get('new_password')
-    hashed_password = bcrypt.generate_password_hash(
-        new_password).decode('utf-8')
+    new_password = request.json.get("new_password")
+    hashed_password = bcrypt.generate_password_hash(new_password).decode("utf-8")
     user.password = hashed_password
     db.session.commit()
 
-    return jsonify({'message': 'Password reset successful'}), 200
+    return jsonify({"message": "Password reset successful"}), 200
 
 
-@app.route('/user-details', methods=['GET'])
+@app.route("/user-details", methods=["GET"])
 @jwt_required()
 def user_details():
     current_user_id = get_jwt_identity()
     user = User.query.filter_by(customer_id=current_user_id).first()
 
     if user is None:
-        return jsonify({'message': 'User not found'}), 404
+        return jsonify({"message": "User not found"}), 404
 
     user_details = {
-        'customer_id': user.customer_id,
-        'username': user.username,
-        'email': user.email,
+        "customer_id": user.customer_id,
+        "username": user.username,
+        "email": user.email,
         # Add any other fields you want to include
     }
 
-    return jsonify({'user_details': user_details}), 200
+    return jsonify({"user_details": user_details}), 200
 
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=os.getenv("PORT"))
