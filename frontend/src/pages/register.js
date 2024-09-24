@@ -87,120 +87,120 @@ function RegisterForm() {
 
   return (
     <div className="login-register-section">
-    <Container className="d-flex mb-5 justify-content-center mt-5">
-      <Card style={{ width: "28rem" }} className="shadow">
-        <Card.Body className="mb-3">
-          <h2 className="text-center mb-4">
-            Register <hr />
-          </h2>
-          {message && <Alert variant="info">{message}</Alert>}
-          <Form onSubmit={onSubmit}>
-            {/* Name Input */}
-            <Form.Group className="mb-3" controlId="formBasicName">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter name"
-                name="name"
-                value={name}
-                onChange={onChange}
-                required
-              />
-            </Form.Group>
+      <Container className="d-flex mb-5 justify-content-center mt-5">
+        <Card style={{ width: "28rem" }} className="shadow">
+          <Card.Body className="mb-3">
+            <h2 className="text-center mb-4">
+              Register <hr />
+            </h2>
+            {message && <Alert variant="info">{message}</Alert>}
+            <Form onSubmit={onSubmit}>
+              {/* Name Input */}
+              <Form.Group className="mb-3" controlId="formBasicName">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter name"
+                  name="name"
+                  value={name}
+                  onChange={onChange}
+                  required
+                />
+              </Form.Group>
 
-            {/* Email Input */}
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter email"
-                name="email"
-                value={email}
-                onChange={onChange}
-                required
-              />
-            </Form.Group>
+              {/* Email Input */}
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Enter email"
+                  name="email"
+                  value={email}
+                  onChange={onChange}
+                  required
+                />
+              </Form.Group>
 
-            {/* Password Input */}
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                name="password"
-                value={password}
-                onChange={onChange}
-                required
-              />
-            </Form.Group>
+              {/* Password Input */}
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  value={password}
+                  onChange={onChange}
+                  required
+                />
+              </Form.Group>
 
-            {/* Confirm Password Input */}
-            <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Confirm Password"
-                name="confirmPassword"
-                value={confirmPassword}
-                onChange={onChange}
-                required
-              />
-            </Form.Group>
+              {/* Confirm Password Input */}
+              <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Confirm Password"
+                  name="confirmPassword"
+                  value={confirmPassword}
+                  onChange={onChange}
+                  required
+                />
+              </Form.Group>
 
-            {/* Submit Button */}
-            <Button
-              variant="primary"
-              type="submit"
-              className="w-100"
-              disabled={loading}
-            >
-              {loading ? "Registering…" : "Register"}
-            </Button>
-          </Form>
-          <hr />
-          <Row className="mt-3 text-center">
-            <Col>
-              <span>Have an Account ? </span>
-              <a
-                href="/login"
-                style={{ textDecoration: "none", color: "#007bff" }}
+              {/* Submit Button */}
+              <Button
+                variant="primary"
+                type="submit"
+                className="w-100"
+                disabled={loading}
               >
-                Login Here
-              </a>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
+                {loading ? "Registering…" : "Register"}
+              </Button>
+            </Form>
+            <hr />
+            <Row className="mt-3 text-center">
+              <Col>
+                <span>Have an Account ? </span>
+                <a
+                  href="/login"
+                  style={{ textDecoration: "none", color: "#007bff" }}
+                >
+                  Login Here
+                </a>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
 
-      {/* Token Verification Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Verify Your Account</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {tokenError && <Alert variant="danger">{tokenError}</Alert>}
-          <Form>
-            <Form.Group>
-              <Form.Label>Verification Token</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter token sent to your email"
-                value={token}
-                onChange={handleTokenChange}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={verifyToken}>
-            Verify Account
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </Container>
+        {/* Token Verification Modal */}
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Verify Your Account</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {tokenError && <Alert variant="danger">{tokenError}</Alert>}
+            <Form>
+              <Form.Group>
+                <Form.Label>Verification Token</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter token sent to your email"
+                  value={token}
+                  onChange={handleTokenChange}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={verifyToken}>
+              Verify Account
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </Container>
     </div>
   );
 }

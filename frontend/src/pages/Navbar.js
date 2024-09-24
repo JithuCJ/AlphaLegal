@@ -29,15 +29,15 @@ const { Sider, Content, Footer, Header } = Layout;
 
 const AppHeader = () => {
   const { isLoggedIn, logoutUser, role } = useContext(AuthContext);
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
 
   const handleMouseEnter = () => {
     setCollapsed(false);
   };
 
-  const handleMouseLeave = () => {
-    setCollapsed(true);
-  };
+  // const handleMouseLeave = () => {
+  //   setCollapsed(true);
+  // };
 
   const userLogin = (
     <Layout>
@@ -151,27 +151,66 @@ const AppHeader = () => {
   );
 
   const loggedOutNavbar = (
-    <Navbar bg="" expand="lg" className="p-3 border-bottom Navbar">
+    <Navbar
+      bg=""
+      expand="lg"
+      expanded={collapsed}
+      className="p-3 border-bottom Navbar"
+    >
       <Container>
         <Navbar.Brand as={NavLink} to="/">
           <img src="/external/logo.png" alt="logo" height="40" />
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
+        <Navbar.Toggle
+          aria-controls="basic-navbar-nav"
+          onClick={() => setCollapsed(collapsed ? false : true)}
+        />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mx-auto gap-5 fs-5">
-            <Nav.Link as={NavLink} to="/services"  className="nav-link-hover" activeClassName="active">
+            <Nav.Link
+              as={NavLink}
+              to="/services"
+              className="nav-link-hover"
+              activeClassName="active"
+              onClick={handleMouseEnter}
+            >
               Services
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/industries" className="nav-link-hover" activeClassName="active">
+            <Nav.Link
+              as={NavLink}
+              to="/industries"
+              className="nav-link-hover"
+              activeClassName="active"
+              onClick={handleMouseEnter}
+            >
               Industries
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/blog" className="nav-link-hover" activeClassName="active">
+            <Nav.Link
+              as={NavLink}
+              to="/blog"
+              className="nav-link-hover"
+              activeClassName="active"
+              onClick={handleMouseEnter}
+            >
               Blog
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/about" className="nav-link-hover" activeClassName="active">
+            <Nav.Link
+              as={NavLink}
+              to="/about"
+              className="nav-link-hover"
+              activeClassName="active"
+              onClick={handleMouseEnter}
+            >
               About Us
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/careers" className="nav-link-hover" activeClassName="active">
+            <Nav.Link
+              as={NavLink}
+              to="/careers"
+              className="nav-link-hover"
+              activeClassName="active"
+              onClick={handleMouseEnter}
+            >
               Careers
             </Nav.Link>
           </Nav>
@@ -180,6 +219,7 @@ const AppHeader = () => {
               as={NavLink}
               to="/login"
               className="btn login-register-btn"
+              onClick={handleMouseEnter}
             >
               Login
             </Nav.Link>
@@ -187,6 +227,7 @@ const AppHeader = () => {
               as={NavLink}
               to="/register"
               className="btn login-register-btn"
+              onClick={handleMouseEnter}
             >
               Register
             </Nav.Link>
