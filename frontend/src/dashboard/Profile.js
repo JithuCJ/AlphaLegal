@@ -54,7 +54,8 @@ const ProfileManagement = () => {
       userId: userDetails.customer_id,
       email: userDetails.email,
       name: userDetails.username,
-    });
+    })
+   
   }, [userDetails, form]);
 
   const handleSubmit = async (values) => {

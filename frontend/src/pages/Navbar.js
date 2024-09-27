@@ -55,7 +55,7 @@ const AppHeader = () => {
               src="/external/logo.png"
               alt="logo"
               height="40"
-             className="w-16"
+              className="w-16"
             />
           </Navbar.Brand>
           <div>
@@ -159,7 +159,12 @@ const AppHeader = () => {
     >
       <Container>
         <Navbar.Brand as={NavLink} to="/">
-          <img src="/external/logo.png" alt="logo" height="40" className="w-16" />
+          <img
+            src="/external/logo.png"
+            alt="logo"
+            height="40"
+            className="w-16"
+          />
         </Navbar.Brand>
         {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
         <Navbar.Toggle

@@ -38,7 +38,11 @@ function Regulation() {
   const { username, email, customer_id } = userDetails;
   const navigate = useNavigate();
 
-  // CustomerId
+  /**
+   * Fetches questions from the backend API and updates the component's state.
+   *
+   * @return {void}
+   */
   useEffect(() => {
     async function fetchQuestions() {
       try {
@@ -57,7 +61,11 @@ function Regulation() {
     fetchQuestions();
   }, []);
 
-  // user Progress
+  /**
+   * Fetches the user's progress and smoothly increments the progress bar to the target value.
+   *
+   * @return {void}
+   */
   useEffect(() => {
     async function fetchProgress() {
       try {
@@ -209,7 +217,9 @@ function Regulation() {
                         <Avatar size={64} icon={<UserOutlined />} />
                       </Col>
                       <Col span={12} className="text-center ">
-                        <h4 className="text-2xl text-white mb-2 ">{username}</h4>
+                        <h4 className="text-2xl text-white mb-2 ">
+                          {username}
+                        </h4>
                         <p className="text-white text-lg">{email}</p>
                         {/* <p className="text-white">{customer_id}</p> */}
                       </Col>

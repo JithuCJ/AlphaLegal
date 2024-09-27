@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
     if (currentRole !== role) {
       setRole(currentRole);
     }
+    
   }, [token, role]);
 
   // Function to store token in localStorage and state
