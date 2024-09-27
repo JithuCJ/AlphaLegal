@@ -2,63 +2,26 @@ import React, { useState, useEffect } from "react";
 import { Container, Button, Form, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Skeleton } from "antd";
 import { Content } from "antd/es/layout/layout";
+import {
+  initialFormData,
+  industryOptions,
+  companySizeOptions,
+  aiApplicationsOptions,
+  complianceRequirementsOptions,
+} from "../components/data/comapnayInfo.data";
 
 const backend = process.env.REACT_APP_BACKEND_URL;
-
-const initialFormData = {
-  company_name: "",
-  industry: "",
-  company_size: "",
-  annual_revenue: "",
-  locations: "",
-  contact_name: "",
-  contact_position: "",
-  contact_email: "",
-  contact_phone: "",
-  ai_applications: [],
-  compliance_requirements: [],
-  ai_governance: "",
-  ai_vendors: "",
-};
-
-const industryOptions = [
-  "Technology",
-  "Finance",
-  "Healthcare",
-  "Education",
-  "Retail",
-  "Manufacturing",
-];
-const companySizeOptions = [
-  "1-10",
-  "11-50",
-  "51-200",
-  "201-500",
-  "501-1000",
-  "1001-5000",
-  "5001-10000",
-  "10001+",
-];
-const aiApplicationsOptions = [
-  "Machine Learning",
-  "Natural Language Processing",
-  "Computer Vision",
-  "Robotics",
-  "Predictive Analytics",
-];
-const complianceRequirementsOptions = [
-  "GDPR",
-  "HIPAA",
-  "CCPA",
-  "SOX",
-  "PCI DSS",
-];
 
 const ContactInfo = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(initialFormData);
+  const [companyInfoChecked, setCompanyInfoChecked] = useState(false); // To prevent rerendering multiple times
+  const [isCompanyInfoFilled, setIsCompanyInfoFilled] = useState(false); // To store if company info is already filled
+  const [loading, setLoading] = useState(true); // Use 'loading' state to control the Skeleton
 
+  // Check if company info is already filled
   useEffect(() => {
     const checkCompanyInfo = async () => {
       try {
@@ -72,10 +35,17 @@ const ContactInfo = () => {
         );
 
         if (response.status === 200 && response.data.company_info_exists) {
-          navigate("/regulation");
+          setIsCompanyInfoFilled(true);
+          navigate("/regulation"); // Redirect if info exists
+        } else {
+          setLoading(false);
         }
       } catch (error) {
         console.error("Error checking company info", error);
+
+        setLoading(false);
+      } finally {
+        setCompanyInfoChecked(true); // Ensure that the form is rendered if data is not found
       }
     };
 
@@ -121,6 +91,17 @@ const ContactInfo = () => {
       console.error("Error submitting company info", error);
     }
   };
+
+  if (!companyInfoChecked || isCompanyInfoFilled) {
+    return null;
+  }
+  if (loading) {
+    return (
+      <Content style={{ padding: "24px" }}>
+        <Skeleton active />
+      </Content>
+    );
+  }
 
   return (
     <Content>

@@ -54,8 +54,8 @@ const AppHeader = () => {
             <img
               src="/external/logo.png"
               alt="logo"
-              height="50"
-              className="d-inline-block align-top"
+              height="40"
+              className="w-16"
             />
           </Navbar.Brand>
           <div>
@@ -113,7 +113,7 @@ const AppHeader = () => {
               src="/external/logo.png"
               alt="logo"
               height="50"
-              className="d-inline-block align-top"
+              className="w-16"
             />
           </Navbar.Brand>
           <div>
@@ -159,7 +159,12 @@ const AppHeader = () => {
     >
       <Container>
         <Navbar.Brand as={NavLink} to="/">
-          <img src="/external/logo.png" alt="logo" height="40" />
+          <img
+            src="/external/logo.png"
+            alt="logo"
+            height="40"
+            className="w-16"
+          />
         </Navbar.Brand>
         {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
         <Navbar.Toggle

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: 'alphalegal.azurecr.io/backend:v10'
+          image: 'shubham305/python:v1'
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
