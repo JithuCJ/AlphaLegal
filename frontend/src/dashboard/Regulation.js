@@ -203,33 +203,43 @@ function Regulation() {
                 <div className="titles-container">
                   {/* User Information */}
 
-                  <div className="user-info mb-4">
+                  <div className="user-info">
                     <Row>
                       <Col span={8} className="text-center">
                         <Avatar size={64} icon={<UserOutlined />} />
                       </Col>
-                      <Col span={12} className="text-left ">
-                        <h4 className="text-white">{username}</h4>
-                        <p className="text-white">{email}</p>
+                      <Col span={12} className="text-center ">
+                        <h4 className="text-2xl text-white mb-2 ">{username}</h4>
+                        <p className="text-white text-lg">{email}</p>
                         {/* <p className="text-white">{customer_id}</p> */}
                       </Col>
                     </Row>
                   </div>
 
                   {/* User Progress */}
-                  <div className="user-progress  mb-4">
-                    <div className="progress-bar-container">
-                      <div className="progress-bar">
-                        <div
-                          className="progress-fill"
-                          style={{ width: `${progress}%` }}
-                        >
-                          <span className="progress-text">{progress}%</span>
-                        </div>
+
+                  <div className="user-progress mb-4">
+                    <div className="flex flex-col items-center mb-2">
+                      {/* Display the percentage on top */}
+                      <p className="text-white text-lg mb-0">
+                        {progress}% Completed
+                      </p>
+                      {/* Progress bar */}
+                      <div className="w-3/4">
+                        <Progress
+                          percent={progress}
+                          showInfo={false} // Hide default percentage inside the bar
+                          strokeColor={{
+                            from: "#6EE7B7",
+                            to: "#34D399",
+                          }}
+                          trailColor="#2d3748" // Set a darker trail color
+                        />
                       </div>
                     </div>
                   </div>
 
+                  {/* Question Titles */}
                   <hr className="text-white" />
                   <Title className="p-2 text-white" level={3}>
                     Questions Titles
