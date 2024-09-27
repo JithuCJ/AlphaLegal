@@ -34,7 +34,7 @@ function Regulation() {
   const [score, setScore] = useState(null);
   const [progress, setProgress] = useState(0); // New state for progress
 
-  const { customerId, fetchUserProgress, userDetails } = useUser();
+  const { customerId, fetchUserProgress, userDetails } = useUser(0);
   const { username, email, customer_id } = userDetails;
   const navigate = useNavigate();
 
@@ -62,13 +62,24 @@ function Regulation() {
     async function fetchProgress() {
       try {
         const progressData = await fetchUserProgress();
-        setProgress(progressData.progress_percentage);
+        const targetProgress = progressData.progress_percentage;
+
+        // Smoothly increment progress
+        let currentProgress = 0;
+        const interval = setInterval(() => {
+          if (currentProgress < targetProgress) {
+            currentProgress += 1; // Increment by 1
+            setProgress(currentProgress);
+          } else {
+            clearInterval(interval); // Stop incrementing when target is reached
+          }
+        }, 20); // Set interval time (adjust for smoothness)
       } catch (error) {
         console.error("There was an error fetching the user progress!", error);
       }
     }
     fetchProgress();
-  }, [fetchUserProgress]);
+  }, [fetchUserProgress, customerId]);
 
   const handleSave = async () => {
     try {
@@ -191,7 +202,7 @@ function Regulation() {
               <Col xs={24} md={6}>
                 <div className="titles-container">
                   {/* User Information */}
-                
+
                   <div className="user-info mb-4">
                     <Row>
                       <Col span={8} className="text-center">
@@ -207,7 +218,6 @@ function Regulation() {
 
                   {/* User Progress */}
                   <div className="user-progress  mb-4">
-                   
                     <div className="progress-bar-container">
                       <div className="progress-bar">
                         <div
@@ -219,7 +229,6 @@ function Regulation() {
                       </div>
                     </div>
                   </div>
-
 
                   <hr className="text-white" />
                   <Title className="p-2 text-white" level={3}>

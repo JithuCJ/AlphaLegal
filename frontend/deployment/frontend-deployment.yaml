@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: 'shubham305/react:v1'
+          image: 'asia-south1-docker.pkg.dev/alphalegal/alphalegal/frontend:6'
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
