@@ -12,6 +12,7 @@ import {
   Typography,
   Progress,
   Avatar,
+  Skeleton
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { useUser } from "../store/UserContext";
@@ -33,7 +34,7 @@ function Regulation() {
   const [selectedTitle, setSelectedTitle] = useState(null);
   const [score, setScore] = useState(null);
   const [progress, setProgress] = useState(0); // New state for progress
-
+  const [loading, setLoading] = useState(true);  //  `loading` state to control the Skeleton
   const { customerId, fetchUserProgress, userDetails } = useUser(0);
   const { username, email, customer_id } = userDetails;
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ function Regulation() {
    */
   useEffect(() => {
     async function fetchQuestions() {
+      setLoading(true); // Start loading
       try {
         const response = await axios.get(`${backend}questions/questions`, {
           headers: {
@@ -56,6 +58,8 @@ function Regulation() {
         setFilteredQuestions(response.data.questions);
       } catch (error) {
         console.error("There was an error fetching the questions!", error);
+      } finally {
+        setLoading(false); // Stop loading
       }
     }
     fetchQuestions();
@@ -68,6 +72,8 @@ function Regulation() {
    */
   useEffect(() => {
     async function fetchProgress() {
+      setLoading(true); // Start loading
+
       try {
         const progressData = await fetchUserProgress();
         const targetProgress = progressData.progress_percentage;
@@ -84,11 +90,19 @@ function Regulation() {
         }, 20); // Set interval time (adjust for smoothness)
       } catch (error) {
         console.error("There was an error fetching the user progress!", error);
+      } finally {
+        setLoading(false); // Stop loading
       }
     }
     fetchProgress();
   }, [fetchUserProgress, customerId]);
 
+
+    /**
+   * Saves the user's answers to the backend API.
+   *
+   * 
+   */
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
@@ -210,8 +224,10 @@ function Regulation() {
               <Col xs={24} md={6}>
                 <div className="titles-container">
                   {/* User Information */}
-
-                  <div className="user-info">
+ {loading ? (
+   <Skeleton avatar paragraph={{ rows: 2 }} active />
+ ) : (
+  <div className="user-info">
                     <Row>
                       <Col span={8} className="text-center">
                         <Avatar size={64} icon={<UserOutlined />} />
@@ -225,6 +241,10 @@ function Regulation() {
                       </Col>
                     </Row>
                   </div>
+   
+ 
+ )}
+                  
 
                   {/* User Progress */}
 
@@ -250,10 +270,14 @@ function Regulation() {
                   </div>
 
                   {/* Question Titles */}
+
                   <hr className="text-white" />
                   <Title className="p-2 text-white" level={3}>
                     Questions Titles
                   </Title>
+                  {loading ? (
+                    <Skeleton active paragraph={{ rows: 4 }} />
+                  ) : (
                   <ul className="titles-list list-unstyled">
                     {[...new Set(questions.map((q) => q.title))].map(
                       (title, index) => (
@@ -271,12 +295,18 @@ function Regulation() {
                       )
                     )}
                   </ul>
+
+                  )}
                 </div>
               </Col>
 
               {/* Question Colume */}
               <Col className="p-3" xs={24} md={18}>
                 <div className="questions-container">
+                {loading ? (
+                    <Skeleton active paragraph={{ rows: 4 }} />
+                  ) : (
+
                   <Form form={form}>
                     {currentQuestions.map((q) => (
                       <div key={q.id} className="question-item">
@@ -303,6 +333,7 @@ function Regulation() {
                       </div>
                     ))}
                   </Form>
+                  )}
                 </div>
               </Col>
             </Row>

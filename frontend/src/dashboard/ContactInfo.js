@@ -20,10 +20,14 @@ const ContactInfo = () => {
   const [companyInfoChecked, setCompanyInfoChecked] = useState(false); // To prevent rerendering multiple times
   const [isCompanyInfoFilled, setIsCompanyInfoFilled] = useState(false); // To store if company info is already filled
   const [loading, setLoading] = useState(true); // Use 'loading' state to control the Skeleton
-
-  // Check if company info is already filled
+    /**
+     * Asynchronously checks if company info is already filled.
+     *
+     * @return {Promise<void>} Promise that resolves when the function completes.
+     */
   useEffect(() => {
     const checkCompanyInfo = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `${backend}questions/company_info/check`,
@@ -42,9 +46,8 @@ const ContactInfo = () => {
         }
       } catch (error) {
         console.error("Error checking company info", error);
-
-        setLoading(false);
       } finally {
+        setLoading(false);
         setCompanyInfoChecked(true); // Ensure that the form is rendered if data is not found
       }
     };
@@ -95,229 +98,235 @@ const ContactInfo = () => {
   if (!companyInfoChecked || isCompanyInfoFilled) {
     return null;
   }
+
   if (loading) {
-    return (
-      <Content style={{ padding: "24px" }}>
-        <Skeleton active />
-      </Content>
-    );
+    return <Skeleton active paragraph={{ rows: 4 }} />;
   }
+
 
   return (
     <Content>
-      <Container className="bg-white shadow-lg border rounded p-5 my-4">
-        <h1 className="text-center mb-5">Company Information</h1>
-        <Form onSubmit={handleSubmit}>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Company Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="company_name"
-                  value={formData.company_name}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Industry</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="industry"
-                  value={formData.industry}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Industry</option>
-                  {industryOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Company Size</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="company_size"
-                  value={formData.company_size}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Company Size</option>
-                  {companySizeOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Annual Revenue</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="annual_revenue"
-                  value={formData.annual_revenue}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Locations</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="locations"
-                  value={formData.locations}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Contact Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="contact_name"
-                  value={formData.contact_name}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Contact Position</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="contact_position"
-                  value={formData.contact_position}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Contact Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="contact_email"
-                  value={formData.contact_email}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Contact Phone</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="contact_phone"
-                  value={formData.contact_phone}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>AI Vendors</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="ai_vendors"
-                  value={formData.ai_vendors}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Form.Group className="mb-3">
-            <Form.Label>AI Applications</Form.Label>
-            <Row>
-              {aiApplicationsOptions.map((option) => (
-                <Col md={4} key={option}>
-                  <Form.Check
-                    type="checkbox"
-                    label={option}
-                    value={option}
-                    checked={formData.ai_applications.includes(option)}
-                    onChange={(e) => handleCheckboxChange(e, "ai_applications")}
-                  />
-                </Col>
-              ))}
-            </Row>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Compliance Requirements</Form.Label>
-            <Row>
-              {complianceRequirementsOptions.map((option) => (
-                <Col md={4} key={option}>
-                  <Form.Check
-                    type="checkbox"
-                    label={option}
-                    value={option}
-                    checked={formData.compliance_requirements.includes(option)}
-                    onChange={(e) =>
-                      handleCheckboxChange(e, "compliance_requirements")
-                    }
-                  />
-                </Col>
-              ))}
-            </Row>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>AI Governance</Form.Label>
+      {loading ? (
+        <Skeleton active paragraph={{ rows: 4 }} />
+      ) : (
+        <Container className="bg-white shadow-lg border rounded p-5 my-4">
+          <h1 className="text-center mb-5">Company Information</h1>
+          <Form onSubmit={handleSubmit}>
             <Row>
               <Col md={6}>
-                <Form.Check
-                  type="radio"
-                  name="ai_governance"
-                  label="Yes"
-                  value="true"
-                  checked={formData.ai_governance === "true"}
-                  onChange={handleChange}
-                />
+                <Form.Group className="mb-3">
+                  <Form.Label>Company Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="company_name"
+                    value={formData.company_name}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
               </Col>
               <Col md={6}>
-                <Form.Check
-                  type="radio"
-                  name="ai_governance"
-                  label="No"
-                  value="false"
-                  checked={formData.ai_governance === "false"}
-                  onChange={handleChange}
-                />
+                <Form.Group className="mb-3">
+                  <Form.Label>Industry</Form.Label>
+                  <Form.Control
+                    as="select"
+                    name="industry"
+                    value={formData.industry}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select Industry</option>
+                    {industryOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </Form.Group>
               </Col>
             </Row>
-          </Form.Group>
-          <div className="text-center mt-4">
-            <Button variant="primary" size="lg" type="submit">
-              Start Survey
-            </Button>
-          </div>
-        </Form>
-      </Container>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Company Size</Form.Label>
+                  <Form.Control
+                    as="select"
+                    name="company_size"
+                    value={formData.company_size}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select Company Size</option>
+                    {companySizeOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Annual Revenue</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="annual_revenue"
+                    value={formData.annual_revenue}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Locations</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="locations"
+                    value={formData.locations}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Contact Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="contact_name"
+                    value={formData.contact_name}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Contact Position</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="contact_position"
+                    value={formData.contact_position}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Contact Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    name="contact_email"
+                    value={formData.contact_email}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Contact Phone</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="contact_phone"
+                    value={formData.contact_phone}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>AI Vendors</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="ai_vendors"
+                    value={formData.ai_vendors}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Form.Group className="mb-3">
+              <Form.Label>AI Applications</Form.Label>
+              <Row>
+                {aiApplicationsOptions.map((option) => (
+                  <Col md={4} key={option}>
+                    <Form.Check
+                      type="checkbox"
+                      label={option}
+                      value={option}
+                      checked={formData.ai_applications.includes(option)}
+                      onChange={(e) =>
+                        handleCheckboxChange(e, "ai_applications")
+                      }
+                    />
+                  </Col>
+                ))}
+              </Row>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Compliance Requirements</Form.Label>
+              <Row>
+                {complianceRequirementsOptions.map((option) => (
+                  <Col md={4} key={option}>
+                    <Form.Check
+                      type="checkbox"
+                      label={option}
+                      value={option}
+                      checked={formData.compliance_requirements.includes(
+                        option
+                      )}
+                      onChange={(e) =>
+                        handleCheckboxChange(e, "compliance_requirements")
+                      }
+                    />
+                  </Col>
+                ))}
+              </Row>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>AI Governance</Form.Label>
+              <Row>
+                <Col md={6}>
+                  <Form.Check
+                    type="radio"
+                    name="ai_governance"
+                    label="Yes"
+                    value="true"
+                    checked={formData.ai_governance === "true"}
+                    onChange={handleChange}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Form.Check
+                    type="radio"
+                    name="ai_governance"
+                    label="No"
+                    value="false"
+                    checked={formData.ai_governance === "false"}
+                    onChange={handleChange}
+                  />
+                </Col>
+              </Row>
+            </Form.Group>
+            <div className="text-center">
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </div>
+          </Form>
+        </Container>
+      )}
     </Content>
   );
 };
