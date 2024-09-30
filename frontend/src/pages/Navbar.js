@@ -44,7 +44,7 @@ const AppHeader = () => {
       <Navbar
         bg="light"
         expand="lg"
-        className="border-bottom"
+        className="Navbar"
         style={{ height: "4rem" }}
       >
         <div className="container d-flex justify-content-between">
@@ -55,7 +55,7 @@ const AppHeader = () => {
               src="/external/logo.png"
               alt="logo"
               height="40"
-              className="w-16"
+              className="w-20"
             />
           </Navbar.Brand>
           <div>
@@ -102,8 +102,8 @@ const AppHeader = () => {
       <Navbar
         bg="light"
         expand="lg"
-        className="border-bottom"
-        style={{ height: "4rem" }}
+        className="Navbar"
+       
       >
         <div className="container d-flex justify-content-between">
           {" "}
@@ -112,8 +112,8 @@ const AppHeader = () => {
             <img
               src="/external/logo.png"
               alt="logo"
-              height="50"
-              className="w-16"
+                height="40"
+            className="w-24"
             />
           </Navbar.Brand>
           <div>
@@ -155,7 +155,7 @@ const AppHeader = () => {
       bg=""
       expand="lg"
       expanded={collapsed}
-      className="p-3 border-bottom Navbar"
+      className="Navbar"
     >
       <Container>
         <Navbar.Brand as={NavLink} to="/">
@@ -163,7 +163,7 @@ const AppHeader = () => {
             src="/external/logo.png"
             alt="logo"
             height="40"
-            className="w-16"
+            className="w-24"
           />
         </Navbar.Brand>
         {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
