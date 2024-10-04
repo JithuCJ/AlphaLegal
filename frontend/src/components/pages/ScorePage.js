@@ -17,6 +17,10 @@ function ScorePage() {
   const [score, setScore] = useState(null);
 
   useEffect(() => {
+  /**
+   * Fetches the user's score from the backend and sets it in the state.
+   * The score is rounded to the nearest whole number.
+   */
     const fetchScore = async () => {
       try {
         const response = await axios.get(`${backend}questions/score`, {
@@ -24,7 +28,9 @@ function ScorePage() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        setScore(response.data.score);
+        // setScore(response.data.score);
+
+        setScore(Math.round(response.data.score));
       } catch (error) {
         console.error("Error fetching the score:", error);
       }

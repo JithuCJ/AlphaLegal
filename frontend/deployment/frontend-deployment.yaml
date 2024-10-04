@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: 'asia-south1-docker.pkg.dev/alphalegal/alphalegal/frontend:7'
+          image: 'asia-south1-docker.pkg.dev/alphalegal/alphalegal/frontend:8'
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
