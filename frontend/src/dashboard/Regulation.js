@@ -12,18 +12,18 @@ import {
   Typography,
   Progress,
   Avatar,
-  Skeleton
+  Skeleton,
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { useUser } from "../store/UserContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "../CSS/Regulation.css"; // Import the custom CSS
-
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 const { Content } = Layout;
 const { Title } = Typography;
 
-const QUESTIONS_PER_PAGE = 10;
+const QUESTIONS_PER_PAGE = 8;
 const backend = process.env.REACT_APP_BACKEND_URL;
 
 function Regulation() {
@@ -34,7 +34,7 @@ function Regulation() {
   const [selectedTitle, setSelectedTitle] = useState(null);
   const [score, setScore] = useState(null);
   const [progress, setProgress] = useState(0); // New state for progress
-  const [loading, setLoading] = useState(true);  //  `loading` state to control the Skeleton
+  const [loading, setLoading] = useState(true); //  `loading` state to control the Skeleton
   const { customerId, fetchUserProgress, userDetails } = useUser(0);
   const { username, email, customer_id } = userDetails;
   const navigate = useNavigate();
@@ -97,11 +97,10 @@ function Regulation() {
     fetchProgress();
   }, [fetchUserProgress, customerId]);
 
-
-    /**
+  /**
    * Saves the user's answers to the backend API.
    *
-   * 
+   *
    */
   const handleSave = async () => {
     try {
@@ -201,7 +200,23 @@ function Regulation() {
     setCurrentPage(page);
   };
 
+
+
   const itemRender = (page, type, originalElement) => {
+    if (type === "prev") {
+      return (
+        <a className="text-blue-500 hover:text-blue-700">
+          <LeftOutlined className="text-blue-600" /> Previous
+        </a>
+      );
+    }
+    if (type === "next") {
+      return (
+        <a className="text-blue-500 hover:text-blue-700">
+          Next <RightOutlined className="text-blue-600" />
+        </a>
+      );
+    }
     if (type === "page") {
       return Math.abs(currentPage - page) < 2 ? originalElement : null;
     }
@@ -224,27 +239,24 @@ function Regulation() {
               <Col xs={24} md={6}>
                 <div className="titles-container">
                   {/* User Information */}
- {loading ? (
-   <Skeleton avatar paragraph={{ rows: 2 }} active />
- ) : (
-  <div className="user-info">
-                    <Row>
-                      <Col span={8} className="text-center">
-                        <Avatar size={64} icon={<UserOutlined />} />
-                      </Col>
-                      <Col span={12} className="text-center ">
-                        <h4 className="text-2xl text-white mb-2 ">
-                          {username}
-                        </h4>
-                        <p className="text-white text-lg">{email}</p>
-                        {/* <p className="text-white">{customer_id}</p> */}
-                      </Col>
-                    </Row>
-                  </div>
-   
- 
- )}
-                  
+                  {loading ? (
+                    <Skeleton avatar paragraph={{ rows: 2 }} active />
+                  ) : (
+                    <div className="user-info">
+                      <Row>
+                        <Col span={8} className="text-center">
+                          <Avatar size={64} icon={<UserOutlined />} />
+                        </Col>
+                        <Col span={12} className="text-center ">
+                          <h4 className="text-2xl text-white mb-2 ">
+                            {username}
+                          </h4>
+                          <p className="text-white text-lg">{email}</p>
+                          {/* <p className="text-white">{customer_id}</p> */}
+                        </Col>
+                      </Row>
+                    </div>
+                  )}
 
                   {/* User Progress */}
 
@@ -278,24 +290,23 @@ function Regulation() {
                   {loading ? (
                     <Skeleton active paragraph={{ rows: 4 }} />
                   ) : (
-                  <ul className="titles-list list-unstyled">
-                    {[...new Set(questions.map((q) => q.title))].map(
-                      (title, index) => (
-                        <li
-                          key={index}
-                          className={`title-item p-2 rounded ${
-                            selectedTitle === title
-                              ? "bg-primary text-white"
-                              : "text-white"
-                          }`}
-                          onClick={() => handleTitleClick(title)}
-                        >
-                          {title}
-                        </li>
-                      )
-                    )}
-                  </ul>
-
+                    <ul className="titles-list list-unstyled">
+                      {[...new Set(questions.map((q) => q.title))].map(
+                        (title, index) => (
+                          <li
+                            key={index}
+                            className={`title-item p-2 rounded ${
+                              selectedTitle === title
+                                ? "bg-primary text-white"
+                                : "text-white"
+                            }`}
+                            onClick={() => handleTitleClick(title)}
+                          >
+                            {title}
+                          </li>
+                        )
+                      )}
+                    </ul>
                   )}
                 </div>
               </Col>
@@ -303,36 +314,35 @@ function Regulation() {
               {/* Question Colume */}
               <Col className="p-3" xs={24} md={18}>
                 <div className="questions-container">
-                {loading ? (
+                  {loading ? (
                     <Skeleton active paragraph={{ rows: 4 }} />
                   ) : (
-
-                  <Form form={form}>
-                    {currentQuestions.map((q) => (
-                      <div key={q.id} className="question-item">
-                        <Title level={4}>
-                          {q.question}{" "}
-                          {q.attempted && (
-                            <span style={{ color: "blue" }}>✔</span>
-                          )}
-                        </Title>
-                        <Form.Item
-                          name={`question_${q.id}`}
-                          initialValue={q.answer || ""}
-                        >
-                          <Radio.Group disabled={q.attempted}>
-                            <Row gutter={[36, 36]}>
-                              {q.options.split("\n").map((option, index) => (
-                                <Col span={12} key={index}>
-                                  <Radio value={option}>{option}</Radio>
-                                </Col>
-                              ))}
-                            </Row>
-                          </Radio.Group>
-                        </Form.Item>
-                      </div>
-                    ))}
-                  </Form>
+                    <Form form={form}>
+                      {currentQuestions.map((q) => (
+                        <div key={q.id} className="question-item">
+                          <Title level={4}>
+                            {q.question}{" "}
+                            {q.attempted && (
+                              <span style={{ color: "blue" }}>✔</span>
+                            )}
+                          </Title>
+                          <Form.Item
+                            name={`question_${q.id}`}
+                            initialValue={q.answer || ""}
+                          >
+                            <Radio.Group disabled={q.attempted}>
+                              <Row gutter={[36, 36]}>
+                                {q.options.split("\n").map((option, index) => (
+                                  <Col span={12} key={index}>
+                                    <Radio value={option}>{option}</Radio>
+                                  </Col>
+                                ))}
+                              </Row>
+                            </Radio.Group>
+                          </Form.Item>
+                        </div>
+                      ))}
+                    </Form>
                   )}
                 </div>
               </Col>
@@ -341,15 +351,16 @@ function Regulation() {
           {/* <hr /> */}
 
           {/* Pagination  */}
-          <div className="pagination-container">
+          <div className="pagination-container ">
             <Pagination
               current={currentPage}
               pageSize={QUESTIONS_PER_PAGE}
               total={filteredQuestions.length}
               onChange={handlePageChange}
               showSizeChanger={false}
-              showQuickJumper
+              // showQuickJumper
               itemRender={itemRender}
+              className="flex justify-center"
             />
             <Button
               type="primary"
